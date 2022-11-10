@@ -73,4 +73,8 @@ public class Users {
     public void updateModifiedDate() {
         this.modifiedDate = LocalDate.now();
     }
+
+    public void initPreferredTechStacks() {
+        this.preferStacks = new ArrayList<>();
+    }
 }
