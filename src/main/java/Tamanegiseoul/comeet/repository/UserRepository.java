@@ -25,7 +25,7 @@ public class UserRepository {
     public Users findUserByNickname(String nickname) {
         return em.createQuery("select u from Users u where u.nickname = :nickname", Users.class)
                 .setParameter("nickname", nickname)
-                .getSingleResult();
+                .getResultList().stream().findFirst().orElse(null);
     }
 
     public List<Users> findAll() {
@@ -42,6 +42,6 @@ public class UserRepository {
     public Users findUserByEmail(String email) {
         return em.createQuery("select u from Users u where u.email = :email", Users.class)
                 .setParameter("email", email)
-                .getSingleResult();
+                .getResultList().stream().findFirst().orElse(null);
     }
 }
