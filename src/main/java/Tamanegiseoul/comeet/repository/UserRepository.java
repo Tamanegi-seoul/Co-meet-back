@@ -1,6 +1,8 @@
 package Tamanegiseoul.comeet.repository;
 
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.enums.TechStack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +30,12 @@ public class UserRepository {
 
     public List<Users> findAll() {
         return em.createQuery("select u from Users u", Users.class)
+                .getResultList();
+    }
+
+    public List<StackRelation> findPreferredStacks(Long userId) {
+        return em.createQuery("select sr from StackRelation sr where sr.user.id = :userId", StackRelation.class)
+                .setParameter("userId", userId)
                 .getResultList();
     }
 }
