@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.repository.UserRepository;
 import Tamanegiseoul.comeet.service.UserService;
 
@@ -43,9 +44,48 @@ public class UserServiceTest {
         Assert.assertEquals(findUser.getEmail(), "testuser@gmail.com");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = DuplicateResourceException.class)
     public void 유저_이메일_중복검사() {
+        // given
+        Users newUser = Users.builder()
+                .nickname("test_user")
+                .email("testuser@gmail.com")
+                .password("password")
+                .build();
+        userService.registerUser(newUser);
 
+        // when
+        Users otherUser = Users.builder()
+                .nickname("other_user")
+                .email("testuser@gmail.com")
+                .password("password")
+                .build();
+        userService.registerUser(otherUser);
+
+        // then
+        Assert.fail("something goes wrong");
+    }
+
+    @Test(expected = DuplicateResourceException.class)
+    public void 유저_닉네임_중복검사() {
+        // given
+        Users newUser = Users.builder()
+                .nickname("test_user")
+                .email("testuser@gmail.com")
+                .password("password")
+                .build();
+        userService.registerUser(newUser);
+
+        // when
+        Users otherUser = Users.builder()
+                .nickname("test_user")
+                .email("otherUser@gmail.com")
+                .password("password")
+                .build();
+        userService.registerUser(otherUser);
+
+        // then
+        Assert.fail("something goes wrong");
     }
 
     @Test
