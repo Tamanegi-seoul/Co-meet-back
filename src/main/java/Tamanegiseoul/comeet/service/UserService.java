@@ -12,7 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +51,13 @@ public class UserService {
         }
     }
 
-    // update methods
+    /**********************
+     * USER UPDATE METHODS
+     **********************/
+
     @Transactional
     public void updateUserNickname(Long id, String newNickname) {
+        validateUserNickname(newNickname);
         Users findUser = userRepository.findOne(id);
         findUser.changeNickname(newNickname);
         findUser.updateModifiedDate();
@@ -66,12 +73,22 @@ public class UserService {
     @Transactional
     public void updatePreferStack(Long id, TechStack...techStacks) {
         Users findUser = userRepository.findOne(id);
+        findUser.initPreferredTechStacks();
         for(TechStack ts : techStacks) {
             findUser.addPreferStack(ts);
         }
+        /*
+        List<TechStack> tsArr = List.copyOf(findPreferredStacks(id));
+        HashSet<TechStack> tsSet = (HashSet<TechStack>)tsArr.stream().collect(Collectors.toSet());
+        for(TechStack ts : techStacks) {
+            tsSet.add(ts);
+        }
+        */
     }
 
-    // below search methods
+    /**********************
+     * USER SEARCH METHODS
+     **********************/
 
     @Transactional(readOnly = true)
     public Users findUserById(Long id) {
@@ -79,13 +96,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Users findUserByNickname(String nickname) {
-        return userRepository.findUserByNickname(nickname);
+    public List<Users> findAll() {
+        return userRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findAll() {
-        return userRepository.findAll();
+    public Users findUserByNickname(String nickname) {
+        return userRepository.findUserByNickname(nickname);
     }
 
     public List<TechStack> findPreferredStacks(Long userId) {
