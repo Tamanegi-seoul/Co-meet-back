@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet.domain;
 
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,5 +34,14 @@ public class Comment {
 
     @NotNull
     private LocalDate modifiedDate;
+
+    @Builder
+    public Comment(Posts post, Users user, String comment) {
+        this.post = post;
+        this.user = user;
+        this.comment = comment;
+        this.createdDate = LocalDate.now();
+        this.modifiedDate = LocalDate.now();
+    }
 
 }

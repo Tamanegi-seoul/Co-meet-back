@@ -2,10 +2,13 @@ package Tamanegiseoul.comeet.domain;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -18,9 +21,11 @@ public class StackRelation {
     @Column(name = "stack_relation_id")
     private Long id;
 
+    @Nullable
     @ManyToOne(fetch = LAZY) @JoinColumn(name = "post_id")
     private Posts post;
 
+    @Nullable
     @ManyToOne(fetch = LAZY) @JoinColumn(name = "user_id")
     private Users user;
 
@@ -28,19 +33,27 @@ public class StackRelation {
     @NotNull
     private TechStack techStack;
 
-    public static StackRelation createForUser(Users user, TechStack ts) {
-        StackRelation newSt = new StackRelation();
-        newSt.user = user;
-        newSt.techStack = ts;
-        return newSt;
+    @Builder
+    public StackRelation(Users user, Posts post, TechStack techStack) {
+        this.user = user;
+        this.post = post;
+        this.techStack = techStack;
     }
 
-    public static StackRelation createForPost(Posts post, TechStack ts) {
-        StackRelation newSt = new StackRelation();
-        newSt.post = post;
-        newSt.techStack = ts;
-        return newSt;
-    }
+
+//    public static StackRelation createForUser(Users user, TechStack ts) {
+//        StackRelation newSt = new StackRelation();
+//        newSt.user = user;
+//        newSt.techStack = ts;
+//        return newSt;
+//    }
+//
+//    public static StackRelation createForPost(Posts post, TechStack ts) {
+//        StackRelation newSt = new StackRelation();
+//        newSt.post = post;
+//        newSt.techStack = ts;
+//        return newSt;
+//    }
 
 
 }

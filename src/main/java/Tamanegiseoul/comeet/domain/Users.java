@@ -59,8 +59,10 @@ public class Users {
     }
 
     public void addPreferStack(TechStack ts) {
-        StackRelation newSt = StackRelation.createForUser(this, ts);
-        this.preferStacks.add(newSt);
+        //StackRelation newSt = StackRelation.createForUser(this, ts);
+        this.preferStacks.add(StackRelation.builder()
+                .user(this)
+                .techStack(ts).build());
     }
 
     // set LocalTime for created, modified date

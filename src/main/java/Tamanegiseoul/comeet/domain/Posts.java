@@ -1,7 +1,9 @@
 package Tamanegiseoul.comeet.domain;
 
+import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,7 +45,7 @@ public class Posts {
     private List<Comment> comments = new ArrayList<>();
 
     @NotNull
-    private Long hits;
+    private Long hits = 0L;
 
     @NotNull
     private String content;
@@ -53,5 +55,25 @@ public class Posts {
 
     @NotNull
     private LocalDate modifiedDate;
+
+    @Builder
+    public Posts(String title, Long recruitCapacity, LocalDate startDate, Long expectedTerm, String content) {
+        this.title = title;
+        this.recruitCapacity = recruitCapacity;
+        this.startDate = startDate;
+        this.expectedTerm = expectedTerm;
+        this.content = content;
+        this.createdDate = LocalDate.now();
+        this.modifiedDate = LocalDate.now();
+    }
+
+    public void addDesignateStack(TechStack ...ts) {
+        //StackRelation newSt = StackRelation.createForUser(this, ts);
+        for(TechStack stack : ts) {
+            this.techStacks.add(StackRelation.builder()
+                    .post(this)
+                    .techStack(stack).build());
+        }
+    }
 
 }
