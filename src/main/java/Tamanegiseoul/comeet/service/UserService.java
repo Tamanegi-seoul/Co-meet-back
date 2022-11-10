@@ -25,6 +25,8 @@ public class UserService {
 
     @Transactional
     public Long registerUser(Users user) {
+        validateUserEmail(user.getEmail());
+        validateUserNickname(user.getNickname());
         user.updateCreatedDate();
         userRepository.save(user);
         return user.getId();
