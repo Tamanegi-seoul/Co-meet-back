@@ -1,5 +1,6 @@
 package Tamanegiseoul.comeet.service;
 
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.repository.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,5 +67,15 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<Users> findAll() {
         return userRepository.findAll();
+    }
+
+    public List<TechStack> findPreferredStacks(Long userId) {
+        List<TechStack> findStacks = new ArrayList<>();
+        List<StackRelation> findStackRelations = userRepository.findPreferredStacks(userId);
+        for(StackRelation sr : findStackRelations) {
+            findStacks.add(sr.getTechStack());
+        }
+
+        return findStacks;
     }
 }
