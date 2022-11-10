@@ -3,6 +3,7 @@ package Tamanegiseoul.comeet.service;
 import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,22 @@ public class UserService {
         user.updateCreatedDate();
         userRepository.save(user);
         return user.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public void validateUserEmail(String email) {
+        Users findUser = userRepository.findUserByEmail(email);
+        if(findUser != null) {
+            throw new DuplicateResourceException("Users Email", email);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void validateUserNickname(String nickname) {
+        Users findUser = userRepository.findUserByNickname(nickname);
+        if(findUser != null) {
+            throw new DuplicateResourceException("Users Nickname", nickname);
+        }
     }
 
     // update methods
