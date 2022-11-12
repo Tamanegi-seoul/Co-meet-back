@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,6 +107,30 @@ public class UserServiceTest {
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name());
         }
+        Assert.assertEquals(2, findStacks.size());
+    }
+
+    @Test
+    //@Rollback(false)
+    public void 기술스택_수정() {
+        // given
+        Users newUser = Users.builder()
+                .nickname("woogie")
+                .email("woogie@gmail.com")
+                .password("password")
+                .build();
+        userService.registerUser(newUser);
+        userService.updatePreferStack(newUser.getId(), TechStack.JAVA, TechStack.R);
+
+        // when
+        userService.updatePreferStack(newUser.getId(), TechStack.PYTHON, TechStack.JAVA_SCRIPT);
+
+        // then
+        List<TechStack> findStacks = userService.findPreferredStacks(newUser.getId());
+        for(TechStack ts : findStacks) {
+            log.info("TechStack : " + ts.name());
+        }
+        Assert.assertEquals("PYTHON", findStacks.get(0).name());
         Assert.assertEquals(2, findStacks.size());
     }
 }
