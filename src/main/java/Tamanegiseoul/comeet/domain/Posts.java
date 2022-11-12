@@ -95,6 +95,10 @@ public class Posts {
                 .techStack(ts).build());
     }
 
+    public void increaseHits() {
+        this.hits++;
+    }
+
 //    public void updateDesignateStack(TechStack ...ts) {
 //        for(TechStack stack : ts) {
 //            this.designatedStack.add(StackRelation.builder()

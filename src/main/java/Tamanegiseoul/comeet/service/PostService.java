@@ -44,6 +44,12 @@ public class PostService {
         findPost.updateDesignateStack(updatedPost.getStacks());
     }
 
+    @Transactional
+    public void increasePostHit(Long postId) {
+        Posts findPost = postRepository.findOne(postId);
+        findPost.increaseHits();
+    }
+
     /***********************
      * SEARCH POST METHODS *
      ***********************/
