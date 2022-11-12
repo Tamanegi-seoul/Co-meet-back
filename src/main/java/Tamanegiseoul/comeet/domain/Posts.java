@@ -141,20 +141,6 @@ public class Posts {
         this.expectedTerm = updatePost.getExpectedTerm();
     }
 
-    public PostEdit toPostEdit() {
-        return PostEdit.builder()
-                .contact(this.contact)
-                .contactType(this.contactType)
-                .content(this.content)
-                .createdDate(this.createdDate)
-                .expectedTerm(this.expectedTerm)
-                .hits(this.hits)
-                .recruitCapacity(this.recruitCapacity)
-                .recruitStatus(this.recruitStatus)
-                .startDate(this.startDate)
-                .title(this.title)
-                .build();
-    }
 
     public String printout() {
         return String.format("title: %s\n content: %s\n recruit status: %s\n recruit capacity: %s\n start date: %s\n" +

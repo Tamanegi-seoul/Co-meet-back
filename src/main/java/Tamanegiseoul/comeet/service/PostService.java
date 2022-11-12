@@ -1,5 +1,4 @@
 package Tamanegiseoul.comeet.service;
-import Tamanegiseoul.comeet.domain.PostEdit;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
