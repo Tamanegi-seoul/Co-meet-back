@@ -33,8 +33,11 @@ public class Users {
     @NotNull
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "id")
+    private List<Posts> wrotePosts = new ArrayList<>();
 
     @NotNull
     private LocalDate createdDate;
