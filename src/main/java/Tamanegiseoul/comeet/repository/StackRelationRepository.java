@@ -1,5 +1,6 @@
 package Tamanegiseoul.comeet.repository;
 
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -28,5 +29,23 @@ public class StackRelationRepository {
     public List<Users> findAll() {
         return em.createQuery("select u from Users u", Users.class)
                 .getResultList();
+    }
+
+    public List<StackRelation> findByPostId(Long postId) {
+        return em.createQuery("select sr from StackRelation sr where sr.post.id = :postId", StackRelation.class)
+                .setParameter("postId", postId)
+                .getResultList();
+    }
+
+    public List<StackRelation> findByUserId(Long userId) {
+        return em.createQuery("select sr from StackRelation sr where sr.user.id = :userId", StackRelation.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    public int removeRelatedStacksByPost(Long postId) {
+        return em.createQuery("delete from StackRelation sr where sr.post.id = :postId", StackRelation.class)
+                .setParameter("postId", postId)
+                .executeUpdate();
     }
 }

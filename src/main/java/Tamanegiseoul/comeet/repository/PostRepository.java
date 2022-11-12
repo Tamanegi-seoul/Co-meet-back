@@ -1,5 +1,7 @@
 package Tamanegiseoul.comeet.repository;
+import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.enums.TechStack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,21 +13,23 @@ import java.util.List;
 public class PostRepository {
     private final EntityManager em;
 
-    public void save(Users user) {
-        em.persist(user);
+    public void save(Posts post) {
+        em.persist(post);
     }
 
-    public Users findOne(Long id) {
-        return em.find(Users.class, id);
+    public Posts findOne(Long id) {
+        return em.find(Posts.class, id);
     }
 
-    public Users findUserByNickname(String nickname) {
-        return em.createQuery("select u from Users u where u.nickname = :nickname", Users.class)
-                .getSingleResult();
-    }
-
-    public List<Users> findAll() {
-        return em.createQuery("select u from Users u", Users.class)
+    public List<Posts> findAll() {
+        return em.createQuery("select p from Posts p", Posts.class)
                 .getResultList();
     }
+
+    public List<Posts> findPostByUserId(Long userId) {
+        return em.createQuery("select p from Posts p where p.poster.id = :userId", Posts.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
 }
