@@ -128,4 +128,29 @@ public class CommentServiceTest {
         Assert.assertEquals(0, commentService.findAll().size());
     }
 
+    @Test
+    public void 덧글_조회() {
+        // given
+        Posts findPost = postService.findAll().get(0);
+        Users findUser = userService.findAll().get(0);
+
+        Comment newComment = Comment.builder()
+                .post(findPost)
+                .user(findUser)
+                .content("foo boo")
+                .build();
+        Long commentId = commentService.registerComment(newComment);
+
+        // when
+        findUser = userService.findUserByNickname("케네스");
+        findPost = postService.findPostByUserId(findUser.getId()).get(0);
+        Comment findCommentWithUserId = commentService.findCommentByUserId(findUser.getId()).get(0);
+        Comment findCommentWithPostId = commentService.findCommentByPostId(findPost.getId()).get(0);
+
+        // then
+        Assert.assertEquals("foo boo", findCommentWithPostId.getContent());
+        Assert.assertEquals("foo boo", findCommentWithUserId.getContent());
+
+    }
+
 }
