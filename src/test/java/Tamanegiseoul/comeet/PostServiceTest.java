@@ -67,7 +67,6 @@ public class PostServiceTest {
     }
 
     @Test
-    @Rollback(false)
     public void 포스트_수정() {
         // given
         Users newUser = Users.builder()
