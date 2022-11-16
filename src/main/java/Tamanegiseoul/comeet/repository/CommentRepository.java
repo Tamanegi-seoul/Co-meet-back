@@ -26,6 +26,12 @@ public class CommentRepository {
                 .getResultList();
     }
 
+    public Comment findCommentById(Long commentId) {
+        return em.createQuery("select c from Comment c where c.id = :commentId", Comment.class)
+                .setParameter("commentId", commentId)
+                .getResultList().stream().findFirst().orElse(null);
+    }
+
     public List<Comment> findCommentByPostId(Long postId) {
         return em.createQuery("select c from Comment c where c.post.id = :postId", Comment.class)
                 .setParameter("postId", postId)
@@ -37,5 +43,6 @@ public class CommentRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
 
 }
