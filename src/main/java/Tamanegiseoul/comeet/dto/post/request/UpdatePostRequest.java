@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 public class UpdatePostRequest {
+    private Long postId;
     private String title;
     private String content;
     private ContactType contactType;
