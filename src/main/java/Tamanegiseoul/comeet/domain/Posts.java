@@ -32,6 +32,7 @@ public class Posts {
     private String title;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
 
     @NotNull
@@ -98,14 +99,6 @@ public class Posts {
     public void increaseHits() {
         this.hits++;
     }
-
-//    public void updateDesignateStack(TechStack ...ts) {
-//        for(TechStack stack : ts) {
-//            this.designatedStack.add(StackRelation.builder()
-//                    .post(this)
-//                    .techStack(stack).build());
-//        }
-//    }
 
     public void updateDesignateStack(List<TechStack> tsArr) {
         for(TechStack stack : tsArr) {
