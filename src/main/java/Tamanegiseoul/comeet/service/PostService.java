@@ -53,6 +53,10 @@ public class PostService {
     /***********************
      * SEARCH POST METHODS *
      ***********************/
+    @Transactional(readOnly = true)
+    public Posts findPostById(Long postId) {
+        return postRepository.findOne(postId);
+    }
 
     @Transactional(readOnly = true)
     public List<Posts> findAll() {
