@@ -1,5 +1,6 @@
 package Tamanegiseoul.comeet.repository;
 
+import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -12,21 +13,29 @@ import java.util.List;
 public class CommentRepository {
     private final EntityManager em;
 
-    public void save(Users user) {
-        em.persist(user);
+    public void save(Comment comment) {
+        em.persist(comment);
     }
 
-    public Users findOne(Long id) {
-        return em.find(Users.class, id);
+    public Comment findOne(Long id) {
+        return em.find(Comment.class, id);
     }
 
-    public Users findUserByNickname(String nickname) {
-        return em.createQuery("select u from Users u where u.nickname = :nickname", Users.class)
-                .getSingleResult();
-    }
-
-    public List<Users> findAll() {
-        return em.createQuery("select u from Users u", Users.class)
+    public List<Comment> findAll() {
+        return em.createQuery("select c from Comment c", Comment.class)
                 .getResultList();
     }
+
+    public List<Comment> findCommentByPostId(Long postId) {
+        return em.createQuery("select c from Comment c where c.post.id = :postId", Comment.class)
+                .setParameter("postId", postId)
+                .getResultList();
+    }
+
+    public List<Comment> findCommentByUserId(Long userId) {
+        return em.createQuery("select c from Comment c where c.user.id = :userId", Comment.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
 }
