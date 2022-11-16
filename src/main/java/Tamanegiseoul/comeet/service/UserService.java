@@ -31,9 +31,15 @@ public class UserService {
         validateUserEmail(user.getEmail());
         validateUserNickname(user.getNickname());
         user.updateCreatedDate();
+        user.updateModifiedDate();
         userRepository.save(user);
         return user.getId();
     }
+
+
+    /*****************************
+     * VALIDATE METHODS FOR USER *
+     *****************************/
 
     @Transactional(readOnly = true)
     public void validateUserEmail(String email) {
@@ -77,13 +83,7 @@ public class UserService {
         for(TechStack ts : techStacks) {
             findUser.addPreferStack(ts);
         }
-        /*
-        List<TechStack> tsArr = List.copyOf(findPreferredStacks(id));
-        HashSet<TechStack> tsSet = (HashSet<TechStack>)tsArr.stream().collect(Collectors.toSet());
-        for(TechStack ts : techStacks) {
-            tsSet.add(ts);
-        }
-        */
+        findUser.updateModifiedDate();
     }
 
     /**********************

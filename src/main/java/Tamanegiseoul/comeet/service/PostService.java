@@ -29,6 +29,8 @@ public class PostService {
     @Transactional
     public Long registerPost(Posts post) {
         postRepository.save(post);
+        post.updateModifiedDate();
+        post.updateCreatedDate();
         return post.getId();
     }
 
@@ -42,6 +44,7 @@ public class PostService {
         findPost.updatePost(updatedPost);
         findPost.initDesignateStack();
         findPost.updateDesignateStack(updatedPost.getStacks());
+        findPost.updateModifiedDate();
     }
 
     @Transactional
