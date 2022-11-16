@@ -34,7 +34,7 @@ public class Users {
     private String password;
 
     @OneToMany(mappedBy = "id", cascade = ALL, orphanRemoval = true)
-    private List<StackRelation> preferStacks = new ArrayList<>();
+    private List<StackRelation> preferStacks;
 
     @OneToMany(mappedBy = "id")
     private List<Posts> wrotePosts = new ArrayList<>();
