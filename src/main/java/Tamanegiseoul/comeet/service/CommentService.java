@@ -25,7 +25,8 @@ public class CommentService {
     @Transactional
     public Long registerComment(Comment comment) {
         commentRepository.save(comment);
-
+        comment.updateCreatedDate();
+        comment.updateModifiedDate();
         return comment.getId();
     }
 
