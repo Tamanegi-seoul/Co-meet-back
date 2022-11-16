@@ -54,23 +54,23 @@ public class CommentService {
      **************************/
 
     @Transactional(readOnly = true)
-    public List<Posts> findAll() {
-        return postService.findAll();
+    public List<Comment> findAll() {
+        return commentRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findCommentById(Long userId) {
-        return postService.findPostByUserId(userId);
+    public Comment findCommentById(Long commentId) {
+        return commentRepository.findCommentById(commentId);
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findCommentByUserId(Long userId) {
-        return postService.findPostByUserId(userId);
+    public List<Comment> findCommentByUserId(Long userId) {
+        return commentRepository.findCommentByUserId(userId);
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findCommentByPostId(Long postId) {
-        return postService.findPostByUserId(postId);
+    public List<Comment> findCommentByPostId(Long postId) {
+        return commentRepository.findCommentByUserId(postId);
     }
 
 
