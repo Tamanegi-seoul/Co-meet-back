@@ -1,12 +1,13 @@
-package Tamanegiseoul.comeet.dto.user.response;
+package Tamanegiseoul.comeet.dto.post.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class RemoveUserResponse {
-    private Long userId;
-    private String nickname;
+public class RemovePostResponse {
+    private Long postId;
 }

@@ -5,19 +5,16 @@ import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
-public class UpdatePostRequest {
+public class CreatePostRequest {
     private Long id;
     private String title;
     private String content;
@@ -32,4 +29,5 @@ public class UpdatePostRequest {
     private Long posterId;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+
 }
