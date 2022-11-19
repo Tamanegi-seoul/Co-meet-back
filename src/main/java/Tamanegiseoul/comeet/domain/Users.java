@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.domain;
 
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.dto.user.response.SearchUserResponse;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,7 +35,7 @@ public class Users {
     private String password;
 
     @OneToMany(mappedBy = "id", cascade = ALL, orphanRemoval = true)
-    private List<StackRelation> preferStacks;
+    private List<StackRelation> preferStacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "id")
     private List<Posts> wrotePosts = new ArrayList<>();
@@ -78,6 +79,8 @@ public class Users {
     }
 
     public void initPreferredTechStacks() {
-        this.preferStacks = new ArrayList<>();
+        //this.preferStacks = new ArrayList<>();
+        this.preferStacks.clear();
     }
+
 }
