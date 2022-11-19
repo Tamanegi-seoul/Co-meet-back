@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
+import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
 import Tamanegiseoul.comeet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,18 @@ public class UserService {
      **********************/
 
     @Transactional
+    public Users updateUser(UpdateUserRequest request) {
+        Users findUser = this.findUserById(request.getUserId());
+        Long findUserId = findUser.getId();
+        findUser.changeNickname(request.getNewNickname());
+        findUser.changePassword(request.getNewPassword());
+        findUser.initPreferredTechStacks();
+        this.updatePreferStack(findUserId, request.getUpdatedStack());
+        findUser.updateModifiedDate();
+        return findUser;
+    }
+
+    @Transactional
     public void updateUserNickname(Long id, String newNickname) {
         validateUserNickname(newNickname);
         Users findUser = userRepository.findOne(id);
@@ -77,7 +90,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePreferStack(Long id, TechStack...techStacks) {
+    public void updatePreferStack(Long id, List<TechStack> techStacks) {
         Users findUser = userRepository.findOne(id);
         findUser.initPreferredTechStacks();
         for(TechStack ts : techStacks) {
