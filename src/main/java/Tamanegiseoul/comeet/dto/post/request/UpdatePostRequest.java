@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdatePostRequest {
     private Long id;
