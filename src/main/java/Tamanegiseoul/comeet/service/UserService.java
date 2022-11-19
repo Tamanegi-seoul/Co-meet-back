@@ -99,6 +99,12 @@ public class UserService {
         findUser.updateModifiedDate();
     }
 
+    @Transactional
+    public void removeUser(Long id) {
+        Users findUesr = userRepository.findOne(id);
+        em.remove(id);
+    }
+
     /**********************
      * USER SEARCH METHODS
      **********************/
