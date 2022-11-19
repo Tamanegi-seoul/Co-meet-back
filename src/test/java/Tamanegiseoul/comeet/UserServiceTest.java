@@ -16,6 +16,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -100,7 +101,7 @@ public class UserServiceTest {
         userService.registerUser(newUser);
 
         // when
-        userService.updatePreferStack(newUser.getId(), TechStack.JAVA, TechStack.R);
+        userService.updatePreferStack(newUser.getId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
 
         // then
         List<TechStack> findStacks = userService.findPreferredStacks(newUser.getId());
@@ -120,10 +121,10 @@ public class UserServiceTest {
                 .password("password")
                 .build();
         userService.registerUser(newUser);
-        userService.updatePreferStack(newUser.getId(), TechStack.JAVA, TechStack.R);
+        userService.updatePreferStack(newUser.getId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
 
         // when
-        userService.updatePreferStack(newUser.getId(), TechStack.PYTHON, TechStack.JAVA_SCRIPT);
+        userService.updatePreferStack(newUser.getId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
 
         // then
         List<TechStack> findStacks = userService.findPreferredStacks(newUser.getId());

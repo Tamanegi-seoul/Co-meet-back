@@ -98,7 +98,7 @@ public class PostServiceTest {
                 .recruitCapacity(8L)
                 .startDate(LocalDate.of(2022, 11, 27))
                 .expectedTerm(28L)
-                .stacks(new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT)))
+                .designatedStacks(new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT)))
                 .build();
 
         log.warn(updatedPost.getTitle());
