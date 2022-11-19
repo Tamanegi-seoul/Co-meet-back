@@ -16,6 +16,7 @@ import Tamanegiseoul.comeet.dto.user.response.SearchUserResponse;
 import Tamanegiseoul.comeet.dto.user.response.UpdateUserResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
+import Tamanegiseoul.comeet.service.StackRelationService;
 import Tamanegiseoul.comeet.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class UserApiController {
     private final UserService userService;
     private final PostService postService;
     private final CommentService commentService;
+    private final StackRelationService stackRelationService;
 
     @PostMapping("/join")
     public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request) {
