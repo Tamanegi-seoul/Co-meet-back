@@ -15,7 +15,7 @@ public class ResponseMessage {
 
     public static final String CREATED_USER = "회원 가입 성공";
     public static final String CREATED_POST = "게시글 작성 성공";
-    public static final String CREATE_COMMNET = "덧글 작성 성공";
+    public static final String CREATED_COMMNET = "덧글 작성 성공";
 
     public static final String FAIL_CREATE_USER = "회원 가입 실패";
     public static final String FAIL_CREATE_POST = "게시글 작성 실패";
