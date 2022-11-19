@@ -1,5 +1,6 @@
 package Tamanegiseoul.comeet.dto.post.response;
 
+import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
@@ -28,7 +29,32 @@ public class CreatePostResponse {
     private String contact;
     private LocalDate startDate;
     private Long expectedTerm;
-    private Long posterId;
+    private String posterNickname;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+
+    public static CreatePostResponse toDto(Posts post) {
+        return CreatePostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .contactType(post.getContactType())
+                .contact(post.getContact())
+                .expectedTerm(post.getExpectedTerm())
+                .recruitCapacity(post.getRecruitCapacity())
+                .recruitStatus(post.getRecruitStatus())
+                .startDate(post.getStartDate())
+                .expectedTerm(post.getExpectedTerm())
+                .build();
+    }
+
+    public CreatePostResponse designatedStacks(List<TechStack> stacks) {
+        this.designatedStacks = stacks;
+        return this;
+    }
+
+    public CreatePostResponse posterNickname(String name) {
+        this.posterNickname = name;
+        return this;
+    }
 }
