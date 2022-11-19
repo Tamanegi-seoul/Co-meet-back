@@ -7,5 +7,7 @@ import lombok.Data;
 @Data
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class CreateCommentRequest {
-
+    private Long postId;
+    private Long userId;
+    private String content;
 }

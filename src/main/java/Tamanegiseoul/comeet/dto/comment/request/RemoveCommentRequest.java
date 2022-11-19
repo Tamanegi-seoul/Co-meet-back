@@ -7,4 +7,5 @@ import lombok.Data;
 @Data
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class RemoveCommentRequest {
+    private Long commentId;
 }

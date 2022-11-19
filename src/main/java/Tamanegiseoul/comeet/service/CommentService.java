@@ -36,10 +36,11 @@ public class CommentService {
      **************************/
 
     @Transactional
-    public void updateComment(Long commentId, UpdateCommentRequest updatedComment) {
-        Comment findComment = commentRepository.findOne(commentId);
+    public Comment updateComment(UpdateCommentRequest updatedComment) {
+        Comment findComment = commentRepository.findOne(updatedComment.getCommentId());
         findComment.updateComment(updatedComment);
         findComment.updateModifiedDate();
+        return findComment;
     }
 
     @Transactional
@@ -70,7 +71,7 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<Comment> findCommentByPostId(Long postId) {
-        return commentRepository.findCommentByUserId(postId);
+        return commentRepository.findCommentByPostId(postId);
     }
 
 

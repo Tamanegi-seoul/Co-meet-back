@@ -131,7 +131,7 @@ public class UserServiceTest {
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name());
         }
-        Assert.assertEquals("PYTHON", findStacks.get(0).name());
+        Assert.assertEquals("JAVA_SCRIPT", findStacks.get(0).name());
         Assert.assertEquals(2, findStacks.size());
     }
 }

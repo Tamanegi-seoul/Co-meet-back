@@ -102,30 +102,10 @@ public class CommentServiceTest {
                 .content("foo boo foo")
                 .build();
 
-        commentService.updateComment(ucr.getCommentId(), ucr);
+        commentService.updateComment(ucr);
 
         // then
         Assert.assertEquals("foo boo foo", findComment.getContent());
-    }
-
-    @Test
-    public void 덧글_삭제() {
-        // given
-        Posts findPost = postService.findAll().get(0);
-        Users findUser = userService.findAll().get(0);
-
-        Comment newComment = Comment.builder()
-                .post(findPost)
-                .user(findUser)
-                .content("foo boo")
-                .build();
-        Long commentId = commentService.registerComment(newComment);
-
-        // when
-        commentService.removeComment(commentId);
-
-        // then
-        Assert.assertEquals(0, commentService.findAll().size());
     }
 
     @Test
@@ -152,5 +132,27 @@ public class CommentServiceTest {
         Assert.assertEquals("foo boo", findCommentWithUserId.getContent());
 
     }
+
+    @Test
+    public void 덧글_삭제() {
+        // given
+        Posts findPost = postService.findAll().get(0);
+        Users findUser = userService.findAll().get(0);
+
+        Comment newComment = Comment.builder()
+                .post(findPost)
+                .user(findUser)
+                .content("foo boo")
+                .build();
+        Long commentId = commentService.registerComment(newComment);
+
+        // when
+        commentService.removeComment(commentId);
+
+        // then
+        Assert.assertEquals(0, commentService.findAll().size());
+    }
+
+
 
 }
