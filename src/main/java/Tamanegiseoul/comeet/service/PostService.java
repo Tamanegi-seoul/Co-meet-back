@@ -48,6 +48,12 @@ public class PostService {
     }
 
     @Transactional
+    public void removePost(Long id) {
+        Posts findPost = postRepository.findOne(id);
+        em.persist(findPost);
+    }
+
+    @Transactional
     public void increasePostHit(Long postId) {
         Posts findPost = postRepository.findOne(postId);
         findPost.increaseHits();
