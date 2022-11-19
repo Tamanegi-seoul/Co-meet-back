@@ -43,7 +43,7 @@ public class PostService {
         Posts findPost = postRepository.findOne(id);
         findPost.updatePost(updatedPost);
         findPost.initDesignateStack();
-        findPost.updateDesignateStack(updatedPost.getStacks());
+        findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
         findPost.updateModifiedDate();
     }
 
