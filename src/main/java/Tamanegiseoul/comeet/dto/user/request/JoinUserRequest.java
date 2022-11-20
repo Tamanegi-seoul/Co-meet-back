@@ -10,7 +10,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class JoinUserRequest {
     private String email;
     private String password;

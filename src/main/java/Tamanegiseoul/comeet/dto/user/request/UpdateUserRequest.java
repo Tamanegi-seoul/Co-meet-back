@@ -10,7 +10,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdateUserRequest {
     private Long userId;
     private String newNickname;
