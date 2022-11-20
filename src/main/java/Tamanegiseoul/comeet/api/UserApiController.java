@@ -45,7 +45,7 @@ public class UserApiController {
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE, request);
         } catch (DuplicateResourceException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.DUPLICATE_RES, e.getMessage());
+            return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
         }
     }
 
@@ -81,8 +81,8 @@ public class UserApiController {
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
         try {
-            userService.removeUser(request.getUserId());
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, request.getUserId());
+            Long removedUserId = userService.removeUser(request.getUserId());
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, removedUserId);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, request.getUserId());
         }
