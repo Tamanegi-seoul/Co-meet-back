@@ -100,9 +100,10 @@ public class UserService {
     }
 
     @Transactional
-    public void removeUser(Long id) {
+    public Long removeUser(Long id) {
         Users findUesr = userRepository.findOne(id);
         em.remove(id);
+        return id;
     }
 
     /**********************
