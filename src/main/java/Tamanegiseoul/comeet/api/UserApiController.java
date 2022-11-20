@@ -7,10 +7,7 @@ import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.StatusCode;
-import Tamanegiseoul.comeet.dto.user.request.JoinUserRequest;
-import Tamanegiseoul.comeet.dto.user.request.RemoveUserRequest;
-import Tamanegiseoul.comeet.dto.user.request.SearchUserRequest;
-import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
+import Tamanegiseoul.comeet.dto.user.request.*;
 import Tamanegiseoul.comeet.dto.user.response.JoinUserResponse;
 import Tamanegiseoul.comeet.dto.user.response.SearchUserResponse;
 import Tamanegiseoul.comeet.dto.user.response.UpdateUserResponse;
@@ -39,6 +36,18 @@ public class UserApiController {
     private final PostService postService;
     private final CommentService commentService;
     private final StackRelationService stackRelationService;
+
+    @GetMapping("/validate")
+    public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateUserRequest request) {
+        try {
+            userService.validateUserEmail(request.getEmail());
+            userService.validateUserEmail(request.getNickname());
+
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE, request);
+        } catch (DuplicateResourceException e) {
+            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.DUPLICATE_RES, e.getMessage());
+        }
+    }
 
     @PostMapping("/join")
     public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request) {
