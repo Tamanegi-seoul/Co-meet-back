@@ -2,7 +2,6 @@ package Tamanegiseoul.comeet.repository;
 
 import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
-import Tamanegiseoul.comeet.domain.enums.TechStack;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,10 +23,10 @@ public class UserRepository {
         return removedUserId;
     }
 
-    public Long removeByUserId(Long userId) {
-        em.createQuery("delete from Users u where u.userId = :userId", Users.class)
-                .setParameter("userId", userId);
-        return userId;
+    public int removeByUserId(Long userId) {
+        return em.createQuery("delete from Users u where u.userId = :userId")
+                .setParameter("userId", userId)
+                .executeUpdate();
     }
 
     public Users findOne(Long id) {

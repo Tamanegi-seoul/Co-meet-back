@@ -33,8 +33,14 @@ public class PostRepository {
     }
 
     public int removePostByPosterId(Long userId) {
-        return em.createQuery("delete from Posts p where p.poster.userId = :userId ", Posts.class)
+        return em.createQuery("delete from Posts p where p.poster.userId = :userId ")
                 .setParameter("userId", userId)
+                .executeUpdate();
+    }
+
+    public int removePostByPostId(Long postId) {
+        return em.createQuery("delete from Posts p where p.postId = :postId")
+                .setParameter("postId", postId)
                 .executeUpdate();
     }
 

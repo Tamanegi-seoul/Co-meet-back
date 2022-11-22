@@ -45,13 +45,13 @@ public class CommentRepository {
     }
 
     public int removeCommentByUserId(Long userId) {
-        return em.createQuery("delete from Comment c where c.user.userId = :userId", Comment.class)
+        return em.createQuery("delete from Comment c where c.user.userId = :userId")
                 .setParameter("userId", userId)
                 .executeUpdate();
     }
 
     public int removeCommentByPostId(Long postId) {
-        return em.createQuery("delete from Comment c where c.post.postId = :postId", Comment.class)
+        return em.createQuery("delete from Comment c where c.post.postId = :postId")
                 .setParameter("postId", postId)
                 .executeUpdate();
     }
