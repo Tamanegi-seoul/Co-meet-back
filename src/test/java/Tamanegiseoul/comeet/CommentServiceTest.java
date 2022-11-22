@@ -123,9 +123,9 @@ public class CommentServiceTest {
 
         // when
         findUser = userService.findUserByNickname("케네스");
-        findPost = postService.findPostByUserId(findUser.getId()).get(0);
-        Comment findCommentWithUserId = commentService.findCommentByUserId(findUser.getId()).get(0);
-        Comment findCommentWithPostId = commentService.findCommentByPostId(findPost.getId()).get(0);
+        findPost = postService.findPostByUserId(findUser.getUserId()).get(0);
+        Comment findCommentWithUserId = commentService.findCommentByUserId(findUser.getUserId()).get(0);
+        Comment findCommentWithPostId = commentService.findCommentByPostId(findPost.getPostId()).get(0);
 
         // then
         Assert.assertEquals("foo boo", findCommentWithPostId.getContent());

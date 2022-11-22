@@ -58,10 +58,10 @@ public class PostServiceTest {
                 .expectedTerm(14L)
                 .build();
         postService.registerPost(newPost);
-        postService.updateDesignateStacks(newPost.getId(), TechStack.JAVA, TechStack.SPRING);
+        postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // then
-        List<Posts> findPosts = postService.findPostByUserId(newUser.getId());
+        List<Posts> findPosts = postService.findPostByUserId(newUser.getUserId());
         log.info(findPosts.get(0).printout());
         Assert.assertEquals(1, findPosts.size());
     }
@@ -86,7 +86,7 @@ public class PostServiceTest {
                 .expectedTerm(14L)
                 .build();
         postService.registerPost(newPost);
-        postService.updateDesignateStacks(newPost.getId(), TechStack.JAVA, TechStack.SPRING);
+        postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // when
         UpdatePostRequest updatedPost = UpdatePostRequest.builder()
@@ -103,10 +103,10 @@ public class PostServiceTest {
 
         log.warn(updatedPost.getTitle());
 
-        postService.updatePost(newPost.getId(), updatedPost);
+        postService.updatePost(newPost.getPostId(), updatedPost);
 
         // then
-        Posts findPost = postService.findPostByUserId(newUser.getId()).get(0);
+        Posts findPost = postService.findPostByUserId(newUser.getUserId()).get(0);
         log.info(findPost.printout());
 
         Assert.assertEquals("이것은 수정된 포스트입니다.", findPost.getTitle());
