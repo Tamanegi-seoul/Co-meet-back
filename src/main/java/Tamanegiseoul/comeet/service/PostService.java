@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
+import Tamanegiseoul.comeet.repository.StackRelationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,11 @@ import java.util.List;
 @Slf4j
 public class PostService {
 
+    private final StackRelationService stackRelationService;
+
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserService userService;
-    private final StackRelationService stackRelationService;
+    private final StackRelationRepository stackRelationRepository;
 
     @PersistenceContext
     EntityManager em;
@@ -31,7 +33,7 @@ public class PostService {
         postRepository.save(post);
         post.updateModifiedDate();
         post.updateCreatedDate();
-        return post.getId();
+        return post.getPostId();
     }
 
     /***********************
@@ -48,9 +50,27 @@ public class PostService {
     }
 
     @Transactional
-    public void removePost(Long id) {
-        Posts findPost = postRepository.findOne(id);
-        em.persist(findPost);
+    public int removePostByPostId(Long postId) {
+        Posts findPost = postRepository.findOne(postId);
+        // first, remove child entity
+        stackRelationRepository.removeRelatedStacksByPost(postId);
+        commentRepository.removeCommentByPostId(postId);
+        // then, remove parent entity
+        return postRepository.removePostByPostId(postId);
+
+    }
+
+    @Transactional
+    public void removePostByPosterId(Long userId) {
+        List<Posts> findPosts = postRepository.findPostByUserId(userId);
+        // first, remove child entity
+        for(Posts p : findPosts) {
+            stackRelationRepository.removeRelatedStacksByPost(p.getPostId());
+            commentRepository.removeCommentByPostId(p.getPostId());
+        }
+
+        // then, remove parent entity
+        postRepository.removePostByPosterId(userId);
     }
 
     @Transactional

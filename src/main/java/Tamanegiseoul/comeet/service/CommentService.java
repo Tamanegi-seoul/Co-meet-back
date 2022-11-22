@@ -27,7 +27,7 @@ public class CommentService {
         commentRepository.save(comment);
         comment.updateCreatedDate();
         comment.updateModifiedDate();
-        return comment.getId();
+        return comment.getCommentId();
     }
 
 

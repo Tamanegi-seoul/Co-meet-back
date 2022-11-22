@@ -1,31 +1,39 @@
 package Tamanegiseoul.comeet.service;
 
+import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
+import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
+import Tamanegiseoul.comeet.repository.CommentRepository;
+import Tamanegiseoul.comeet.repository.PostRepository;
+import Tamanegiseoul.comeet.repository.StackRelationRepository;
 import Tamanegiseoul.comeet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final StackRelationRepository stackRelationRepository;
+    private final CommentRepository commentRepository;
+
+    private final PostService postService;
 
     @PersistenceContext
-    EntityManager em;
+    private final EntityManager em;
 
     @Transactional
     public Long registerUser(Users user) {
@@ -34,7 +42,7 @@ public class UserService {
         user.updateCreatedDate();
         user.updateModifiedDate();
         userRepository.save(user);
-        return user.getId();
+        return user.getUserId();
     }
 
 
@@ -65,7 +73,7 @@ public class UserService {
     @Transactional
     public Users updateUser(UpdateUserRequest request) {
         Users findUser = this.findUserById(request.getUserId());
-        Long findUserId = findUser.getId();
+        Long findUserId = findUser.getUserId();
         findUser.changeNickname(request.getNewNickname());
         findUser.changePassword(request.getNewPassword());
         findUser.initPreferredTechStacks();
@@ -90,20 +98,32 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePreferStack(Long id, List<TechStack> techStacks) {
-        Users findUser = userRepository.findOne(id);
+    public void updatePreferStack(Long userId, List<TechStack> techStacks) {
+        Users findUser = userRepository.findOne(userId);
         findUser.initPreferredTechStacks();
+        stackRelationRepository.removeRelatedStakcsByUser(userId);
         for(TechStack ts : techStacks) {
             findUser.addPreferStack(ts);
         }
         findUser.updateModifiedDate();
+        em.flush();
+        em.clear();
+        log.warn("[UserService:updatePreferStack] updated " + userId + "'s tech stack" + techStacks.toString());
     }
 
     @Transactional
-    public Long removeUser(Long id) {
-        Users findUser = userRepository.findOne(id);
-        em.remove(findUser);
-        return id;
+    public int removeUser(Long userId) throws ResourceNotFoundException {
+        Users findUser = this.findUserById(userId);
+
+        // first of all,
+        // delete related child entities
+        stackRelationRepository.removeRelatedStakcsByUser(userId);
+        commentRepository.removeCommentByUserId(userId);
+        //postRepository.removePostByPosterId(userId);
+        postService.removePostByPosterId(userId);
+
+        // then, remove parent entity
+        return userRepository.removeByUserId(userId);
     }
 
     /**********************
@@ -111,8 +131,16 @@ public class UserService {
      **********************/
 
     @Transactional(readOnly = true)
-    public Users findUserById(Long id) {
-        return userRepository.findOne(id);
+    public Users findUserById(Long userId) {
+        Users findUser = userRepository.findOne(userId);
+
+        if(findUser == null) {
+            log.info("[UserService:findUserById] THE RESULT OF FIND ONE is NULL ");
+            throw new ResourceNotFoundException("user_id", "userId ", userId);
+        } else {
+            log.info("[UserService:findUserById] find user with provided user id : " + userId);
+            return findUser;
+        }
     }
 
     @Transactional(readOnly = true)
