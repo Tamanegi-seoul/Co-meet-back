@@ -60,14 +60,14 @@ public class UserApiController {
             userService.registerUser(newUser);
             log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
 
-            userService.updatePreferStack(newUser.getId(), request.getStacks());
+            userService.updatePreferStack(newUser.getUserId(), request.getStacks());
             log.info("%s's preferred tech stack has been registered", newUser.getNickname());
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getId());
+            List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
                     JoinUserResponse.builder()
-                            .userId(newUser.getId())
+                            .userId(newUser.getUserId())
                             .email(newUser.getEmail())
                             .nickname(newUser.getNickname())
                             .preferredStacks(preferredStacks)
@@ -81,7 +81,7 @@ public class UserApiController {
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
         try {
-            Long removedUserId = userService.removeUser(request.getUserId());
+            int removedUserId = userService.removeUser(request.getUserId());
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, removedUserId);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, request.getUserId());
@@ -93,10 +93,10 @@ public class UserApiController {
         try {
             Users findUser = userService.findUserById(request.getUserId());
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(findUser.getId());
+            List<TechStack> preferredStacks = userService.findPreferredStacks(findUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchUserResponse.builder()
-                    .id(findUser.getId())
+                    .id(findUser.getUserId())
                     .email(findUser.getEmail())
                     .nickname(findUser.getNickname())
                     .stacks(preferredStacks)
@@ -111,7 +111,7 @@ public class UserApiController {
         try {
             Users updatedUser = userService.updateUser(request);
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(updatedUser.getId());
+            List<TechStack> preferredStacks = userService.findPreferredStacks(updatedUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_USER,
                     UpdateUserResponse.builder()

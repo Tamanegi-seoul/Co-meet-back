@@ -41,6 +41,7 @@ public class PostApiController {
     private final CommentService commentService;
     private final StackRelationService stackRelationService;
 
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
             Users findUser = userService.findUserById(request.getPosterId());
@@ -110,7 +111,7 @@ public class PostApiController {
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse> removePost(@RequestBody @Valid RemovePostRequest request) {
         try {
-            postService.removePost(request.getPostId());
+            postService.removePostByPostId(request.getPostId());
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, request.getPostId());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.NOT_FOUND_POST, e.getMessage());
@@ -118,11 +119,11 @@ public class PostApiController {
     }
 
 
-    public List<SearchPostResponse> toDtoList(List<Posts> postList) {
+    private List<SearchPostResponse> toDtoList(List<Posts> postList) {
         List<SearchPostResponse> list = new ArrayList<>();
         for(Posts post : postList) {
             SearchPostResponse response = SearchPostResponse.toDto(post);
-            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getId());
+            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
             response.designatedStacks(techStacks);
             list.add(response);
         }
