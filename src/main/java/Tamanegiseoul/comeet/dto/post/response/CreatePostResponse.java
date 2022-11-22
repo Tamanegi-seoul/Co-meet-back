@@ -35,7 +35,7 @@ public class CreatePostResponse {
 
     public static CreatePostResponse toDto(Posts post) {
         return CreatePostResponse.builder()
-                .id(post.getId())
+                .id(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .contactType(post.getContactType())

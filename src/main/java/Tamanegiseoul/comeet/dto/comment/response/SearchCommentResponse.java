@@ -27,9 +27,9 @@ public class SearchCommentResponse {
 
     public static List<CommentDto> commentToDto(List<Comment> commentList) {
         return commentList.stream().map(c -> CommentDto.builder()
-                .postId(c.getPost().getId())
-                .commentId(c.getId())
-                .commenterId(c.getUser().getId())
+                .postId(c.getPost().getPostId())
+                .commentId(c.getCommentId())
+                .commenterId(c.getUser().getUserId())
                 .commenterNickname(c.getUser().getNickname())
                 .content(c.getContent())
                 .build()).collect(Collectors.toList());

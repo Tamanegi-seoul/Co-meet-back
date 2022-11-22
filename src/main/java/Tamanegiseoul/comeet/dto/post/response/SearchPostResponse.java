@@ -38,10 +38,10 @@ public class SearchPostResponse {
 
     public static SearchPostResponse toDto(Posts findPost) {
         return SearchPostResponse.builder()
-                .postId(findPost.getId())
+                .postId(findPost.getPostId())
                 .title(findPost.getTitle())
                 .content(findPost.getContent())
-                .posterId(findPost.getPoster().getId())
+                .posterId(findPost.getPoster().getUserId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .contactType(findPost.getContactType())
                 .contact(findPost.getContact())

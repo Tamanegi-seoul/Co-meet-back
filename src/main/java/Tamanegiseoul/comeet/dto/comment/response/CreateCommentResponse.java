@@ -19,10 +19,10 @@ public class CreateCommentResponse {
 
     public static CreateCommentResponse toDto(Comment comment) {
         return CreateCommentResponse.builder()
-                .commentId(comment.getId())
-                .postId(comment.getPost().getId())
+                .commentId(comment.getCommentId())
+                .postId(comment.getPost().getPostId())
                 .postTitle(comment.getPost().getTitle())
-                .commenterId(comment.getUser().getId())
+                .commenterId(comment.getUser().getUserId())
                 .commenterNickname(comment.getUser().getNickname())
                 .content(comment.getContent())
                 .build();
