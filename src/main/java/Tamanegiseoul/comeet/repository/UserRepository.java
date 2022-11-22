@@ -18,6 +18,18 @@ public class UserRepository {
         em.persist(user);
     }
 
+    public Long remove(Users user) {
+        Long removedUserId = user.getUserId();
+        em.remove(user);
+        return removedUserId;
+    }
+
+    public Long removeByUserId(Long userId) {
+        em.createQuery("delete from Users u where u.userId = :userId", Users.class)
+                .setParameter("userId", userId);
+        return userId;
+    }
+
     public Users findOne(Long id) {
         return em.find(Users.class, id);
     }
@@ -34,7 +46,7 @@ public class UserRepository {
     }
 
     public List<StackRelation> findPreferredStacks(Long userId) {
-        return em.createQuery("select sr from StackRelation sr where sr.user.id = :userId", StackRelation.class)
+        return em.createQuery("select sr from StackRelation sr where sr.user.userId = :userId", StackRelation.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
@@ -44,4 +56,6 @@ public class UserRepository {
                 .setParameter("email", email)
                 .getResultList().stream().findFirst().orElse(null);
     }
+
+
 }

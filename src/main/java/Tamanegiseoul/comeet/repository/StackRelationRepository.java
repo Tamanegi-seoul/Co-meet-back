@@ -32,20 +32,28 @@ public class StackRelationRepository {
     }
 
     public List<StackRelation> findByPostId(Long postId) {
-        return em.createQuery("select sr from StackRelation sr where sr.post.id = :postId", StackRelation.class)
+        return em.createQuery("select sr from StackRelation sr where sr.post.postId = :postId", StackRelation.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }
 
     public List<StackRelation> findByUserId(Long userId) {
-        return em.createQuery("select sr from StackRelation sr where sr.user.id = :userId", StackRelation.class)
+        return em.createQuery("select sr from StackRelation sr where sr.user.userId = :userId", StackRelation.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
 
     public int removeRelatedStacksByPost(Long postId) {
-        return em.createQuery("delete from StackRelation sr where sr.post.id = :postId", StackRelation.class)
+        return em.createQuery("delete from StackRelation sr where sr.post.postId = :postId")
                 .setParameter("postId", postId)
                 .executeUpdate();
     }
+
+    public int removeRelatedStakcsByUser(Long userId) {
+        return em.createQuery("delete from StackRelation sr where sr.user.userId = :userId")
+                .setParameter("userId", userId)
+                .executeUpdate();
+    }
+
+
 }

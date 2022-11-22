@@ -27,21 +27,33 @@ public class CommentRepository {
     }
 
     public Comment findCommentById(Long commentId) {
-        return em.createQuery("select c from Comment c where c.id = :commentId", Comment.class)
+        return em.createQuery("select c from Comment c where c.commentId = :commentId", Comment.class)
                 .setParameter("commentId", commentId)
                 .getResultList().stream().findFirst().orElse(null);
     }
 
     public List<Comment> findCommentByPostId(Long postId) {
-        return em.createQuery("select c from Comment c where c.post.id = :postId", Comment.class)
+        return em.createQuery("select c from Comment c where c.post.postId = :postId", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }
 
     public List<Comment> findCommentByUserId(Long userId) {
-        return em.createQuery("select c from Comment c where c.user.id = :userId", Comment.class)
+        return em.createQuery("select c from Comment c where c.user.userId = :userId", Comment.class)
                 .setParameter("userId", userId)
                 .getResultList();
+    }
+
+    public int removeCommentByUserId(Long userId) {
+        return em.createQuery("delete from Comment c where c.user.userId = :userId", Comment.class)
+                .setParameter("userId", userId)
+                .executeUpdate();
+    }
+
+    public int removeCommentByPostId(Long postId) {
+        return em.createQuery("delete from Comment c where c.post.postId = :postId", Comment.class)
+                .setParameter("postId", postId)
+                .executeUpdate();
     }
 
 

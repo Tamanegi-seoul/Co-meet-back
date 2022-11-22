@@ -27,9 +27,15 @@ public class PostRepository {
     }
 
     public List<Posts> findPostByUserId(Long userId) {
-        return em.createQuery("select p from Posts p where p.poster.id = :userId", Posts.class)
+        return em.createQuery("select p from Posts p where p.poster.userId = :userId", Posts.class)
                 .setParameter("userId", userId)
                 .getResultList();
+    }
+
+    public int removePostByPosterId(Long userId) {
+        return em.createQuery("delete from Posts p where p.poster.userId = :userId ", Posts.class)
+                .setParameter("userId", userId)
+                .executeUpdate();
     }
 
 }
