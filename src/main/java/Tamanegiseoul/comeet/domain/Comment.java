@@ -19,7 +19,7 @@ import static javax.persistence.FetchType.LAZY;
 public class Comment {
     @Id @GeneratedValue
     @Column(name = "comment_id", nullable = false)
-    private Long id;
+    private Long commentId;
 
     @ManyToOne(fetch = LAZY) @JoinColumn(name = "post_id")
     private Posts post;

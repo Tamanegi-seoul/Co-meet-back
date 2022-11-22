@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private Long userId;
 
     @NotNull @Column(unique = true)
     private String nickname;
@@ -34,10 +35,10 @@ public class Users {
     @NotNull
     private String password;
 
-    @OneToMany(mappedBy = "id", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "stackRelationId", fetch = FetchType.EAGER, cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "postId", cascade = ALL, orphanRemoval = true)
     private List<Posts> wrotePosts = new ArrayList<>();
 
     @NotNull
@@ -78,6 +79,7 @@ public class Users {
         this.modifiedDate = LocalDate.now();
     }
 
+    @Transactional
     public void initPreferredTechStacks() {
         //this.preferStacks = new ArrayList<>();
         this.preferStacks.clear();

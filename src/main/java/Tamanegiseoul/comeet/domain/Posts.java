@@ -26,7 +26,7 @@ import static javax.persistence.CascadeType.ALL;
 public class Posts {
     @Id @GeneratedValue
     @Column(name = "post_id", nullable = false)
-    private Long id;
+    private Long postId;
 
     @NotNull
     private String title;
@@ -59,7 +59,7 @@ public class Posts {
     @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> designatedStack = new ArrayList<>();
 
-    @OneToMany(mappedBy="id", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="commentId", cascade = ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @NotNull

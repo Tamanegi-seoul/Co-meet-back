@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Null;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Getter
@@ -19,14 +20,14 @@ import static javax.persistence.FetchType.LAZY;
 public class StackRelation {
     @Id @GeneratedValue
     @Column(name = "stack_relation_id")
-    private Long id;
+    private Long stackRelationId;
 
     @Nullable
-    @ManyToOne(fetch = LAZY) @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = EAGER) @JoinColumn(name = "post_id")
     private Posts post;
 
     @Nullable
-    @ManyToOne(fetch = LAZY) @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = EAGER) @JoinColumn(name = "user_id")
     private Users user;
 
     @Enumerated(EnumType.STRING)
