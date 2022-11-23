@@ -118,7 +118,7 @@ public class PostApiController {
             postService.removePostByPostId(request.getPostId());
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, request.getPostId());
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.NOT_FOUND_POST, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
     }
 

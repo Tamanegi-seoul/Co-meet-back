@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.service;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
@@ -86,7 +87,15 @@ public class PostService {
      ***********************/
     @Transactional(readOnly = true)
     public Posts findPostById(Long postId) {
-        return postRepository.findOne(postId);
+        log.warn("[PostService:findPostById] find method init");
+        Posts findPost = postRepository.findOne(postId);
+        if(findPost == null) {
+            log.warn("[PostService:findPostById] can't find post with given post id");
+            throw new ResourceNotFoundException("Posts", "postId", postId);
+        } else {
+            log.warn("[PostService:findPostById] find post with given post id");
+            return findPost;
+        }
     }
 
     @Transactional(readOnly = true)

@@ -49,7 +49,7 @@ public class CommentApiController {
             commentService.registerComment(newComment);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, CreateCommentResponse.toDto(newComment));
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class CommentApiController {
             Comment updatedComment = commentService.updateComment(request);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, CreateCommentResponse.toDto(updatedComment));
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class CommentApiController {
                             .commentList(SearchCommentResponse.commentToDto(commentList))
                             .build());
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
