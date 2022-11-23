@@ -30,9 +30,11 @@ public class PostService {
 
     @Transactional
     public Long registerPost(Posts post) {
+        log.info("[PostService:registerPost] register method init");
         postRepository.save(post);
         post.updateModifiedDate();
         post.updateCreatedDate();
+        log.info("[PostService:registerPost] successfully registered");
         return post.getPostId();
     }
 

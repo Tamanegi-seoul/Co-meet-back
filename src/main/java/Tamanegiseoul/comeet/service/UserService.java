@@ -77,6 +77,7 @@ public class UserService {
         findUser.changeNickname(request.getNewNickname());
         findUser.changePassword(request.getNewPassword());
         findUser.initPreferredTechStacks();
+        em.flush();
         this.updatePreferStack(findUserId, request.getUpdatedStack());
         findUser.updateModifiedDate();
         return findUser;
@@ -99,6 +100,7 @@ public class UserService {
 
     @Transactional
     public void updatePreferStack(Long userId, List<TechStack> techStacks) {
+        log.warn("[UserService:updatePreferStack] method init");
         Users findUser = userRepository.findOne(userId);
         findUser.initPreferredTechStacks();
         stackRelationRepository.removeRelatedStakcsByUser(userId);
