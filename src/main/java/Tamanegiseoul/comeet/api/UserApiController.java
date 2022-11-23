@@ -9,6 +9,7 @@ import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.StatusCode;
 import Tamanegiseoul.comeet.dto.user.request.*;
 import Tamanegiseoul.comeet.dto.user.response.JoinUserResponse;
+import Tamanegiseoul.comeet.dto.user.response.RemoveUserResponse;
 import Tamanegiseoul.comeet.dto.user.response.SearchUserResponse;
 import Tamanegiseoul.comeet.dto.user.response.UpdateUserResponse;
 import Tamanegiseoul.comeet.service.CommentService;
@@ -81,10 +82,15 @@ public class UserApiController {
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
         try {
+            Users findUser = userService.findUserById(request.getUserId());
+            RemoveUserResponse response = RemoveUserResponse.builder()
+                    .userId(findUser.getUserId())
+                    .nickname(findUser.getNickname())
+                    .build();
             int removedUserId = userService.removeUser(request.getUserId());
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, removedUserId);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, request.getUserId());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, request);
         }
     }
 
