@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreatePostResponse {
-    private Long id;
+    private Long postId;
     private String title;
     private String content;
     @Enumerated(EnumType.STRING)
@@ -35,7 +35,7 @@ public class CreatePostResponse {
 
     public static CreatePostResponse toDto(Posts post) {
         return CreatePostResponse.builder()
-                .id(post.getPostId())
+                .postId(post.getPostId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .contactType(post.getContactType())

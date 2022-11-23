@@ -13,13 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreatePostRequest {
-    private Long id;
     private String title;
     private String content;
-    @Enumerated(EnumType.STRING)
-    private RecruitStatus recruitStatus;
     private Long recruitCapacity;
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
