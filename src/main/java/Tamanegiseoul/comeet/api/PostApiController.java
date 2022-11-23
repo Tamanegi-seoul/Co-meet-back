@@ -44,6 +44,7 @@ public class PostApiController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
+            log.warn("[PostApi:registerPost] registerPost init");
             Users findUser = userService.findUserById(request.getPosterId());
 
             Posts newPost = Posts.builder()
@@ -57,9 +58,12 @@ public class PostApiController {
                     .recruitCapacity(request.getRecruitCapacity())
                     .build();
 
-            newPost.updateDesignateStack(request.getDesignatedStacks());
+            log.warn("[PostApi:registerPost] successfully build Post entity");
             postService.registerPost(newPost);
+            log.warn("[PostApi:registerPost] successfully registered");
 
+            newPost.updateDesignateStack(request.getDesignatedStacks());
+            log.warn("[PostApi:registerPost] updated designate stacks");
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
                     CreatePostResponse.toDto(newPost)
