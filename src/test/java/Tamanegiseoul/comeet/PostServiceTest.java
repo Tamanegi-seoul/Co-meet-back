@@ -89,17 +89,18 @@ public class PostServiceTest {
         postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // when
-        UpdatePostRequest updatedPost = UpdatePostRequest.builder()
-                .title("이것은 수정된 포스트입니다.")
-                .content("빈 내용")
-                .contactType(ContactType.KAKAO_OPEN_CHAT)
-                .contact("93jpark@gmail.com")
-                .recruitStatus(RecruitStatus.RECRUIT)
-                .recruitCapacity(8L)
-                .startDate(LocalDate.of(2022, 11, 27))
-                .expectedTerm(28L)
-                .designatedStacks(new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT)))
-                .build();
+        UpdatePostRequest updatedPost = new UpdatePostRequest(
+                newPost.getPostId(),
+                "이것은 수정된 포스트입니다.",
+                "빈 내용",
+                RecruitStatus.DONE,
+                8L,
+                ContactType.POSTER_EMAIL,
+                "93jpark@gmail.com",
+                LocalDate.of(2022, 11, 27),
+                28L,
+                new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT))
+        );
 
         log.warn(updatedPost.getTitle());
 
