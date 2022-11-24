@@ -61,7 +61,7 @@ public class UserApiController {
             userService.registerUser(newUser);
             log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
 
-            userService.updatePreferStack(newUser.getUserId(), request.getStacks());
+            userService.updatePreferStack(newUser.getUserId(), request.getPreferStacks());
             log.info("%s's preferred tech stack has been registered", newUser.getNickname());
 
             List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
@@ -71,7 +71,7 @@ public class UserApiController {
                             .userId(newUser.getUserId())
                             .email(newUser.getEmail())
                             .nickname(newUser.getNickname())
-                            .preferredStacks(preferredStacks)
+                            .preferStacks(preferredStacks)
                             .build()
                     );
         } catch (DuplicateResourceException e) {
@@ -102,10 +102,10 @@ public class UserApiController {
             List<TechStack> preferredStacks = userService.findPreferredStacks(findUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchUserResponse.builder()
-                    .id(findUser.getUserId())
+                    .userId(findUser.getUserId())
                     .email(findUser.getEmail())
                     .nickname(findUser.getNickname())
-                    .stacks(preferredStacks)
+                    .preferStacks(preferredStacks)
                     .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
@@ -116,6 +116,8 @@ public class UserApiController {
     public ResponseEntity<ApiResponse> updateUser(@RequestBody @Valid UpdateUserRequest request) {
         try {
             Users updatedUser = userService.updateUser(request);
+
+
 
             List<TechStack> preferredStacks = userService.findPreferredStacks(updatedUser.getUserId());
 
@@ -128,7 +130,7 @@ public class UserApiController {
                             .build()
                     );
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         } catch (DuplicateResourceException e) {
             return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.DUPLICATE_RES, e.getMessage());
         }
