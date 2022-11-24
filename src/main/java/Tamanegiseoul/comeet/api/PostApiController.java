@@ -17,6 +17,8 @@ import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
 import Tamanegiseoul.comeet.service.UserService;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -98,8 +100,8 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/search/{id}")
-    public ResponseEntity<ApiResponse> searchPost(@PathVariable Long postId) {
+    @GetMapping("/search/{post_id}")
+    public ResponseEntity<ApiResponse> searchPost(@PathVariable("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(postId);
