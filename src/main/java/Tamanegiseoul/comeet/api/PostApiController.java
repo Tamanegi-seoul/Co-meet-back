@@ -12,6 +12,7 @@ import Tamanegiseoul.comeet.dto.post.request.RemovePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.SearchPostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
+import Tamanegiseoul.comeet.dto.post.response.RemovePostResponse;
 import Tamanegiseoul.comeet.dto.post.response.SearchPostResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
@@ -81,18 +82,22 @@ public class PostApiController {
     @PatchMapping("/update")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
-            postService.updatePost(request.getPostId(), request);
+            Posts findPost = postService.findPostById(request.getPostId());
+            postService.updatePost(findPost, request);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, request);
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.NOT_FOUND_POST, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/search/all")
     public ResponseEntity<ApiResponse> searchAllPost(@RequestBody @Valid SearchPostRequest request) {
         try {
+            log.warn("[PostApiController:searchAllPost]method execute init");
             List<Posts> allPosts = postService.findAll();
+            log.warn("found "+allPosts.size()+"ea posts from DB");
+
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toDtoList(allPosts));
         } catch (ResourceNotFoundException e) {
@@ -118,7 +123,9 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> removePost(@RequestBody @Valid RemovePostRequest request) {
         try {
             postService.removePostByPostId(request.getPostId());
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, request.getPostId());
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, RemovePostResponse.builder()
+                            .postId(request.getPostId())
+                            .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -130,6 +137,7 @@ public class PostApiController {
         for(Posts post : postList) {
             SearchPostResponse response = SearchPostResponse.toDto(post);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
+            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
             response.designatedStacks(techStacks);
             list.add(response);
         }
