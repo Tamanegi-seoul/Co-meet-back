@@ -3,20 +3,26 @@ package Tamanegiseoul.comeet.dto.post.request;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Builder
+@AllArgsConstructor // for implementing test code
+@NoArgsConstructor // for implementing test code
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdatePostRequest {
     private Long postId;
@@ -32,4 +38,6 @@ public class UpdatePostRequest {
     private Long expectedTerm;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+
+
 }
