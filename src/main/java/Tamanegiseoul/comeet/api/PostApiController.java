@@ -79,7 +79,7 @@ public class PostApiController {
     @PatchMapping("/update")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
-            postService.updatePost(request.getId(), request);
+            postService.updatePost(request.getPostId(), request);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, request);
         } catch (ResourceNotFoundException e) {

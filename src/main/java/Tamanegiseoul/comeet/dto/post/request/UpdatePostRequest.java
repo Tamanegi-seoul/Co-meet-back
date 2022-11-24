@@ -30,7 +30,6 @@ public class UpdatePostRequest {
     private String contact;
     private LocalDate startDate;
     private Long expectedTerm;
-    private Long posterId;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
 }

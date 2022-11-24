@@ -44,12 +44,17 @@ public class PostService {
      ***********************/
 
     @Transactional
-    public void updatePost(Long id, UpdatePostRequest updatedPost) {
-        Posts findPost = postRepository.findOne(id);
+    public void updatePost(Long postId, UpdatePostRequest updatedPost) {
+        Posts findPost = postRepository.findOne(postId);
         findPost.updatePost(updatedPost);
-        findPost.initDesignateStack();
+        //findPost.initDesignateStack();
+        stackRelationRepository.removeRelatedStacksByPost(postId);
+        em.flush();
+        em.clear();
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
         findPost.updateModifiedDate();
+        em.flush();
+        em.clear();
     }
 
     @Transactional
