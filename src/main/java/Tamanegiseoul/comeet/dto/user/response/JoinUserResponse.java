@@ -15,5 +15,5 @@ public class JoinUserResponse {
     private Long userId;
     private String nickname;
     private String email;
-    private List<TechStack> preferredStacks;
+    private List<TechStack> preferStacks;
 }

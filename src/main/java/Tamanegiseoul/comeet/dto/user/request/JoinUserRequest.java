@@ -15,5 +15,5 @@ public class JoinUserRequest {
     private String email;
     private String password;
     private String nickname;
-    private List<TechStack> stacks;
+    private List<TechStack> preferStacks;
 }

@@ -12,8 +12,8 @@ import java.util.List;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SearchUserResponse {
-    private Long id;
+    private Long userId;
     private String email;
     private String nickname;
-    private List<TechStack> stacks;
+    private List<TechStack> preferStacks;
 }

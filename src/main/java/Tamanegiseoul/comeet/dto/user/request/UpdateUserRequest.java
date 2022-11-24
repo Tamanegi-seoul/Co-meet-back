@@ -15,5 +15,5 @@ public class UpdateUserRequest {
     private Long userId;
     private String newNickname;
     private String newPassword;
-    private List<TechStack> updatedStack;
+    private List<TechStack> updatedStacks;
 }

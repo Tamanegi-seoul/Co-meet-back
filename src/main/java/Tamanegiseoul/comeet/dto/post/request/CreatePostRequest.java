@@ -26,5 +26,4 @@ public class CreatePostRequest {
     private Long posterId;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
-
 }
