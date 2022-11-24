@@ -17,9 +17,9 @@ import java.util.List;
 
 @Data
 @Builder
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdatePostRequest {
-    private Long id;
+    private Long postId;
     private String title;
     private String content;
     @Enumerated(EnumType.STRING)

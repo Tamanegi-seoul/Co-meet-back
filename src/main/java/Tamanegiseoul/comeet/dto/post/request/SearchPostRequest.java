@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SearchPostRequest {
     private Long postId;
 }
