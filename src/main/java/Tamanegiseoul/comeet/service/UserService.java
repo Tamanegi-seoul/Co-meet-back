@@ -76,10 +76,11 @@ public class UserService {
         Long findUserId = findUser.getUserId();
         findUser.changeNickname(request.getNewNickname());
         findUser.changePassword(request.getNewPassword());
-        findUser.initPreferredTechStacks();
-        em.flush();
-        this.updatePreferStack(findUserId, request.getUpdatedStack());
+        //findUser.initPreferredTechStacks();
+        this.updatePreferStack(findUserId, request.getUpdatedStacks());
         findUser.updateModifiedDate();
+        em.flush();
+        em.clear();
         return findUser;
     }
 
@@ -101,8 +102,8 @@ public class UserService {
     @Transactional
     public void updatePreferStack(Long userId, List<TechStack> techStacks) {
         log.warn("[UserService:updatePreferStack] method init");
-        Users findUser = userRepository.findOne(userId);
-        findUser.initPreferredTechStacks();
+        Users findUser = this.findUserById(userId); // checked
+        //findUser.initPreferredTechStacks();
         stackRelationRepository.removeRelatedStakcsByUser(userId);
         for(TechStack ts : techStacks) {
             findUser.addPreferStack(ts);

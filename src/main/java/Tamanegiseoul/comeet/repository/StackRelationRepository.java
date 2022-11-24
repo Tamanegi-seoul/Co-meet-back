@@ -3,6 +3,7 @@ package Tamanegiseoul.comeet.repository;
 import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.Users;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class StackRelationRepository {
     private final EntityManager em;
 
@@ -50,6 +52,7 @@ public class StackRelationRepository {
     }
 
     public int removeRelatedStakcsByUser(Long userId) {
+        log.warn("[StackRelationRepository:removeRelatedStacksByUser]method init");
         return em.createQuery("delete from StackRelation sr where sr.user.userId = :userId")
                 .setParameter("userId", userId)
                 .executeUpdate();
