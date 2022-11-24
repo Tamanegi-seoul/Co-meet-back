@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdateCommentRequest {
     private Long commentId;
     private String content;
