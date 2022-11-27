@@ -3,35 +3,32 @@ package Tamanegiseoul.comeet.dto.comment.response;
 import Tamanegiseoul.comeet.domain.Comment;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor @Slf4j
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SearchCommentResponse {
 
     private List<CommentDto> commentList;
 
-    @Builder
-    private static class CommentDto {
-        private Long postId;
-        private Long commentId;
-        private Long commenterId;
-        private String commenterNickname;
-        private String content;
-    }
-
-    public static List<CommentDto> commentToDto(List<Comment> commentList) {
-        return commentList.stream().map(c -> CommentDto.builder()
-                .postId(c.getPost().getPostId())
-                .commentId(c.getCommentId())
-                .commenterId(c.getUser().getUserId())
-                .commenterNickname(c.getUser().getNickname())
-                .content(c.getContent())
-                .build()).collect(Collectors.toList());
+    public static List<CommentDto> commentListToDto(List<Comment> commentList) {
+        log.warn("[SearchCommentResponse:commentToDto] commentList param's size is "+commentList.size());
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        //commentList.stream().map(c -> commentDtoList.add(CommentDto.toDto(c)));
+        for(Comment c : commentList) {
+            commentDtoList.add(CommentDto.toDto(c));
+        }
+        return commentDtoList;
     }
 }
