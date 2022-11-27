@@ -44,11 +44,10 @@ public class PostService {
      ***********************/
 
     @Transactional
-    public void updatePost(Long postId, UpdatePostRequest updatedPost) {
-        Posts findPost = postRepository.findOne(postId);
+    public void updatePost(Posts findPost, UpdatePostRequest updatedPost) {
         findPost.updatePost(updatedPost);
         //findPost.initDesignateStack();
-        stackRelationRepository.removeRelatedStacksByPost(postId);
+        stackRelationRepository.removeRelatedStacksByPost(findPost.getPostId());
         em.flush();
         em.clear();
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
@@ -59,7 +58,7 @@ public class PostService {
 
     @Transactional
     public int removePostByPostId(Long postId) {
-        Posts findPost = postRepository.findOne(postId);
+        Posts findPost = this.findPostById(postId);
         // first, remove child entity
         stackRelationRepository.removeRelatedStacksByPost(postId);
         commentRepository.removeCommentByPostId(postId);
