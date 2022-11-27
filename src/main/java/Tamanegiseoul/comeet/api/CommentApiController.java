@@ -11,6 +11,7 @@ import Tamanegiseoul.comeet.dto.comment.request.RemoveCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.SearchCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
+import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.SearchCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
@@ -57,28 +58,37 @@ public class CommentApiController {
     public ResponseEntity<ApiResponse> updateComment(@RequestBody @Valid UpdateCommentRequest request) {
         try {
             Comment updatedComment = commentService.updateComment(request);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, CreateCommentResponse.toDto(updatedComment));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_COMMNET, CreateCommentResponse.toDto(updatedComment));
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, RemoveCommentResponse.builder()
+
+                    .build());
         }
     }
 
     @DeleteMapping("/remove")
     public ResponseEntity<ApiResponse> removeComment(@RequestBody @Valid RemoveCommentRequest request) {
         try {
+            Comment findComment = commentService.findCommentById(request.getCommentId());
+
             commentService.removeComment(request.getCommentId());
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_COMMENT, request.getCommentId());
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_COMMENT, RemoveCommentResponse.toDto(findComment));
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> searchComment(@RequestBody @Valid SearchCommentRequest request) {
         try {
-            List<Comment> commentList = commentService.findCommentByPostId(request.getPostId());
+            Posts findPost = postService.findPostById(request.getPostId());
+            List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
+            log.warn("[CommentApiController:searchComment] comment list size is " + commentList.size());
+            SearchCommentResponse response = SearchCommentResponse.builder().commentList(SearchCommentResponse.commentListToDto(commentList)).build();
+            log.warn("[CommentApiController:searchComment] response's commentList size is " + response.getCommentList().size());
+
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_COMMENT, SearchCommentResponse.builder()
-                            .commentList(SearchCommentResponse.commentToDto(commentList))
+                            .commentList(SearchCommentResponse.commentListToDto(commentList))
                             .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
