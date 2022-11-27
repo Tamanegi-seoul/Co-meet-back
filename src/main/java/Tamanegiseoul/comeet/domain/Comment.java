@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -31,24 +32,24 @@ public class Comment {
     private String content;
 
     @NotNull
-    private LocalDate createdTime;
+    private LocalDateTime createdTime;
 
     @NotNull
-    private LocalDate modifiedTime;
+    private LocalDateTime modifiedTime;
 
     @Builder
     public Comment(Posts post, Users user, String content) {
         this.post = post;
         this.user = user;
         this.content = content;
-        this.createdTime = LocalDate.now();
-        this.modifiedTime = LocalDate.now();
+        this.createdTime = LocalDateTime.now();
+        this.modifiedTime = LocalDateTime.now();
     }
 
     public void updateModifiedTime() {
-        this.modifiedTime = LocalDate.now();
+        this.modifiedTime = LocalDateTime.now();
     }
-    public void updateCreatedTime() { this.createdTime = LocalDate.now(); }
+    public void updateCreatedTime() { this.createdTime = LocalDateTime.now(); }
 
     public void updateComment(UpdateCommentRequest updatedComment) {
         this.content = updatedComment.getContent();
