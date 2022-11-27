@@ -1,10 +1,12 @@
 package Tamanegiseoul.comeet.service;
 import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
@@ -25,8 +27,8 @@ public class CommentService {
     @Transactional
     public Long registerComment(Comment comment) {
         commentRepository.save(comment);
-        comment.updateCreatedDate();
-        comment.updateModifiedDate();
+        comment.updateCreatedTime();
+        comment.updateModifiedTime();
         return comment.getCommentId();
     }
 
@@ -37,15 +39,15 @@ public class CommentService {
 
     @Transactional
     public Comment updateComment(UpdateCommentRequest updatedComment) {
-        Comment findComment = commentRepository.findOne(updatedComment.getCommentId());
+        Comment findComment = this.findCommentById(updatedComment.getCommentId());
         findComment.updateComment(updatedComment);
-        findComment.updateModifiedDate();
+        findComment.updateModifiedTime();
         return findComment;
     }
 
     @Transactional
     public void removeComment(Long commentId) {
-        Comment findComment = commentRepository.findOne(commentId);
+        Comment findComment = this.findCommentById(commentId);
         em.remove(findComment);
     }
 
@@ -61,7 +63,11 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public Comment findCommentById(Long commentId) {
-        return commentRepository.findCommentById(commentId);
+        Comment findComment = commentRepository.findCommentById(commentId);
+        if(findComment == null) {
+            throw new ResourceNotFoundException("Comment", "commentId", commentId);
+        }
+        return findComment;
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +77,10 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<Comment> findCommentByPostId(Long postId) {
-        return commentRepository.findCommentByPostId(postId);
+        log.warn("[CommentServce:findCommentByPostId]method init");
+        List<Comment> findComments = commentRepository.findCommentByPostId(postId);
+        log.warn("[CommentServce:findCommentByPostId]" + " found " + findComments.size() + "ea comments for " + postId);
+        return findComments;
     }
 
 

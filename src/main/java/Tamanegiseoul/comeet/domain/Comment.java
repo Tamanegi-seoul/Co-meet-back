@@ -31,24 +31,24 @@ public class Comment {
     private String content;
 
     @NotNull
-    private LocalDate createdDate;
+    private LocalDate createdTime;
 
     @NotNull
-    private LocalDate modifiedDate;
+    private LocalDate modifiedTime;
 
     @Builder
     public Comment(Posts post, Users user, String content) {
         this.post = post;
         this.user = user;
         this.content = content;
-        this.createdDate = LocalDate.now();
-        this.modifiedDate = LocalDate.now();
+        this.createdTime = LocalDate.now();
+        this.modifiedTime = LocalDate.now();
     }
 
-    public void updateModifiedDate() {
-        this.modifiedDate = LocalDate.now();
+    public void updateModifiedTime() {
+        this.modifiedTime = LocalDate.now();
     }
-    public void updateCreatedDate() { this.createdDate = LocalDate.now(); }
+    public void updateCreatedTime() { this.createdTime = LocalDate.now(); }
 
     public void updateComment(UpdateCommentRequest updatedComment) {
         this.content = updatedComment.getContent();
