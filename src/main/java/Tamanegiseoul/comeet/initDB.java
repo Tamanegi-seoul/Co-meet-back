@@ -98,8 +98,8 @@ public class initDB {
                     .user(userA)
                     .content("welcome whoever")
                     .build();
-            comA.updateCreatedDate();
-            comA.updateModifiedDate();
+            comA.updateCreatedTime();
+            comA.updateModifiedTime();
             em.persist(comA);
 
             Comment comB = Comment.builder() // commentId = 10
@@ -107,8 +107,8 @@ public class initDB {
                     .user(userB)
                     .content("cmf!")
                     .build();
-            comB.updateCreatedDate();
-            comB.updateModifiedDate();
+            comB.updateCreatedTime();
+            comB.updateModifiedTime();
             em.persist(comB);
 
             Comment comC = Comment.builder() // commentId = 11
@@ -116,8 +116,8 @@ public class initDB {
                     .user(userA)
                     .content("what about JAVA?")
                     .build();
-            comC.updateCreatedDate();
-            comC.updateModifiedDate();
+            comC.updateCreatedTime();
+            comC.updateModifiedTime();
             em.persist(comC);
 
         }
