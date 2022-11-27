@@ -1,0 +1,49 @@
+{
+	
+	"_comment": "below stacks are for programming languages",
+
+	"Java" : "JAVA",
+	"JavaScript" : "JAVA_SCRIPT",
+	"TypeScript" : "TYPE_SCRIPT",
+	"Python" : "PYTHON",
+	"R" : "R",
+	"C" : "C",
+	"C++" : "C++",
+	"Go" : "GO",
+	"Swift" : "SWIFT",
+	"Kotlin" : "KOTLIN",
+	"MySQL" : "MYSQL",
+	"MongoDB" : "MONGO_DB",
+	"Php" : "PHP",
+	"GraphQL" : "GRAPH_QL",
+
+
+	"_comment": "below stacks are for infra or tools",
+	
+	"Firebase" : "FIREBASE",
+	"Unity" : "UNITY",
+	"AWS" : "AWS",
+	"Kubernetes" : "KUBERNETES",
+	"Docker" : "DOCKER",
+	"Git" : "GIT",
+	"Figma" : "FIGMA",
+	"Zeplin" : "ZEPLIN",
+
+	"_comment": "below stacks are for frameworks",
+	
+
+	"Spring" : "SPRING",
+	"React" : "REACT",
+	"ReactNative" : "REACT_NATIVE",
+	"Vue" : "VUE",
+	"NodeJs" : "NODE_JS",
+	"NextJS" : "NEXT_JS",
+	"NestJS" : "NEST_JS",
+	"Express" : "EXPRESS",
+	"Django" : "DJANGO",
+	"Flutter" : "FLUTTER",
+	
+
+}
+
+
