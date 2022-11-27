@@ -14,6 +14,7 @@ import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.dto.post.response.RemovePostResponse;
 import Tamanegiseoul.comeet.dto.post.response.SearchPostResponse;
+import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
@@ -85,7 +86,8 @@ public class PostApiController {
             Posts findPost = postService.findPostById(request.getPostId());
             postService.updatePost(findPost, request);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, request);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, UpdatePostResponse.toDto(findPost)
+                    .designatedStacks(request.getDesignatedStacks()));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }

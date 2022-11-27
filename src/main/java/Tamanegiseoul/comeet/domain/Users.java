@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +43,10 @@ public class Users {
     private List<Posts> wrotePosts = new ArrayList<>();
 
     @NotNull
-    private LocalDate createdDate;
+    private LocalDateTime createdTime;
 
     @NotNull
-    private LocalDate modifiedDate;
+    private LocalDateTime modifiedTime;
 
     @Builder
     public Users(String nickname, String email, String password) {
@@ -72,11 +73,11 @@ public class Users {
 
     // set LocalTime for created, modified date
     public void updateCreatedDate() {
-        this.createdDate = LocalDate.now();
+        this.createdTime = LocalDateTime.now();
     }
 
     public void updateModifiedDate() {
-        this.modifiedDate = LocalDate.now();
+        this.modifiedTime = LocalDateTime.now();
     }
 
     @Transactional

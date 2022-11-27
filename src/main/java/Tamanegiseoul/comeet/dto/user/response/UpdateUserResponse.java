@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,4 +20,6 @@ public class UpdateUserResponse {
     private String nickname;
     private String email;
     private List<TechStack> preferredStacks;
+    private LocalDateTime createdTime;
+    private LocalDateTime modifiedTime;
 }

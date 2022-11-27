@@ -72,6 +72,8 @@ public class UserApiController {
                             .email(newUser.getEmail())
                             .nickname(newUser.getNickname())
                             .preferStacks(preferredStacks)
+                            .createdTime(newUser.getCreatedTime())
+                            .modifiedTime(newUser.getModifiedTime())
                             .build()
                     );
         } catch (DuplicateResourceException e) {
@@ -102,11 +104,13 @@ public class UserApiController {
             List<TechStack> preferredStacks = userService.findPreferredStacks(findUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchUserResponse.builder()
-                    .userId(findUser.getUserId())
-                    .email(findUser.getEmail())
-                    .nickname(findUser.getNickname())
-                    .preferStacks(preferredStacks)
-                    .build());
+                            .userId(findUser.getUserId())
+                            .email(findUser.getEmail())
+                            .nickname(findUser.getNickname())
+                            .preferStacks(preferredStacks)
+                            .createdTime(findUser.getCreatedTime())
+                            .modifiedTime(findUser.getModifiedTime())
+                            .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         }
@@ -127,6 +131,8 @@ public class UserApiController {
                             .nickname(updatedUser.getNickname())
                             .email(updatedUser.getEmail())
                             .preferredStacks(preferredStacks)
+                            .createdTime(updatedUser.getCreatedTime())
+                            .modifiedTime(updatedUser.getModifiedTime())
                             .build()
                     );
         } catch (ResourceNotFoundException e) {

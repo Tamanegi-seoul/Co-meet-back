@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data @Slf4j
 @Builder
@@ -18,8 +18,8 @@ public class CommentDto {
     private Long commenterId;
     private String commenterNickname;
     private String content;
-    private LocalDate createdTime;
-    private LocalDate modifiedTime;
+    private LocalDateTime createdTime;
+    private LocalDateTime modifiedTime;
 
     public static CommentDto toDto(Comment comment) {
         return CommentDto.builder()

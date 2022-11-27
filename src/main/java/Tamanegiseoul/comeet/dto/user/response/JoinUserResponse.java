@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -16,4 +17,6 @@ public class JoinUserResponse {
     private String nickname;
     private String email;
     private List<TechStack> preferStacks;
+    private LocalDateTime createdTime;
+    private LocalDateTime modifiedTime;
 }

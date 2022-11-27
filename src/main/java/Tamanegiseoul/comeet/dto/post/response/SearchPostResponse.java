@@ -11,6 +11,7 @@ import lombok.Data;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class SearchPostResponse {
     private String posterNickname;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
 

@@ -12,6 +12,7 @@ import lombok.Data;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -32,6 +33,8 @@ public class CreatePostResponse {
     private String posterNickname;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+    private LocalDateTime createdTime;
+    private LocalDateTime modifiedTime;
 
     public static CreatePostResponse toDto(Posts post) {
         return CreatePostResponse.builder()
@@ -45,6 +48,8 @@ public class CreatePostResponse {
                 .recruitStatus(post.getRecruitStatus())
                 .startDate(post.getStartDate())
                 .expectedTerm(post.getExpectedTerm())
+                .createdTime(post.getCreatedTime())
+                .modifiedTime(post.getModifiedTime())
                 .build();
     }
 
