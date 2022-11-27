@@ -12,6 +12,7 @@ import lombok.Data;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
@@ -33,8 +34,8 @@ public class SearchPostResponse {
     private String posterNickname;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
-    private LocalDate createdDate;
-    private LocalDate modifiedDate;
+    private LocalDateTime createdTime;
+    private LocalDateTime modifiedTime;
 
     public static SearchPostResponse toDto(Posts findPost) {
         return SearchPostResponse.builder()
@@ -49,8 +50,8 @@ public class SearchPostResponse {
                 .recruitStatus(findPost.getRecruitStatus())
                 .startDate(findPost.getStartDate())
                 .expectedTerm(findPost.getExpectedTerm())
-                .createdDate(findPost.getCreatedDate())
-                .modifiedDate(findPost.getModifiedDate())
+                .createdTime(findPost.getCreatedTime())
+                .modifiedTime(findPost.getModifiedTime())
                 .build();
     }
 

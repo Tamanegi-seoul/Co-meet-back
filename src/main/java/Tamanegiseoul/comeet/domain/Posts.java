@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -69,10 +70,10 @@ public class Posts {
     private String content;
 
     @NotNull
-    private LocalDate createdDate;
+    private LocalDateTime createdTime;
 
     @NotNull
-    private LocalDate modifiedDate;
+    private LocalDateTime modifiedTime;
 
     @Builder
     public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Users poster) {
@@ -86,8 +87,8 @@ public class Posts {
         this.contactType = contactType;
         this.contact = contact;
         this.hits = 0L;
-        this.createdDate = LocalDate.now();
-        this.modifiedDate = LocalDate.now();
+        this.createdTime = LocalDateTime.now();
+        this.modifiedTime = LocalDateTime.now();
     }
 
     public void addDesignateStack(TechStack ts) {
@@ -119,8 +120,8 @@ public class Posts {
     public void updateContent(String newContent) { this.content = content; }
     public void updateContactType(ContactType newCT) { this.contactType = newCT; }
     public void updateContact(String newContact) { this.contact = contact; }
-    public void updateCreatedDate() { this.createdDate = LocalDate.now(); }
-    public void updateModifiedDate() { this.modifiedDate = LocalDate.now(); }
+    public void updateCreatedDate() { this.createdTime = LocalDateTime.now(); }
+    public void updateModifiedDate() { this.modifiedTime = LocalDateTime.now(); }
     public void updateRecruitStatus(RecruitStatus rs) { this.recruitStatus = rs; }
 
     public void initDesignateStack() {
@@ -143,6 +144,6 @@ public class Posts {
         return String.format("title: %s\n content: %s\n recruit status: %s\n recruit capacity: %s\n start date: %s\n" +
                 "contact: %s\n contact type: %s\n start date: %s\n expected term: %s\n created date: %s\n modified date: %s\n",
                 this.title, this.content, this.recruitStatus, this.recruitCapacity, this.startDate, this.contact,
-                this.contactType, this.startDate, this.expectedTerm, this.createdDate, this.modifiedDate);
+                this.contactType, this.startDate, this.expectedTerm, this.createdTime, this.modifiedTime);
     }
 }
