@@ -7,6 +7,7 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
+import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.StackRelationRepository;
@@ -15,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -165,4 +168,5 @@ public class UserService {
 
         return findStacks;
     }
+
 }

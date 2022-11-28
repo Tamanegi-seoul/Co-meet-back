@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -35,6 +36,10 @@ public class Users {
 
     @NotNull
     private String password;
+
+    @Nullable
+    @OneToOne @JoinColumn(name = "image_id")
+    private ImageData profileImage;
 
     @OneToMany(mappedBy = "stackRelationId", fetch = FetchType.EAGER, cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();

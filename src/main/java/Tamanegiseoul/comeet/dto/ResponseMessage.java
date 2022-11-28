@@ -8,6 +8,7 @@ public class ResponseMessage {
     public static final String FOUND_USER = "회원 조회 성공";
     public static final String FOUND_POST = "게시글 조회 성공";
     public static final String FOUND_COMMENT = "덧글 조회 성공";
+    public static final String FOUND_FILE = "파일 조회 성공";
 
     public static final String NOT_FOUND_USER = "회원 조회 실패";
     public static final String NOT_FOUND_POST = "게시글 조회 실패";
@@ -20,7 +21,8 @@ public class ResponseMessage {
     public static final String FAIL_CREATE_USER = "회원 가입 실패";
     public static final String FAIL_CREATE_POST = "게시글 작성 실패";
     public static final String FAIL_CREATE_COMMENT = "덧글 작성 실패";
-
+    public static final String FAIL_FILE_UPLOAD = "파일 업로드 실패";
+    public static final String FAIL_FETCH_FILE = "파일 조회 실패";
 
     public static final String UPDATE_USER = "회원 정보 수정 성공";
     public static final String UPDATE_POST = "게시글 수정 성공";
@@ -42,4 +44,7 @@ public class ResponseMessage {
     public static final String DUPLICATE_RES = "중복된 리소스";
     public static final String DUPLICATE_NICKNAME = "중복된 닉네임";
     public static final String DUPLICATE_EMAIL = "중복된 이메일";
+
+    public static final String UPLOADED_FILE = "파일 업로드 완료";
+
 }
