@@ -54,6 +54,7 @@ public class PostServiceTest {
                 .contact("93jpark@gmail.com")
                 .poster(newUser)
                 .recruitCapacity(4L)
+                .remote(false)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
                 .build();
@@ -81,6 +82,7 @@ public class PostServiceTest {
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
                 .poster(newUser)
+                .remote(false)
                 .recruitCapacity(4L)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
@@ -97,6 +99,7 @@ public class PostServiceTest {
                 8L,
                 ContactType.POSTER_EMAIL,
                 "93jpark@gmail.com",
+                false,
                 LocalDate.of(2022, 11, 27),
                 28L,
                 new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT))
