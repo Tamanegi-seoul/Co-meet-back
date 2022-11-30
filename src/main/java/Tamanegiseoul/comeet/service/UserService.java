@@ -8,10 +8,7 @@ import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
 import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
-import Tamanegiseoul.comeet.repository.CommentRepository;
-import Tamanegiseoul.comeet.repository.PostRepository;
-import Tamanegiseoul.comeet.repository.StackRelationRepository;
-import Tamanegiseoul.comeet.repository.UserRepository;
+import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +29,7 @@ public class UserService {
     private final PostRepository postRepository;
     private final StackRelationRepository stackRelationRepository;
     private final CommentRepository commentRepository;
+    private final ImageDataRepository imageDataRepository;
 
     private final PostService postService;
 
@@ -125,6 +123,7 @@ public class UserService {
         // delete related child entities
         stackRelationRepository.removeRelatedStakcsByUser(userId);
         commentRepository.removeCommentByUserId(userId);
+        imageDataRepository.removeImageByUserId(userId);
         //postRepository.removePostByPosterId(userId);
         postService.removePostByPosterId(userId);
 
