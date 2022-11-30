@@ -111,8 +111,9 @@ public class CommentServiceTest {
     @Test
     public void 덧글_조회() {
         // given
-        Posts findPost = postService.findAll().get(0);
-        Users findUser = userService.findAll().get(0);
+
+        Users findUser = userService.findUserByNickname("케네스");
+        Posts findPost = postService.findPostByUserId(findUser.getUserId()).get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
@@ -122,8 +123,6 @@ public class CommentServiceTest {
         Long commentId = commentService.registerComment(newComment);
 
         // when
-        findUser = userService.findUserByNickname("케네스");
-        findPost = postService.findPostByUserId(findUser.getUserId()).get(0);
         Comment findCommentWithUserId = commentService.findCommentByUserId(findUser.getUserId()).get(0);
         Comment findCommentWithPostId = commentService.findCommentByPostId(findPost.getPostId()).get(0);
 
@@ -150,7 +149,7 @@ public class CommentServiceTest {
         commentService.removeComment(commentId);
 
         // then
-        Assert.assertEquals(0, commentService.findAll().size());
+        Assert.assertEquals(3, commentService.findAll().size());
     }
 
 
