@@ -79,7 +79,7 @@ public class Posts {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Users poster) {
+    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, Users poster) {
         this.title = title;
         this.recruitStatus = RecruitStatus.RECRUIT;
         this.recruitCapacity = recruitCapacity;
@@ -89,6 +89,7 @@ public class Posts {
         this.poster = poster;
         this.contactType = contactType;
         this.contact = contact;
+        this.remote = remote;
         this.hits = 0L;
         this.createdTime = LocalDateTime.now();
         this.modifiedTime = LocalDateTime.now();
