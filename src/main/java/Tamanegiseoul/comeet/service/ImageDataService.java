@@ -1,12 +1,14 @@
 package Tamanegiseoul.comeet.service;
 
 import Tamanegiseoul.comeet.domain.ImageData;
+import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.user.response.ImageDto;
 import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
 import Tamanegiseoul.comeet.repository.ImageDataRepository;
 import Tamanegiseoul.comeet.utils.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,31 +28,48 @@ public class ImageDataService {
     EntityManager em;
 
     @Transactional
-    public ImageUploadResponse uploadImage(MultipartFile file) throws IOException {
-        imageDataRepository.save(ImageData.builder()
-                        .name(file.getOriginalFilename())
-                        .type(file.getContentType())
-                        .imageData(ImageUtil.compressImage(file.getBytes()))
+    public ImageDto uploadImage(Users user, MultipartFile file) throws IOException {
+        ImageData imageData = imageDataRepository.save(ImageData.builder()
+                .fileName(file.getOriginalFilename())
+                .fileType(file.getContentType())
+                .imageData(ImageUtil.compressImage(file.getBytes()))
+                .owner(user)
                 .build());
 
-        return new ImageUploadResponse("Image uploaded Successfully: " + file.getOriginalFilename());
+        return ImageDto.toDto(imageData);
     }
 
     @Transactional
-    public ImageData getInfoByImageByName(String name) {
-        Optional<ImageData> dbImage = imageDataRepository.findByName(name);
+    public ImageDto updateImage(Users updatedUser, MultipartFile updatedFile) throws IOException {
+        ImageData dbImage = imageDataRepository.findByUserId(updatedUser.getUserId());
+        if(dbImage != null) {
+            dbImage.updateImageData(updatedFile);
+            em.flush();
+            em.clear();
+        }
 
-        return ImageData.builder()
-                .name(dbImage.get().getName())
-                .type(dbImage.get().getType())
-                .imageData(ImageUtil.decompressImage(dbImage.get().getImageData()))
-                .build();
+        return ImageDto.toDto(dbImage);
     }
 
-    @Transactional
-    public byte[] getImage(String name) {
-        Optional<ImageData> dbImage = imageDataRepository.findByName(name);
-        byte[] image = ImageUtil.decompressImage(dbImage.get().getImageData());
-        return image;
+    public byte[] findImageDataByImageId(Long imageId) {
+        ImageData findImageData = imageDataRepository.findOne(imageId);
+        if(findImageData==null) {
+            return null;
+        }
+        return ImageUtil.decompressImage(findImageData.getImageData());
+
+    }
+
+    public ImageDto findImageByUserId(Long userId) {
+        ImageData dbImage = imageDataRepository.findByUserId(userId);
+
+        if(dbImage == null) {
+            //throw new ResourceNotFoundException("ImageData", "owner:userId", userId);
+            return null;
+        }
+
+        return ImageDto.toDto(dbImage);
+
+
     }
 }
