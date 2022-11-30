@@ -19,4 +19,5 @@ public class JoinUserResponse {
     private List<TechStack> preferStacks;
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
+    private ImageDto profileImage;
 }

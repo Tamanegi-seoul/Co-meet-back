@@ -22,4 +22,5 @@ public class UpdateUserResponse {
     private List<TechStack> preferredStacks;
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
+    private ImageDto profileImage;
 }
