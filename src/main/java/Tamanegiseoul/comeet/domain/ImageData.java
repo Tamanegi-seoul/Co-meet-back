@@ -1,12 +1,15 @@
 package Tamanegiseoul.comeet.domain;
 
+import Tamanegiseoul.comeet.utils.ImageUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 
 @Builder
 @Entity
@@ -20,12 +23,23 @@ public class ImageData {
     private Long imageId;
 
     @NotNull
-    private String name;
+    private String fileName;
 
     @NotNull
-    private String type;
+    private String fileType;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Users owner;
 
     @Lob
     @Column(name = "image_data", length = 1000)
     private byte[] imageData;
+
+    public ImageData updateImageData(MultipartFile updatedFile) throws IOException {
+        this.fileName = updatedFile.getOriginalFilename();
+        this.fileType = updatedFile.getContentType();
+        this.imageData = ImageUtil.compressImage(updatedFile.getBytes());
+
+        return this;
+    }
 }
