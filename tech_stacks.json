@@ -1,6 +1,6 @@
 {
 	
-	"_comment": "below stacks are for programming languages",
+	"__comment": "below stacks are for programming languages",
 
 	"Java" : "JAVA",
 	"JavaScript" : "JAVA_SCRIPT",
@@ -18,7 +18,7 @@
 	"GraphQL" : "GRAPH_QL",
 
 
-	"_comment": "below stacks are for infra or tools",
+	"__comment": "below stacks are for infra or tools",
 	
 	"Firebase" : "FIREBASE",
 	"Unity" : "UNITY",
@@ -29,7 +29,7 @@
 	"Figma" : "FIGMA",
 	"Zeplin" : "ZEPLIN",
 
-	"_comment": "below stacks are for frameworks",
+	"__comment": "below stacks are for frameworks",
 	
 
 	"Spring" : "SPRING",

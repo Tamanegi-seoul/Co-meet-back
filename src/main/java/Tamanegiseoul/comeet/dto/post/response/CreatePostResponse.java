@@ -28,6 +28,7 @@ public class CreatePostResponse {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;
+    private Boolean remote;
     private LocalDate startDate;
     private Long expectedTerm;
     private String posterNickname;
@@ -43,6 +44,7 @@ public class CreatePostResponse {
                 .content(post.getContent())
                 .contactType(post.getContactType())
                 .contact(post.getContact())
+                .remote(post.getRemote())
                 .expectedTerm(post.getExpectedTerm())
                 .recruitCapacity(post.getRecruitCapacity())
                 .recruitStatus(post.getRecruitStatus())

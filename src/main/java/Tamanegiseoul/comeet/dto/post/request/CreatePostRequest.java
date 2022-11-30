@@ -21,6 +21,7 @@ public class CreatePostRequest {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;
+    private Boolean remote;
     private LocalDate startDate;
     private Long expectedTerm;
     private Long posterId;

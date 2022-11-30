@@ -34,6 +34,7 @@ public class UpdatePostRequest {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;
+    private Boolean remote;
     private LocalDate startDate;
     private Long expectedTerm;
     @Enumerated(EnumType.STRING)

@@ -28,6 +28,7 @@ public class UpdatePostResponse {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;
+    private Boolean remote;
     private LocalDate startDate;
     private Long expectedTerm;
     private Long posterId;
@@ -46,6 +47,7 @@ public class UpdatePostResponse {
                 .content(findPost.getContent())
                 .contact(findPost.getContact())
                 .contactType(findPost.getContactType())
+                .remote(findPost.getRemote())
                 .recruitCapacity(findPost.getRecruitCapacity())
                 .recruitStatus(findPost.getRecruitStatus())
                 .startDate(findPost.getStartDate())

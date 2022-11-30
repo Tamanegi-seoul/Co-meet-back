@@ -53,6 +53,9 @@ public class Posts {
     private Long expectedTerm;
 
     @NotNull
+    private Boolean remote;
+
+    @NotNull
     @ManyToOne @JoinColumn(name="user_id")
     private Users poster;
 

@@ -29,6 +29,7 @@ public class SearchPostResponse {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;
+    private Boolean remote;
     private LocalDate startDate;
     private Long expectedTerm;
     private Long posterId;
@@ -48,6 +49,7 @@ public class SearchPostResponse {
                 .posterNickname(findPost.getPoster().getNickname())
                 .contactType(findPost.getContactType())
                 .contact(findPost.getContact())
+                .remote(findPost.getRemote())
                 .recruitCapacity(findPost.getRecruitCapacity())
                 .recruitStatus(findPost.getRecruitStatus())
                 .startDate(findPost.getStartDate())
