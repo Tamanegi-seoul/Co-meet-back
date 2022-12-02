@@ -6,6 +6,7 @@ import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 
 @Component
+@Profile("dev")
 @RequiredArgsConstructor
 public class initDB {
     private final InitService initService;
