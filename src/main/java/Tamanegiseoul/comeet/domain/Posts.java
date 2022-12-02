@@ -60,7 +60,7 @@ public class Posts {
     private Users poster;
 
     @NotNull
-    @OneToMany(mappedBy="post", fetch = FetchType.EAGER, cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> designatedStack = new ArrayList<>();
 
     @OneToMany(mappedBy="commentId", cascade = ALL, orphanRemoval = true)

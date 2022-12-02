@@ -41,7 +41,7 @@ public class Users {
     @OneToOne @JoinColumn(name = "image_id")
     private ImageData profileImage;
 
-    @OneToMany(mappedBy = "stackRelationId", fetch = FetchType.EAGER, cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "stackRelationId", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "postId", cascade = ALL, orphanRemoval = true)
