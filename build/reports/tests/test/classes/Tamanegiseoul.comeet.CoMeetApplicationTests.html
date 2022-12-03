@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.264s</div>
+<div class="counter">0.143s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,7 +79,7 @@
 </thead>
 <tr>
 <td class="success">contextLoads()</td>
-<td class="success">0.264s</td>
+<td class="success">0.143s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -87,20 +87,20 @@
 <div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
-<pre>00:35:19.251 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
-00:35:19.251 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
-00:35:19.253 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [Tamanegiseoul.comeet.CoMeetApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
-00:35:19.254 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [Tamanegiseoul.comeet.CoMeetApplicationTests], using SpringBootContextLoader
-00:35:19.255 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: class path resource [Tamanegiseoul/comeet/CoMeetApplicationTests-context.xml] does not exist
-00:35:19.256 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: class path resource [Tamanegiseoul/comeet/CoMeetApplicationTestsContext.groovy] does not exist
-00:35:19.256 [Test worker] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
-00:35:19.256 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: CoMeetApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-00:35:19.261 [Test worker] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [Tamanegiseoul.comeet.CoMeetApplicationTests]
-00:35:19.262 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration Tamanegiseoul.comeet.CoMeetApplication for test class Tamanegiseoul.comeet.CoMeetApplicationTests
-00:35:19.265 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [Tamanegiseoul.comeet.CoMeetApplicationTests]: using defaults.
-00:35:19.265 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
-00:35:19.266 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@3bffddff, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@66971f6b, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@50687efb, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@517bd097, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@142eef62, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4a9cc6cb, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5990e6c5, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@56e07a08, org.springframework.test.context.event.EventPublishingTestExecutionListener@35d6ca49, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@1950e8a6, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@47289387, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@12cd9150, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@114a85c2, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@f415a95, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@cf65451]
-00:35:19.273 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@46c670a6 testClass = CoMeetApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@59fc684e testClass = CoMeetApplicationTests, locations = '{}', classes = '{class Tamanegiseoul.comeet.CoMeetApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.autoconfigure.actuate.metrics.MetricsExportContextCustomizerFactory$DisableMetricExportContextCustomizer@30c93896, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@558bdf1f, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5f354bcf, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@4716be8b, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@5ddf0d24, org.springframework.boot.test.web.reactive.server.WebTestClientContextCustomizer@3abada5a, org.springframework.boot.test.context.SpringBootTestArgs@1, org.springframework.boot.test.context.SpringBootTestWebEnvironment@69fb6037], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTestExecutionListener.activateListener' -&gt; true]], class annotated with @DirtiesContext [false] with mode [null].
+<pre>01:07:49.137 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+01:07:49.137 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+01:07:49.138 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [Tamanegiseoul.comeet.CoMeetApplicationTests] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+01:07:49.139 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [Tamanegiseoul.comeet.CoMeetApplicationTests], using SpringBootContextLoader
+01:07:49.139 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: class path resource [Tamanegiseoul/comeet/CoMeetApplicationTests-context.xml] does not exist
+01:07:49.140 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: class path resource [Tamanegiseoul/comeet/CoMeetApplicationTestsContext.groovy] does not exist
+01:07:49.140 [Test worker] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: no resource found for suffixes {-context.xml, Context.groovy}.
+01:07:49.140 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [Tamanegiseoul.comeet.CoMeetApplicationTests]: CoMeetApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+01:07:49.143 [Test worker] DEBUG org.springframework.test.context.support.ActiveProfilesUtils - Could not find an 'annotation declaring class' for annotation type [org.springframework.test.context.ActiveProfiles] and class [Tamanegiseoul.comeet.CoMeetApplicationTests]
+01:07:49.143 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration Tamanegiseoul.comeet.CoMeetApplication for test class Tamanegiseoul.comeet.CoMeetApplicationTests
+01:07:49.145 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [Tamanegiseoul.comeet.CoMeetApplicationTests]: using defaults.
+01:07:49.145 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+01:07:49.145 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@3bffddff, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@66971f6b, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@50687efb, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@517bd097, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@142eef62, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4a9cc6cb, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5990e6c5, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@56e07a08, org.springframework.test.context.event.EventPublishingTestExecutionListener@35d6ca49, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@1950e8a6, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@47289387, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@12cd9150, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@114a85c2, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@f415a95, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@cf65451]
+01:07:49.148 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@46c670a6 testClass = CoMeetApplicationTests, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@59fc684e testClass = CoMeetApplicationTests, locations = '{}', classes = '{class Tamanegiseoul.comeet.CoMeetApplication}', contextInitializerClasses = '[]', activeProfiles = '{}', propertySourceLocations = '{}', propertySourceProperties = '{org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.autoconfigure.actuate.metrics.MetricsExportContextCustomizerFactory$DisableMetricExportContextCustomizer@30c93896, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@0, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@558bdf1f, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@5f354bcf, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@4716be8b, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@5ddf0d24, org.springframework.boot.test.web.reactive.server.WebTestClientContextCustomizer@3abada5a, org.springframework.boot.test.context.SpringBootTestArgs@1, org.springframework.boot.test.context.SpringBootTestWebEnvironment@60015ef5], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTestExecutionListener.activateListener' -&gt; true]], class annotated with @DirtiesContext [false] with mode [null].
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -110,85 +110,85 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v2.7.5)
 
-2022-12-03 00:35:19.965  INFO 9787 --- [    Test worker] T.comeet.CoMeetApplicationTests          : Starting CoMeetApplicationTests using Java 18.0.2 on Joonwoos-MacBook-Pro.local with PID 9787 (started by joon in /Users/joon/workspace/co-meet-back)
-2022-12-03 00:35:19.966  INFO 9787 --- [    Test worker] T.comeet.CoMeetApplicationTests          : No active profile set, falling back to 1 default profile: &quot;default&quot;
-2022-12-03 00:35:21.412  INFO 9787 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2022-12-03 00:35:21.445  INFO 9787 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 20 ms. Found 0 JPA repository interfaces.
-2022-12-03 00:35:22.058  INFO 9787 --- [    Test worker] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$9f7131f7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2022-12-03 00:35:22.160  INFO 9787 --- [    Test worker] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
-2022-12-03 00:35:23.026  INFO 9787 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2022-12-03 00:35:23.367  INFO 9787 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2022-12-03 00:35:23.530  INFO 9787 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2022-12-03 00:35:23.605  INFO 9787 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.12.Final
-2022-12-03 00:35:23.910  INFO 9787 --- [    Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2022-12-03 00:35:24.094  INFO 9787 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
-2022-12-03 00:35:25.341  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325341 | took 1ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:49.424  INFO 15002 --- [    Test worker] T.comeet.CoMeetApplicationTests          : Starting CoMeetApplicationTests using Java 18.0.2 on Joonwoos-MacBook-Pro.local with PID 15002 (started by joon in /Users/joon/workspace/co-meet-back)
+2022-12-03 01:07:49.426  INFO 15002 --- [    Test worker] T.comeet.CoMeetApplicationTests          : No active profile set, falling back to 1 default profile: &quot;default&quot;
+2022-12-03 01:07:50.004  INFO 15002 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-12-03 01:07:50.020  INFO 15002 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 10 ms. Found 0 JPA repository interfaces.
+2022-12-03 01:07:50.293  INFO 15002 --- [    Test worker] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$157488be] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-12-03 01:07:50.343  INFO 15002 --- [    Test worker] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-12-03 01:07:50.658  INFO 15002 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-12-03 01:07:50.825  INFO 15002 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-12-03 01:07:50.893  INFO 15002 --- [    Test worker] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-12-03 01:07:50.933  INFO 15002 --- [    Test worker] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.12.Final
+2022-12-03 01:07:51.077  INFO 15002 --- [    Test worker] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-12-03 01:07:51.179  INFO 15002 --- [    Test worker] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2022-12-03 01:07:51.803  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271803 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop table if exists comment CASCADE 
 drop table if exists comment CASCADE ;
-2022-12-03 00:35:25.342  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325342 | took 0ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.803  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271803 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop table if exists image_data CASCADE 
 drop table if exists image_data CASCADE ;
-2022-12-03 00:35:25.343  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325343 | took 0ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.804  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271804 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop table if exists post CASCADE 
 drop table if exists post CASCADE ;
-2022-12-03 00:35:25.344  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325344 | took 0ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.804  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271804 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop table if exists stack_relation CASCADE 
 drop table if exists stack_relation CASCADE ;
-2022-12-03 00:35:25.345  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325345 | took 0ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.805  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271805 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop table if exists users CASCADE 
 drop table if exists users CASCADE ;
-2022-12-03 00:35:25.347  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325347 | took 0ms | statement | connection 2| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.805  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271805 | took 0ms | statement | connection 2| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 drop sequence if exists hibernate_sequence
 drop sequence if exists hibernate_sequence;
-2022-12-03 00:35:25.353  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325353 | took 2ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.809  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271808 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create sequence hibernate_sequence start with 1 increment by 1
 create sequence hibernate_sequence start with 1 increment by 1;
-2022-12-03 00:35:25.364  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325364 | took 10ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.814  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271814 | took 4ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create table comment (comment_id bigint not null, content varchar(255), created_time timestamp, modified_time timestamp, post_id bigint, user_id bigint, primary key (comment_id))
 create table comment (comment_id bigint not null, content varchar(255), created_time timestamp, modified_time timestamp, post_id bigint, user_id bigint, primary key (comment_id));
-2022-12-03 00:35:25.367  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325367 | took 1ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.815  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271815 | took 0ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create table image_data (image_id bigint not null, file_name varchar(255) not null, file_type varchar(255) not null, image_data blob, owner_user_id bigint, primary key (image_id))
 create table image_data (image_id bigint not null, file_name varchar(255) not null, file_type varchar(255) not null, image_data blob, owner_user_id bigint, primary key (image_id));
-2022-12-03 00:35:25.370  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325370 | took 2ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.816  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271816 | took 0ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create table post (post_id bigint not null, contact varchar(255), contact_type varchar(255), content varchar(255), created_time timestamp, expected_term bigint, hits bigint, modified_time timestamp, recruit_capacity bigint, recruit_status varchar(255), remote boolean, start_date date, title varchar(255), user_id bigint, primary key (post_id))
 create table post (post_id bigint not null, contact varchar(255), contact_type varchar(255), content varchar(255), created_time timestamp, expected_term bigint, hits bigint, modified_time timestamp, recruit_capacity bigint, recruit_status varchar(255), remote boolean, start_date date, title varchar(255), user_id bigint, primary key (post_id));
-2022-12-03 00:35:25.372  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325372 | took 1ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.818  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271817 | took 0ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create table stack_relation (stack_relation_id bigint not null, tech_stack varchar(255), post_id bigint, user_id bigint, primary key (stack_relation_id))
 create table stack_relation (stack_relation_id bigint not null, tech_stack varchar(255), post_id bigint, user_id bigint, primary key (stack_relation_id));
-2022-12-03 00:35:25.380  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325380 | took 5ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.821  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271821 | took 2ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 create table users (user_id bigint generated by default as identity, created_time timestamp, email varchar(255), modified_time timestamp, nickname varchar(255), password varchar(255), image_id bigint, primary key (user_id))
 create table users (user_id bigint generated by default as identity, created_time timestamp, email varchar(255), modified_time timestamp, nickname varchar(255), password varchar(255), image_id bigint, primary key (user_id));
-2022-12-03 00:35:25.385  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325385 | took 4ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.822  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271822 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table users add constraint UK_6dotkott2kjsp8vw4d0m25fb7 unique (email)
 alter table users add constraint UK_6dotkott2kjsp8vw4d0m25fb7 unique (email);
-2022-12-03 00:35:25.387  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325387 | took 1ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.823  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271823 | took 0ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table users add constraint UK_2ty1xmrrgtn89xt7kyxx6ta7h unique (nickname)
 alter table users add constraint UK_2ty1xmrrgtn89xt7kyxx6ta7h unique (nickname);
-2022-12-03 00:35:25.408  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325408 | took 20ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.834  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271834 | took 10ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table comment add constraint FKs1slvnkuemjsq2kj4h3vhx7i1 foreign key (post_id) references post
 alter table comment add constraint FKs1slvnkuemjsq2kj4h3vhx7i1 foreign key (post_id) references post;
-2022-12-03 00:35:25.411  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325411 | took 2ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.836  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271836 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table comment add constraint FKqm52p1v3o13hy268he0wcngr5 foreign key (user_id) references users
 alter table comment add constraint FKqm52p1v3o13hy268he0wcngr5 foreign key (user_id) references users;
-2022-12-03 00:35:25.415  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325415 | took 3ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.837  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271837 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table image_data add constraint FKtlgo8hulv9dhgkel7o4315m5f foreign key (owner_user_id) references users
 alter table image_data add constraint FKtlgo8hulv9dhgkel7o4315m5f foreign key (owner_user_id) references users;
-2022-12-03 00:35:25.419  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325419 | took 3ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.839  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271839 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table post add constraint FK7ky67sgi7k0ayf22652f7763r foreign key (user_id) references users
 alter table post add constraint FK7ky67sgi7k0ayf22652f7763r foreign key (user_id) references users;
-2022-12-03 00:35:25.424  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325424 | took 3ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.840  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271840 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table stack_relation add constraint FKew0uemuvdnd9p1c2qxqj469q6 foreign key (post_id) references post
 alter table stack_relation add constraint FKew0uemuvdnd9p1c2qxqj469q6 foreign key (post_id) references post;
-2022-12-03 00:35:25.426  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325426 | took 2ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.841  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271841 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table stack_relation add constraint FKh51kfe4f981kpabd4w1a41pym foreign key (user_id) references users
 alter table stack_relation add constraint FKh51kfe4f981kpabd4w1a41pym foreign key (user_id) references users;
-2022-12-03 00:35:25.429  INFO 9787 --- [    Test worker] p6spy                                    : #1669995325429 | took 2ms | statement | connection 3| url jdbc:h2:mem:dfeda05c-1f6a-4d3b-ba08-2257fa02f659
+2022-12-03 01:07:51.842  INFO 15002 --- [    Test worker] p6spy                                    : #1669997271842 | took 1ms | statement | connection 3| url jdbc:h2:mem:e653744f-d6f7-4e0c-b085-926fa62d0c8e
 alter table users add constraint FKeeulc8mrqoxvdh372vrmd9k7g foreign key (image_id) references image_data
 alter table users add constraint FKeeulc8mrqoxvdh372vrmd9k7g foreign key (image_id) references image_data;
-2022-12-03 00:35:25.433  INFO 9787 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2022-12-03 00:35:25.445  INFO 9787 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2022-12-03 00:35:26.168  WARN 9787 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2022-12-03 00:35:27.190  INFO 9787 --- [    Test worker] T.comeet.CoMeetApplicationTests          : Started CoMeetApplicationTests in 7.815 seconds (JVM running for 10.88)
+2022-12-03 01:07:51.844  INFO 15002 --- [    Test worker] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-12-03 01:07:51.852  INFO 15002 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-12-03 01:07:52.233  WARN 15002 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-12-03 01:07:52.713  INFO 15002 --- [    Test worker] T.comeet.CoMeetApplicationTests          : Started CoMeetApplicationTests in 3.531 seconds (JVM running for 4.702)
 </pre>
 </span>
 </div>
@@ -200,7 +200,7 @@ alter table users add constraint FKeeulc8mrqoxvdh372vrmd9k7g foreign key (image_
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.5.1</a> at Dec 3, 2022, 12:35:28 AM</p>
+<a href="http://www.gradle.org">Gradle 7.5.1</a> at Dec 3, 2022, 1:07:53 AM</p>
 </div>
 </div>
 </body>
