@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'Tamanegi-seoul'
-archivesBaseName = 'comeet-back'
+archivesBaseName = 'co-meet-back'
 //version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
