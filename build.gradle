@@ -32,6 +32,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
 
+	// Java JWT
+	implementation group: 'com.auth0', name: 'java-jwt'
+
+
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
 
 	// mariadb connection

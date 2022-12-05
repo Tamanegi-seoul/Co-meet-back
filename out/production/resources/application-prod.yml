@@ -4,7 +4,7 @@ spring:
       on-profile: prod
 
   datasource:
-    url: jdbc:mariadb://${AWS_DB_URL}
+    url: ${AWS_DB_URL}
     username: ${AWS_DB_ID}
     password: ${AWS_DB_PW}
     driver-class-name: org.mariadb.jdbc.Driver

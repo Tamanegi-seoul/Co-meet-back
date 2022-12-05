@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
@@ -36,6 +37,9 @@ public class Users {
 
     @NotNull
     private String password;
+
+
+    private String roles; // USER, ADMIN
 
     @Nullable
     @OneToOne @JoinColumn(name = "image_id")
@@ -91,4 +95,10 @@ public class Users {
         this.preferStacks.clear();
     }
 
+    public List<String> getRoleList() {
+        if(this.roles.length() > 0) {
+            return Arrays.asList(this.roles.split(","));
+        }
+        return new ArrayList<>();
+    }
 }
