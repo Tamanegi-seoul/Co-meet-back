@@ -11,6 +11,8 @@ import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +35,8 @@ public class UserService {
 
     private final PostService postService;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @PersistenceContext
     private final EntityManager em;
 
@@ -40,6 +44,7 @@ public class UserService {
     public Long registerUser(Users user) {
         validateUserEmail(user.getEmail());
         validateUserNickname(user.getNickname());
+
         user.updateCreatedDate();
         user.updateModifiedDate();
         userRepository.save(user);
@@ -67,6 +72,18 @@ public class UserService {
         }
     }
 
+    public Users getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
+        final Users originalUser = userRepository.findUserByEmail(email);
+
+        // matches 메소드를 이용해서 패스워드가 같은지 확인
+        if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
+            log.warn("[UserService:getByCredentials] success to validate user password");
+            return originalUser;
+        }
+        log.warn("[UserService:getByCredentials] fail to validate user password");
+        return null;
+    }
+
     /**********************
      * USER UPDATE METHODS
      **********************/
@@ -76,7 +93,7 @@ public class UserService {
         Users findUser = this.findUserById(request.getUserId());
         Long findUserId = findUser.getUserId();
         findUser.changeNickname(request.getNewNickname());
-        findUser.changePassword(request.getNewPassword());
+        findUser.changePassword(passwordEncoder.encode(request.getNewPassword()));
         //findUser.initPreferredTechStacks();
         this.updatePreferStack(findUserId, request.getUpdatedStacks());
         findUser.updateModifiedDate();

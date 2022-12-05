@@ -16,6 +16,8 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +39,8 @@ public class UserApiController {
     private final ImageDataService imageDataService;
     private final StackRelationService stackRelationService;
 
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @GetMapping("/validate")
     public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateUserRequest request) {
         try {
@@ -46,53 +50,6 @@ public class UserApiController {
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE, request);
         } catch (DuplicateResourceException e) {
             return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
-        }
-    }
-
-    @PostMapping("/join")
-    //public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
-    public ResponseEntity<ApiResponse> joinNewUser(@RequestPart("request") @Valid JoinUserRequest request, @Nullable @RequestPart("image")MultipartFile file) {
-        Users newUser = Users.builder()
-                .email(request.getEmail())
-                .nickname(request.getNickname())
-                .password(request.getPassword())
-                .build();
-        try {
-            userService.registerUser(newUser);
-            log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
-
-            userService.updatePreferStack(newUser.getUserId(), request.getPreferStacks());
-            log.info("%s's preferred tech stack has been registered", newUser.getNickname());
-
-            ImageDto imageDto = null;
-
-            if(file != null) {
-                log.warn("[UserApiController:joinNewUser]file is present");
-                imageDto = imageDataService.uploadImage(newUser, file);
-            } else {
-                log.warn("[UserApiController:joinNewUser]file is empty");
-            }
-
-            List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
-                    JoinUserResponse.builder()
-                            .userId(newUser.getUserId())
-                            .email(newUser.getEmail())
-                            .nickname(newUser.getNickname())
-                            .preferStacks(preferredStacks)
-                            .createdTime(newUser.getCreatedTime())
-                            .modifiedTime(newUser.getModifiedTime())
-                            .profileImage(imageDto)
-                            .build()
-                    );
-
-        } catch (DuplicateResourceException e) {
-            return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.warn(e.getMessage());
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.FAIL_FILE_UPLOAD, e.getMessage());
         }
     }
 
