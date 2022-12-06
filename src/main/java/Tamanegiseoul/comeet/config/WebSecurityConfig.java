@@ -38,25 +38,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .formLogin().disable()
         .httpBasic().disable()
         .authorizeRequests()
-                .antMatchers("/api/user/validate").permitAll()
-                .antMatchers("/api/user/join").permitAll()
-                //.antMatchers("/api/user/remove").hasRole("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 로그인필요
-                .antMatchers("/api/user/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/user/search").permitAll() // 로그인필요
-                .antMatchers("/api/user/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-
-                .antMatchers("/api/post/register").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/post/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/post/search/**").permitAll()
-                .antMatchers("/api/post/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-
-                .antMatchers("/api/comment/register").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/comment/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/comment/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
-                .antMatchers("/api/comment/search").permitAll()
-
-                .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/logout").authenticated()
+//                .antMatchers("/api/user/validate").permitAll()
+//                .antMatchers("/api/user/join").permitAll()
+//                //.antMatchers("/api/user/remove").hasRole("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')") // 로그인필요
+//                .antMatchers("/api/user/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/user/search").permitAll() // 로그인필요
+//                .antMatchers("/api/user/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//
+//                .antMatchers("/api/post/register").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/post/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/post/search/**").permitAll()
+//                .antMatchers("/api/post/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//
+//                .antMatchers("/api/comment/register").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/comment/update").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/comment/remove").hasAnyRole("USER", "MANAGER", "ADMIN") // 로그인필요
+//                .antMatchers("/api/comment/search").permitAll()
+//
+//                .antMatchers("/api/login").permitAll()
+//                .antMatchers("/api/logout").authenticated()
                 .anyRequest().permitAll();
 
         http.addFilterAfter(
@@ -66,14 +66,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("pasword")
-                .roles("USER")
-                .build();
 
-        return new InMemoryUserDetailsManager(user);
-    }
 }

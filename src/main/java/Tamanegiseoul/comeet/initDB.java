@@ -15,7 +15,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 
 @Component
-@Profile("dev")
+//@Profile("dev")
 @RequiredArgsConstructor
 public class initDB {
     private final InitService initService;

@@ -58,6 +58,20 @@ public class TokenProvider  {
                 .compact();
     }
 
+    public boolean validateToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRIT_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+
+        if(claims.getExpiration().compareTo(Date.from(Instant.now())) < 0) {
+            // 만료된 경우
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public String validateAndGetUserId(String token) {
         // praseClaimsJws 메소드가 Base64로 디코딩 및 파싱
         // 헤더와 페이로드를 setSigningKey로 넘어온 시크릿을 이용해 서명한 후 token의 서명과 비교
@@ -68,7 +82,9 @@ public class TokenProvider  {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.getSubject(); // subject는 우리가 원하는 사용자의 아이디를 뜻함
+
+        return claims.getSubject();
+        //return claims.getSubject(); // subject는 우리가 원하는 사용자의 아이디를 뜻함
     }
 
 

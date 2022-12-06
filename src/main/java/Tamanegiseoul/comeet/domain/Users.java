@@ -38,9 +38,6 @@ public class Users {
     @NotNull
     private String password;
 
-
-    private String roles; // USER, ADMIN
-
     @Nullable
     @OneToOne @JoinColumn(name = "image_id")
     private ImageData profileImage;
@@ -95,10 +92,4 @@ public class Users {
         this.preferStacks.clear();
     }
 
-    public List<String> getRoleList() {
-        if(this.roles.length() > 0) {
-            return Arrays.asList(this.roles.split(","));
-        }
-        return new ArrayList<>();
-    }
 }
