@@ -1,10 +1,8 @@
 package Tamanegiseoul.comeet.service;
 
 import Tamanegiseoul.comeet.domain.ImageData;
-import Tamanegiseoul.comeet.domain.Users;
-import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.dto.user.response.ImageDto;
-import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
 import Tamanegiseoul.comeet.repository.ImageDataRepository;
 import Tamanegiseoul.comeet.utils.ImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
-import java.util.Optional;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +25,7 @@ public class ImageDataService {
     EntityManager em;
 
     @Transactional
-    public ImageDto uploadImage(Users user, MultipartFile file) throws IOException {
+    public ImageDto uploadImage(User user, MultipartFile file) throws IOException {
         ImageData imageData = imageDataRepository.save(ImageData.builder()
                 .fileName(file.getOriginalFilename())
                 .fileType(file.getContentType())
@@ -40,7 +37,7 @@ public class ImageDataService {
     }
 
     @Transactional
-    public ImageDto updateImage(Users updatedUser, MultipartFile updatedFile) throws IOException {
+    public ImageDto updateImage(User updatedUser, MultipartFile updatedFile) throws IOException {
         ImageData dbImage = imageDataRepository.findByUserId(updatedUser.getUserId());
         if(dbImage != null) {
             dbImage.updateImageData(updatedFile);

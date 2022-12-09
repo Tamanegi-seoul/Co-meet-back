@@ -1,37 +1,57 @@
 package Tamanegiseoul.comeet.api;
 
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.Role;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
-import Tamanegiseoul.comeet.dto.StatusCode;
+import Tamanegiseoul.comeet.dto.auth.request.JoinRequest;
+import Tamanegiseoul.comeet.dto.auth.request.SigninRequest;
+import Tamanegiseoul.comeet.dto.auth.response.JoinResponse;
 import Tamanegiseoul.comeet.dto.user.request.*;
 import Tamanegiseoul.comeet.dto.user.response.*;
 import Tamanegiseoul.comeet.service.*;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.io.IOException;
-import java.util.List;
+import java.net.URI;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static Tamanegiseoul.comeet.dto.StatusCode.FORBIDDEN;
+import static java.util.Arrays.stream;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 public class UserApiController {
     private final UserService userService;
     private final PostService postService;
@@ -39,9 +59,9 @@ public class UserApiController {
     private final ImageDataService imageDataService;
     private final StackRelationService stackRelationService;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/validate")
+    @GetMapping("/user/validate")
     public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateUserRequest request) {
         try {
             userService.validateUserEmail(request.getEmail());
@@ -53,10 +73,95 @@ public class UserApiController {
         }
     }
 
-    @DeleteMapping("/remove")
+    @PostMapping("/signin")
+    public ResponseEntity<ApiResponse> authenticate(@RequestBody @Valid SigninRequest request) {
+        User user = null;
+
+        if(user != null) {
+//            final String token = tokenProvider.create(user);
+//            final SigninResponse response = SigninResponse.builder()
+//                    .token(token)
+//                    .userId(user.getUserId())
+//                    .email(user.getEmail())
+//                    .nickname(user.getNickname())
+//                    .build();
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.LOGIN_SUCCESS, null);
+        } else {
+            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.LOGIN_FAIL);
+        }
+    }
+
+    @PostMapping("/user/join")
+    //public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
+    public ResponseEntity<ApiResponse> joinNewUser(@RequestPart("request") @Valid JoinRequest request, @Nullable @RequestPart("image") MultipartFile file) {
+        User newUser = User.builder()
+                .email(request.getEmail())
+                .nickname(request.getNickname())
+                .build();
+        try {
+            userService.registerUser(newUser);
+            log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
+
+            userService.updatePreferStack(newUser.getUserId(), request.getPreferStacks());
+            log.info("%s's preferred tech stack has been registered", newUser.getNickname());
+
+            ImageDto imageDto = null;
+
+            if(file != null) {
+                log.warn("[UserApiController:joinNewUser]file is present");
+                imageDto = imageDataService.uploadImage(newUser, file);
+            } else {
+                log.warn("[UserApiController:joinNewUser]file is empty");
+            }
+
+            List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
+
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
+                    JoinResponse.builder()
+                            .userId(newUser.getUserId())
+                            .email(newUser.getEmail())
+                            .nickname(newUser.getNickname())
+                            .preferStacks(preferredStacks)
+                            .createdTime(newUser.getCreatedTime())
+                            .modifiedTime(newUser.getModifiedTime())
+                            .profileImage(imageDto)
+                            .build()
+            );
+
+        } catch (DuplicateResourceException e) {
+            return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.warn(e.getMessage());
+            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.FAIL_FILE_UPLOAD, e.getMessage());
+        }
+    }
+
+    @PostMapping("/role/save")
+    public ResponseEntity<ApiResponse> saveRole(@RequestBody @Valid Role role) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+        userService.saveRole(role);
+        //return ResponseEntity.created(uri).body(role);
+
+        return null;
+    }
+
+    @PostMapping("/role/addtouser")
+    public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid User user, @RequestBody @Valid Role role) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
+
+        userService.addRoleToUser(user.getNickname(), role.getRoleName());
+        //return ResponseEntity.created(uri).body(role);
+
+        return null;
+    }
+
+
+
+    @DeleteMapping("/user/remove")
     public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
         try {
-            Users findUser = userService.findUserById(request.getUserId());
+            User findUser = userService.findUserById(request.getUserId());
             RemoveUserResponse response = RemoveUserResponse.builder()
                     .userId(findUser.getUserId())
                     .nickname(findUser.getNickname())
@@ -70,10 +175,10 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping("/user/search")
     public ResponseEntity<ApiResponse> searchUser(@RequestBody @Valid SearchUserRequest request) {
         try {
-            Users findUser = userService.findUserById(request.getUserId());
+            User findUser = userService.findUserById(request.getUserId());
 
             ImageDto findImage = imageDataService.findImageByUserId(findUser.getUserId());
 
@@ -93,10 +198,11 @@ public class UserApiController {
         }
     }
 
-    @PatchMapping("/update")
-    public ResponseEntity<ApiResponse> updateUser(@RequestPart("request") @Valid UpdateUserRequest request, @Nullable @RequestPart("image")MultipartFile file) {
+
+    @PatchMapping("/user/update")
+    public ResponseEntity<ApiResponse> updateUser(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateUserRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
-            Users updatedUser = userService.updateUser(request);
+            User updatedUser = userService.updateUser(request);
             ImageDto imageDto = null;
             if(file != null) {
                 log.warn("[UserApiController:updateUser] file is present");
@@ -125,7 +231,7 @@ public class UserApiController {
                             .modifiedTime(updatedUser.getModifiedTime())
                             .profileImage(imageDto)
                             .build()
-                    );
+            );
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         } catch (DuplicateResourceException e) {
@@ -134,6 +240,55 @@ public class UserApiController {
             e.printStackTrace();
             return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.FAIL_FILE_UPLOAD, e.getMessage());
         }
+    }
+
+    @GetMapping("/user/users")
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok().body(userService.findAll());
+    }
+
+
+    @GetMapping("/token/refresh")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.info("[UserApiController:refreshToken]method executed");
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            log.info("[UserApiController:refreshToken]authorizationHeader is valid");
+            try {
+                log.info("[UserApiController:refreshToken]try refresh token");
+                String refreshToken = authorizationHeader.substring("Bearer ".length());
+                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                JWTVerifier verifier = JWT.require(algorithm).build();
+                DecodedJWT decodedJWT = verifier.verify(refreshToken);
+                String userEmail = decodedJWT.getSubject();
+                User user = userService.findUserByEmail(userEmail);
+
+                String accessToken = JWT.create()
+                        .withSubject(user.getEmail()) // get email (security's username)
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
+                        .withIssuer(request.getRequestURL().toString())
+                        .withClaim("roles", user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
+                        .sign(algorithm);
+
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("access_token", accessToken);
+                tokens.put("refresh_token", refreshToken);
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+
+            } catch (Exception e) {
+                response.setHeader("error", e.getMessage());
+                response.setStatus(FORBIDDEN);
+                //response.sendError(FORBIDDEN);
+                Map<String, String> error = new HashMap<>();
+                error.put("error_message", e.getMessage());
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), error);
+            }
+        } else {
+            throw new RuntimeException("Refresh token is missing");
+        }
+
     }
 
 

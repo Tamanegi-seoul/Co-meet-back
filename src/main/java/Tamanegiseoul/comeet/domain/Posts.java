@@ -14,9 +14,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -57,7 +55,7 @@ public class Posts {
 
     @NotNull
     @ManyToOne @JoinColumn(name="user_id")
-    private Users poster;
+    private User poster;
 
     @NotNull
     @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
@@ -79,7 +77,7 @@ public class Posts {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, Users poster) {
+    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, User poster) {
         this.title = title;
         this.recruitStatus = RecruitStatus.RECRUIT;
         this.recruitCapacity = recruitCapacity;

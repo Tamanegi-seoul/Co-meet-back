@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,7 @@ public class PostServiceTest {
     @Test
     public void 포스트_생성() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("케네스")
                 .email("93jpark@gmail.com")
                 .password("password")
@@ -70,7 +69,7 @@ public class PostServiceTest {
     @Test
     public void 포스트_수정() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("케네스")
                 .email("93jpark@gmail.com")
                 .password("password")

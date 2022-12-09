@@ -1,20 +1,16 @@
 package Tamanegiseoul.comeet.domain;
 
 import Tamanegiseoul.comeet.domain.enums.TechStack;
-import Tamanegiseoul.comeet.dto.user.response.SearchUserResponse;
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
@@ -23,7 +19,8 @@ import static javax.persistence.CascadeType.ALL;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Users {
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -37,6 +34,9 @@ public class Users {
 
     @NotNull
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();
 
     @Nullable
     @OneToOne @JoinColumn(name = "image_id")
@@ -55,7 +55,7 @@ public class Users {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Users(String nickname, String email, String password) {
+    public User(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -67,7 +67,7 @@ public class Users {
     }
 
     public void changePassword(String newPassword) {
-        this.password = password;
+        this.password = newPassword;
     }
 
     public void addPreferStack(TechStack ts) {

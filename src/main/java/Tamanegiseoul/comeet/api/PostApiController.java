@@ -1,8 +1,7 @@
 package Tamanegiseoul.comeet.api;
 
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.StackRelation;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
@@ -19,20 +18,15 @@ import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
 import Tamanegiseoul.comeet.service.UserService;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -49,7 +43,7 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
             log.warn("[PostApi:registerPost] registerPost init");
-            Users findUser = userService.findUserById(request.getPosterId());
+            User findUser = userService.findUserById(request.getPosterId());
 
             Posts newPost = Posts.builder()
                     .title(request.getTitle())

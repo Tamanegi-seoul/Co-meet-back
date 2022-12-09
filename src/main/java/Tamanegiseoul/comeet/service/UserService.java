@@ -1,56 +1,76 @@
 package Tamanegiseoul.comeet.service;
 
-import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.Role;
 import Tamanegiseoul.comeet.domain.StackRelation;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
-import Tamanegiseoul.comeet.dto.user.response.ImageUploadResponse;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service @Slf4j
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final StackRelationRepository stackRelationRepository;
     private final CommentRepository commentRepository;
     private final ImageDataRepository imageDataRepository;
+    private final RoleRepository roleRepository;
 
     private final PostService postService;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @PersistenceContext
     private final EntityManager em;
 
     @Transactional
-    public Long registerUser(Users user) {
+    public Long registerUser(User user) {
+        log.info("register new user {} to the database", user.getNickname());
         validateUserEmail(user.getEmail());
         validateUserNickname(user.getNickname());
-
+        user.changePassword(passwordEncoder.encode(user.getPassword())); // encrypt password
         user.updateCreatedDate();
         user.updateModifiedDate();
         userRepository.save(user);
         return user.getUserId();
     }
 
+    @Transactional
+    public Role saveRole(Role role){
+        log.info("register new role {} to the database", role.getRoleName());
+        return roleRepository.save(role);
+    }
+
+    @Transactional
+    public void addRoleToUser(String nickname, String roleName) {
+        log.info("Adding role {} to user {}", roleName, nickname);
+
+        User user = userRepository.findUserByNickname(nickname);
+        Role role = roleRepository.findByRoleName(roleName);
+        if(role == null) {
+            log.warn("no such role {}", roleName);
+        } else {
+            user.getRoles().add(role);
+        }
+    }
 
     /*****************************
      * VALIDATE METHODS FOR USER *
@@ -58,7 +78,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public void validateUserEmail(String email) {
-        Users findUser = userRepository.findUserByEmail(email);
+        User findUser = userRepository.findUserByEmail(email);
         if(findUser != null) {
             throw new DuplicateResourceException("Users Email", email);
         }
@@ -66,22 +86,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public void validateUserNickname(String nickname) {
-        Users findUser = userRepository.findUserByNickname(nickname);
+        User findUser = userRepository.findUserByNickname(nickname);
         if(findUser != null) {
             throw new DuplicateResourceException("Users Nickname", nickname);
         }
-    }
-
-    public Users getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
-        final Users originalUser = userRepository.findUserByEmail(email);
-
-        // matches 메소드를 이용해서 패스워드가 같은지 확인
-        if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
-            log.warn("[UserService:getByCredentials] success to validate user password");
-            return originalUser;
-        }
-        log.warn("[UserService:getByCredentials] fail to validate user password");
-        return null;
     }
 
     /**********************
@@ -89,8 +97,8 @@ public class UserService {
      **********************/
 
     @Transactional
-    public Users updateUser(UpdateUserRequest request) {
-        Users findUser = this.findUserById(request.getUserId());
+    public User updateUser(UpdateUserRequest request) {
+        User findUser = this.findUserById(request.getUserId());
         Long findUserId = findUser.getUserId();
         findUser.changeNickname(request.getNewNickname());
         findUser.changePassword(passwordEncoder.encode(request.getNewPassword()));
@@ -105,14 +113,14 @@ public class UserService {
     @Transactional
     public void updateUserNickname(Long id, String newNickname) {
         validateUserNickname(newNickname);
-        Users findUser = userRepository.findOne(id);
+        User findUser = userRepository.findOne(id);
         findUser.changeNickname(newNickname);
         findUser.updateModifiedDate();
     }
 
     @Transactional
     public void updateUserPassword(Long id, String password) {
-        Users findUser = userRepository.findOne(id);
+        User findUser = userRepository.findOne(id);
         findUser.changePassword(password);
         findUser.updateModifiedDate();
     }
@@ -120,7 +128,7 @@ public class UserService {
     @Transactional
     public void updatePreferStack(Long userId, List<TechStack> techStacks) {
         log.warn("[UserService:updatePreferStack] method init");
-        Users findUser = this.findUserById(userId); // checked
+        User findUser = this.findUserById(userId); // checked
         //findUser.initPreferredTechStacks();
         stackRelationRepository.removeRelatedStakcsByUser(userId);
         for(TechStack ts : techStacks) {
@@ -134,7 +142,7 @@ public class UserService {
 
     @Transactional
     public int removeUser(Long userId) throws ResourceNotFoundException {
-        Users findUser = this.findUserById(userId);
+        User findUser = this.findUserById(userId);
 
         // first of all,
         // delete related child entities
@@ -153,8 +161,8 @@ public class UserService {
      **********************/
 
     @Transactional(readOnly = true)
-    public Users findUserById(Long userId) {
-        Users findUser = userRepository.findOne(userId);
+    public User findUserById(Long userId) {
+        User findUser = userRepository.findOne(userId);
 
         if(findUser == null) {
             log.info("[UserService:findUserById] THE RESULT OF FIND ONE is NULL ");
@@ -166,15 +174,24 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<Users> findAll() {
+    public List<User> findAll() {
+        log.info("Fetching all users");
         return userRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Users findUserByNickname(String nickname) {
+    public User findUserByNickname(String nickname) {
+        log.info("Fetching user {}", nickname);
         return userRepository.findUserByNickname(nickname);
     }
 
+    @Transactional(readOnly = true)
+    public User findUserByEmail(String email) {
+        log.info("Fetching user with eamil {}", email);
+        return userRepository.findUserByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
     public List<TechStack> findPreferredStacks(Long userId) {
         List<TechStack> findStacks = new ArrayList<>();
         List<StackRelation> findStackRelations = userRepository.findPreferredStacks(userId);
@@ -185,4 +202,20 @@ public class UserService {
         return findStacks;
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) {
+            log.error("User having email {} not found in the database", email);
+            throw new UsernameNotFoundException("User not found in the database");
+        } else {
+            log.info("User who has email {} found in the database", email);
+        }
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+        });
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
 }

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
@@ -26,7 +25,7 @@ public class Comment {
     private Posts post;
 
     @ManyToOne(fetch = LAZY) @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @NotNull
     private String content;
@@ -38,7 +37,7 @@ public class Comment {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Comment(Posts post, Users user, String content) {
+    public Comment(Posts post, User user, String content) {
         this.post = post;
         this.user = user;
         this.content = content;

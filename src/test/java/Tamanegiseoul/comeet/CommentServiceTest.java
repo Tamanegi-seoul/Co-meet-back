@@ -2,7 +2,7 @@ package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.repository.PostRepository;
@@ -14,16 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,7 +37,7 @@ public class CommentServiceTest {
     @Before
     public void initialize() {
         log.info("test initializer exceuted");
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .email("93jpark@gmail.com")
                 .nickname("케네스")
                 .password("password")
@@ -66,7 +63,7 @@ public class CommentServiceTest {
     public void 덧글_작성() {
         // given
         Posts findPost = postService.findAll().get(0);
-        Users findUser = userService.findAll().get(0);
+        User findUser = userService.findAll().get(0);
 
         // when
         Comment newComment = Comment.builder()
@@ -86,7 +83,7 @@ public class CommentServiceTest {
     public void 덧글_수정() {
         // given
         Posts findPost = postService.findAll().get(0);
-        Users findUser = userService.findAll().get(0);
+        User findUser = userService.findAll().get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
@@ -112,7 +109,7 @@ public class CommentServiceTest {
     public void 덧글_조회() {
         // given
 
-        Users findUser = userService.findUserByNickname("케네스");
+        User findUser = userService.findUserByNickname("케네스");
         Posts findPost = postService.findPostByUserId(findUser.getUserId()).get(0);
 
         Comment newComment = Comment.builder()
@@ -136,7 +133,7 @@ public class CommentServiceTest {
     public void 덧글_삭제() {
         // given
         Posts findPost = postService.findAll().get(0);
-        Users findUser = userService.findAll().get(0);
+        User findUser = userService.findAll().get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)

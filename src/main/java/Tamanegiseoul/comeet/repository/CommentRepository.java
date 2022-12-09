@@ -1,7 +1,6 @@
 package Tamanegiseoul.comeet.repository;
 
 import Tamanegiseoul.comeet.domain.Comment;
-import Tamanegiseoul.comeet.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet.repository;
 
 import Tamanegiseoul.comeet.domain.StackRelation;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -15,21 +15,21 @@ import java.util.List;
 public class StackRelationRepository {
     private final EntityManager em;
 
-    public void save(Users user) {
+    public void save(User user) {
         em.persist(user);
     }
 
-    public Users findOne(Long id) {
-        return em.find(Users.class, id);
+    public User findOne(Long id) {
+        return em.find(User.class, id);
     }
 
-    public Users findUserByNickname(String nickname) {
-        return em.createQuery("select u from Users u where u.nickname = :nickname", Users.class)
+    public User findUserByNickname(String nickname) {
+        return em.createQuery("select u from User u where u.nickname = :nickname", User.class)
                 .getSingleResult();
     }
 
-    public List<Users> findAll() {
-        return em.createQuery("select u from Users u", Users.class)
+    public List<User> findAll() {
+        return em.createQuery("select u from User u", User.class)
                 .getResultList();
     }
 

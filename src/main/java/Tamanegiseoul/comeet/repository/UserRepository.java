@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet.repository;
 
 import Tamanegiseoul.comeet.domain.StackRelation;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,34 +13,34 @@ import java.util.List;
 public class UserRepository {
     private final EntityManager em;
 
-    public void save(Users user) {
+    public void save(User user) {
         em.persist(user);
     }
 
-    public Long remove(Users user) {
+    public Long remove(User user) {
         Long removedUserId = user.getUserId();
         em.remove(user);
         return removedUserId;
     }
 
     public int removeByUserId(Long userId) {
-        return em.createQuery("delete from Users u where u.userId = :userId")
+        return em.createQuery("delete from User u where u.userId = :userId")
                 .setParameter("userId", userId)
                 .executeUpdate();
     }
 
-    public Users findOne(Long id) {
-        return em.find(Users.class, id);
+    public User findOne(Long id) {
+        return em.find(User.class, id);
     }
 
-    public Users findUserByNickname(String nickname) {
-        return em.createQuery("select u from Users u where u.nickname = :nickname", Users.class)
+    public User findUserByNickname(String nickname) {
+        return em.createQuery("select u from User u where u.nickname = :nickname", User.class)
                 .setParameter("nickname", nickname)
                 .getResultList().stream().findFirst().orElse(null);
     }
 
-    public List<Users> findAll() {
-        return em.createQuery("select u from Users u", Users.class)
+    public List<User> findAll() {
+        return em.createQuery("select u from User u", User.class)
                 .getResultList();
     }
 
@@ -50,8 +50,8 @@ public class UserRepository {
                 .getResultList();
     }
 
-    public Users findUserByEmail(String email) {
-        return em.createQuery("select u from Users u where u.email = :email", Users.class)
+    public User findUserByEmail(String email) {
+        return em.createQuery("select u from User u where u.email = :email", User.class)
                 .setParameter("email", email)
                 .getResultList().stream().findFirst().orElse(null);
     }

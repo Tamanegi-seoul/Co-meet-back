@@ -2,11 +2,12 @@ package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.Role;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class initDB {
     private final InitService initService;
+    private final UserService userService;
 
     @PostConstruct
     public void init() {
@@ -36,7 +38,7 @@ public class initDB {
             /**
              * implement mock-up users
              */
-            Users userA = Users.builder() // userId = 1
+            User userA = User.builder() // userId = 1
                     .nickname("Pansy Stone")
                     .email("p.stone@comeet.com")
                     .password("password")
@@ -47,7 +49,7 @@ public class initDB {
             userA.updateModifiedDate();
             em.persist(userA);
 
-            Users userB = Users.builder() // userId = 2
+            User userB = User.builder() // userId = 2
                     .nickname("Carl Craig")
                     .email("c.craig@comeet.com")
                     .password("password")
@@ -121,6 +123,7 @@ public class initDB {
             comC.updateCreatedTime();
             comC.updateModifiedTime();
             em.persist(comC);
+
 
         }
 

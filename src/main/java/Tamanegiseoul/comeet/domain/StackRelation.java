@@ -8,10 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.Null;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Entity
@@ -28,14 +26,14 @@ public class StackRelation {
 
     @Nullable
     @ManyToOne(fetch = EAGER) @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private TechStack techStack;
 
     @Builder
-    public StackRelation(Users user, Posts post, TechStack techStack) {
+    public StackRelation(User user, Posts post, TechStack techStack) {
         this.user = user;
         this.post = post;
         this.techStack = techStack;

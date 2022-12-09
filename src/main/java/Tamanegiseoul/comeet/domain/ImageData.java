@@ -29,7 +29,7 @@ public class ImageData {
     private String fileType;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private Users owner;
+    private User owner;
 
     @Lob
     @Column(name = "image_data", length = 1000)

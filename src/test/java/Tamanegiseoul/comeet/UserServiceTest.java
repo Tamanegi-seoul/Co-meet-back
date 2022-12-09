@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.Users;
+import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,6 @@ import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @RunWith(SpringRunner.class)
@@ -47,7 +45,7 @@ public class UserServiceTest {
     @Transactional
     public void 단일_유저_생성() throws Exception {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -57,7 +55,7 @@ public class UserServiceTest {
         userService.registerUser(newUser);
 
         // then
-        Users findUser = userService.findUserByNickname("test_user");
+        User findUser = userService.findUserByNickname("test_user");
         Assert.assertEquals(findUser.getEmail(), "testuser@gmail.com");
     }
 
@@ -65,7 +63,7 @@ public class UserServiceTest {
     @Transactional
     public void 유저_이메일_중복검사() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -73,7 +71,7 @@ public class UserServiceTest {
         userService.registerUser(newUser);
 
         // when
-        Users otherUser = Users.builder()
+        User otherUser = User.builder()
                 .nickname("other_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -88,7 +86,7 @@ public class UserServiceTest {
     @Transactional
     public void 유저_닉네임_중복검사() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -96,7 +94,7 @@ public class UserServiceTest {
         userService.registerUser(newUser);
 
         // when
-        Users otherUser = Users.builder()
+        User otherUser = User.builder()
                 .nickname("test_user")
                 .email("otherUser@gmail.com")
                 .password("password")
@@ -111,7 +109,7 @@ public class UserServiceTest {
     @Transactional
     public void 기술스택_세팅() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -134,7 +132,7 @@ public class UserServiceTest {
     //@Rollback(false)
     public void 기술스택_수정() {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("woogie")
                 .email("woogie@gmail.com")
                 .password("password")
@@ -158,7 +156,7 @@ public class UserServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     public void 유저_삭제() throws Exception {
         // given
-        Users newUser = Users.builder()
+        User newUser = User.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
@@ -185,7 +183,7 @@ public class UserServiceTest {
         log.info("query executed for " + queryExecuteTimes+ " times");
 
         // then
-        Users findUser = userService.findUserById(newUserId);
+        User findUser = userService.findUserById(newUserId);
 
         log.info("find user:", findUser.getNickname());
 

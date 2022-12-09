@@ -1,13 +1,10 @@
 package Tamanegiseoul.comeet.dto.user.response;
 
-import Tamanegiseoul.comeet.domain.Users;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
-import Tamanegiseoul.comeet.dto.user.request.UpdateUserRequest;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
