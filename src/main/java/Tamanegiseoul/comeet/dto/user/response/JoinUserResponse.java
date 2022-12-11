@@ -1,7 +1,6 @@
-package Tamanegiseoul.comeet.dto.auth.response;
+package Tamanegiseoul.comeet.dto.user.response;
 
 import Tamanegiseoul.comeet.domain.enums.TechStack;
-import Tamanegiseoul.comeet.dto.user.response.ImageDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import java.util.List;
 @Builder
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class JoinResponse {
+public class JoinUserResponse {
     private Long userId;
     private String nickname;
     private String email;

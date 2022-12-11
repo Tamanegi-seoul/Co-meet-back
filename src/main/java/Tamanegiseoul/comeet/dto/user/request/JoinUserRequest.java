@@ -1,4 +1,4 @@
-package Tamanegiseoul.comeet.dto.auth.request;
+package Tamanegiseoul.comeet.dto.user.request;
 
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class JoinRequest {
+public class JoinUserRequest {
     private String email;
     private String password;
     private String nickname;
