@@ -7,11 +7,12 @@ import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
-import Tamanegiseoul.comeet.dto.auth.request.JoinRequest;
+import Tamanegiseoul.comeet.dto.user.request.JoinUserRequest;
 import Tamanegiseoul.comeet.dto.auth.request.SigninRequest;
-import Tamanegiseoul.comeet.dto.auth.response.JoinResponse;
+import Tamanegiseoul.comeet.dto.user.response.JoinUserResponse;
 import Tamanegiseoul.comeet.dto.user.request.*;
 import Tamanegiseoul.comeet.dto.user.response.*;
+import Tamanegiseoul.comeet.security.JwtTokenProvider;
 import Tamanegiseoul.comeet.service.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -20,16 +21,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +38,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static Tamanegiseoul.comeet.dto.StatusCode.FORBIDDEN;
-import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -59,6 +52,7 @@ public class UserApiController {
     private final ImageDataService imageDataService;
     private final StackRelationService stackRelationService;
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/validate")
@@ -73,34 +67,21 @@ public class UserApiController {
         }
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<ApiResponse> authenticate(@RequestBody @Valid SigninRequest request) {
-        User user = null;
-
-        if(user != null) {
-//            final String token = tokenProvider.create(user);
-//            final SigninResponse response = SigninResponse.builder()
-//                    .token(token)
-//                    .userId(user.getUserId())
-//                    .email(user.getEmail())
-//                    .nickname(user.getNickname())
-//                    .build();
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.LOGIN_SUCCESS, null);
-        } else {
-            return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.LOGIN_FAIL);
-        }
-    }
-
     @PostMapping("/user/join")
     //public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
-    public ResponseEntity<ApiResponse> joinNewUser(@RequestPart("request") @Valid JoinRequest request, @Nullable @RequestPart("image") MultipartFile file) {
+    public ResponseEntity<ApiResponse> joinNewUser(@RequestPart("request") @Valid JoinUserRequest request, @Nullable @RequestPart("image") MultipartFile file) {
+        log.error(request.toString());
+        log.error("join request's password {}", request.getPassword());
         User newUser = User.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())
+                .password(request.getPassword())
                 .build();
         try {
             userService.registerUser(newUser);
             log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
+
+            userService.addRoleToUser(newUser.getEmail(), "ROLE_USER");
 
             userService.updatePreferStack(newUser.getUserId(), request.getPreferStacks());
             log.info("%s's preferred tech stack has been registered", newUser.getNickname());
@@ -117,7 +98,7 @@ public class UserApiController {
             List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
-                    JoinResponse.builder()
+                    JoinUserResponse.builder()
                             .userId(newUser.getUserId())
                             .email(newUser.getEmail())
                             .nickname(newUser.getNickname())
@@ -146,7 +127,7 @@ public class UserApiController {
         return null;
     }
 
-    @PostMapping("/role/addtouser")
+    @PostMapping("/role/addToUser")
     public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid User user, @RequestBody @Valid Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
@@ -161,17 +142,20 @@ public class UserApiController {
     @DeleteMapping("/user/remove")
     public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
         try {
-            User findUser = userService.findUserById(request.getUserId());
+            log.error("[UserApiController:removeUser]method executed");
+            log.error("[UserApiController:removeUser]{}", request.toString());
+            Long userId = request.getUserId();
+            User findUser = userService.findUserById(userId);
             RemoveUserResponse response = RemoveUserResponse.builder()
                     .userId(findUser.getUserId())
                     .nickname(findUser.getNickname())
                     .build();
 
-            int removedUserId = userService.removeUser(request.getUserId());
+            int removedUserId = userService.removeUser(userId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, request);
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null);
         }
     }
 
