@@ -25,3 +25,8 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+security:
+  jwt:
+    token:
+      secret-key: secretsecretsecretsecret
+      expire-length: 3600000
