@@ -60,10 +60,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void addRoleToUser(String nickname, String roleName) {
-        log.info("Adding role {} to user {}", roleName, nickname);
+    public void addRoleToUser(String email, String roleName) {
+        log.info("Adding role {} to user {}", roleName, email);
 
-        User user = userRepository.findUserByNickname(nickname);
+        User user = userRepository.findUserByEmail(email);
         Role role = roleRepository.findByRoleName(roleName);
         if(role == null) {
             log.warn("no such role {}", roleName);
