@@ -46,6 +46,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String userEmail = decodedJWT.getSubject();
+                    log.error("userEmail is {}", userEmail);
                     String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
@@ -53,7 +54,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     });
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userEmail, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    log.error("CHECK");
+                    log.error("{}", request.getAttribute("user_id"));
                     filterChain.doFilter(request, response);
+                    log.error("CHECK");
                 } catch (Exception e) {
                     log.info("in doFilterInternal, inside catch");
                     log.error("Error logging in: {}", e.getMessage());
