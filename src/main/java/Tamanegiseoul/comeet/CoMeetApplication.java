@@ -33,7 +33,7 @@ public class CoMeetApplication {
 							.build()
 			);
 
-			userService.addRoleToUser("관리자", "ROLE_ADMIN");
+			userService.addRoleToUser("admin", "ROLE_ADMIN");
 		};
 	}
 
