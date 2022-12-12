@@ -54,8 +54,8 @@ public class Posts {
     private Boolean remote;
 
     @NotNull
-    @ManyToOne @JoinColumn(name="user_id")
-    private User poster;
+    @ManyToOne @JoinColumn(name="member_id")
+    private Member poster;
 
     @NotNull
     @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
@@ -77,7 +77,7 @@ public class Posts {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, User poster) {
+    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, Member poster) {
         this.title = title;
         this.recruitStatus = RecruitStatus.RECRUIT;
         this.recruitCapacity = recruitCapacity;

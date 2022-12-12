@@ -25,34 +25,17 @@ public class StackRelation {
     private Posts post;
 
     @Nullable
-    @ManyToOne(fetch = EAGER) @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = EAGER) @JoinColumn(name = "member_id")
+    private Member member;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private TechStack techStack;
 
     @Builder
-    public StackRelation(User user, Posts post, TechStack techStack) {
-        this.user = user;
+    public StackRelation(Member member, Posts post, TechStack techStack) {
+        this.member = member;
         this.post = post;
         this.techStack = techStack;
     }
-
-
-//    public static StackRelation createForUser(Users user, TechStack ts) {
-//        StackRelation newSt = new StackRelation();
-//        newSt.user = user;
-//        newSt.techStack = ts;
-//        return newSt;
-//    }
-//
-//    public static StackRelation createForPost(Posts post, TechStack ts) {
-//        StackRelation newSt = new StackRelation();
-//        newSt.post = post;
-//        newSt.techStack = ts;
-//        return newSt;
-//    }
-
-
 }

@@ -45,7 +45,7 @@ public class SearchPostResponse {
                 .postId(findPost.getPostId())
                 .title(findPost.getTitle())
                 .content(findPost.getContent())
-                .posterId(findPost.getPoster().getUserId())
+                .posterId(findPost.getPoster().getMemberId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .contactType(findPost.getContactType())
                 .contact(findPost.getContact())

@@ -41,7 +41,7 @@ public class UpdatePostResponse {
     public static UpdatePostResponse toDto(Posts findPost) {
         return UpdatePostResponse.builder()
                 .postId(findPost.getPostId())
-                .posterId(findPost.getPoster().getUserId())
+                .posterId(findPost.getPoster().getMemberId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .title(findPost.getTitle())
                 .content(findPost.getContent())

@@ -1,9 +1,7 @@
 package Tamanegiseoul.comeet.service;
 import Tamanegiseoul.comeet.domain.Comment;
-import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
-import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +17,7 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostService postService;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @PersistenceContext
     EntityManager em;
@@ -71,8 +69,8 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> findCommentByUserId(Long userId) {
-        return commentRepository.findCommentByUserId(userId);
+    public List<Comment> findCommentByMemberId(Long memberId) {
+        return commentRepository.findCommentByMemberId(memberId);
     }
 
     @Transactional(readOnly = true)

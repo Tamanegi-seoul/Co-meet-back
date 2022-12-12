@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet.repository;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.StackRelation;
-import Tamanegiseoul.comeet.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -15,22 +15,17 @@ import java.util.List;
 public class StackRelationRepository {
     private final EntityManager em;
 
-    public void save(User user) {
-        em.persist(user);
+    public void save(Member member) {
+        em.persist(member);
     }
 
-    public User findOne(Long id) {
-        return em.find(User.class, id);
+    public Member findOne(Long id) {
+        return em.find(Member.class, id);
     }
 
-    public User findUserByNickname(String nickname) {
-        return em.createQuery("select u from User u where u.nickname = :nickname", User.class)
+    public Member findMemberPreferredStackByNickname(String nickname) {
+        return em.createQuery("select m from Member m where m.nickname = :nickname", Member.class)
                 .getSingleResult();
-    }
-
-    public List<User> findAll() {
-        return em.createQuery("select u from User u", User.class)
-                .getResultList();
     }
 
     public List<StackRelation> findByPostId(Long postId) {
@@ -39,9 +34,9 @@ public class StackRelationRepository {
                 .getResultList();
     }
 
-    public List<StackRelation> findByUserId(Long userId) {
-        return em.createQuery("select sr from StackRelation sr where sr.user.userId = :userId", StackRelation.class)
-                .setParameter("userId", userId)
+    public List<StackRelation> findByMemberId(Long memberId) {
+        return em.createQuery("select sr from StackRelation sr where sr.member.memberId = :memberId", StackRelation.class)
+                .setParameter("memberId", memberId)
                 .getResultList();
     }
 
@@ -51,10 +46,10 @@ public class StackRelationRepository {
                 .executeUpdate();
     }
 
-    public int removeRelatedStakcsByUser(Long userId) {
+    public int removeRelatedStakcsByMember(Long memberId) {
         log.warn("[StackRelationRepository:removeRelatedStacksByUser]method init");
-        return em.createQuery("delete from StackRelation sr where sr.user.userId = :userId")
-                .setParameter("userId", userId)
+        return em.createQuery("delete from StackRelation sr where sr.member.memberId = :memberId")
+                .setParameter("memberId", memberId)
                 .executeUpdate();
     }
 

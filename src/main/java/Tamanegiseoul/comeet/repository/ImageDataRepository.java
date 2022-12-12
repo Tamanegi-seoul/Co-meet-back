@@ -22,21 +22,21 @@ public class ImageDataRepository {
         return em.find(ImageData.class, id);
     }
 
-    public ImageData findByUserId(Long userId) {
-        return em.createQuery("select i from ImageData i where i.owner.userId = :userId", ImageData.class)
-                .setParameter("userId", userId)
+    public ImageData findByMemberId(Long memberId) {
+        return em.createQuery("select i from ImageData i where i.owner.memberId = :memberId", ImageData.class)
+                .setParameter("memberId", memberId)
                 .getResultStream().findFirst().orElse(null);
     }
 
-    public int removeByUserId(Long userId) {
-        return em.createQuery("delete from ImageData i where i.owner.userId = :userId")
-                .setParameter("userId", userId)
+    public int removeByMemberId(Long memberId) {
+        return em.createQuery("delete from ImageData i where i.owner.memberId = :memberId")
+                .setParameter("memberId", memberId)
                 .executeUpdate();
     }
 
-    public int removeImageByUserId(Long userId) {
-        return em.createQuery("delete from ImageData i where i.owner.userId = :userId")
-                .setParameter("userId", userId)
+    public int removeImageByMemberId(Long memberId) {
+        return em.createQuery("delete from ImageData i where i.owner.memberId = :memberId")
+                .setParameter("memberId", memberId)
                 .executeUpdate();
     }
 

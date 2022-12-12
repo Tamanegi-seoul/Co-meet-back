@@ -1,12 +1,11 @@
 package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Comment;
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.Role;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class initDB {
     private final InitService initService;
-    private final UserService userService;
+    private final MemberService memberService;
 
     @PostConstruct
     public void init() {
@@ -38,27 +37,27 @@ public class initDB {
             /**
              * implement mock-up users
              */
-            User userA = User.builder() // userId = 1
+            Member memberA = Member.builder() // memberId = 1
                     .nickname("Pansy Stone")
                     .email("p.stone@comeet.com")
                     .password("password")
                     .build();
-            userA.addPreferStack(TechStack.R);
-            userA.addPreferStack(TechStack.JAVA);
-            userA.updateCreatedDate();
-            userA.updateModifiedDate();
-            em.persist(userA);
+            memberA.addPreferStack(TechStack.R);
+            memberA.addPreferStack(TechStack.JAVA);
+            memberA.updateCreatedDate();
+            memberA.updateModifiedDate();
+            em.persist(memberA);
 
-            User userB = User.builder() // userId = 2
+            Member memberB = Member.builder() // memberId = 2
                     .nickname("Carl Craig")
                     .email("c.craig@comeet.com")
                     .password("password")
                     .build();
-            userB.addPreferStack(TechStack.JAVA_SCRIPT);
-            userB.addPreferStack(TechStack.PYTHON);
-            userB.updateCreatedDate();
-            userB.updateModifiedDate();
-            em.persist(userB);
+            memberB.addPreferStack(TechStack.JAVA_SCRIPT);
+            memberB.addPreferStack(TechStack.PYTHON);
+            memberB.updateCreatedDate();
+            memberB.updateModifiedDate();
+            em.persist(memberB);
 
             /**
              * implement mock-up posts
@@ -67,7 +66,7 @@ public class initDB {
             Posts postA = Posts.builder() // postId = 5
                     .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(userA)
+                    .poster(memberA)
                     .contact("p.stone@kakao.com")
                     .contactType(ContactType.KAKAO_OPEN_CHAT)
                     .startDate(LocalDate.parse("2021-08-15"))
@@ -82,7 +81,7 @@ public class initDB {
             Posts postB = Posts.builder() // postId = 7
                     .title("come on, Python algorithm study crew!")
                     .content("tba")
-                    .poster(userB)
+                    .poster(memberB)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-01-23"))
@@ -99,7 +98,7 @@ public class initDB {
              */
             Comment comA = Comment.builder() // commentId = 9
                     .post(postA)
-                    .user(userA)
+                    .member(memberA)
                     .content("welcome whoever")
                     .build();
             comA.updateCreatedTime();
@@ -108,7 +107,7 @@ public class initDB {
 
             Comment comB = Comment.builder() // commentId = 10
                     .post(postA)
-                    .user(userB)
+                    .member(memberB)
                     .content("cmf!")
                     .build();
             comB.updateCreatedTime();
@@ -117,7 +116,7 @@ public class initDB {
 
             Comment comC = Comment.builder() // commentId = 11
                     .post(postB)
-                    .user(userA)
+                    .member(memberA)
                     .content("what about JAVA?")
                     .build();
             comC.updateCreatedTime();

@@ -1,8 +1,8 @@
 package Tamanegiseoul.comeet.service;
 
 import Tamanegiseoul.comeet.domain.ImageData;
-import Tamanegiseoul.comeet.domain.User;
-import Tamanegiseoul.comeet.dto.user.response.ImageDto;
+import Tamanegiseoul.comeet.domain.Member;
+import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.repository.ImageDataRepository;
 import Tamanegiseoul.comeet.utils.ImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,20 +25,20 @@ public class ImageDataService {
     EntityManager em;
 
     @Transactional
-    public ImageDto uploadImage(User user, MultipartFile file) throws IOException {
+    public ImageDto uploadImage(Member member, MultipartFile file) throws IOException {
         ImageData imageData = imageDataRepository.save(ImageData.builder()
                 .fileName(file.getOriginalFilename())
                 .fileType(file.getContentType())
                 .imageData(ImageUtil.compressImage(file.getBytes()))
-                .owner(user)
+                .owner(member)
                 .build());
 
         return ImageDto.toDto(imageData);
     }
 
     @Transactional
-    public ImageDto updateImage(User updatedUser, MultipartFile updatedFile) throws IOException {
-        ImageData dbImage = imageDataRepository.findByUserId(updatedUser.getUserId());
+    public ImageDto updateImage(Member updatedMember, MultipartFile updatedFile) throws IOException {
+        ImageData dbImage = imageDataRepository.findByMemberId(updatedMember.getMemberId());
         if(dbImage != null) {
             dbImage.updateImageData(updatedFile);
             em.flush();
@@ -57,11 +57,11 @@ public class ImageDataService {
 
     }
 
-    public ImageDto findImageByUserId(Long userId) {
-        ImageData dbImage = imageDataRepository.findByUserId(userId);
+    public ImageDto findImageByMemberId(Long memberId) {
+        ImageData dbImage = imageDataRepository.findByMemberId(memberId);
 
         if(dbImage == null) {
-            //throw new ResourceNotFoundException("ImageData", "owner:userId", userId);
+            //throw new ResourceNotFoundException("ImageData", "owner:memberId", memberId);
             return null;
         }
 

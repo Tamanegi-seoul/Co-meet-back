@@ -4,7 +4,6 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.lang.Nullable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -17,14 +16,14 @@ import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Getter
-@Table(name = "users")
+@Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "member_id")
+    private Long memberId;
 
     @NotNull @Column(unique = true)
     private String nickname;
@@ -55,7 +54,7 @@ public class User {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public User(String nickname, String email, String password) {
+    public Member(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
@@ -71,9 +70,8 @@ public class User {
     }
 
     public void addPreferStack(TechStack ts) {
-        //StackRelation newSt = StackRelation.createForUser(this, ts);
         this.preferStacks.add(StackRelation.builder()
-                .user(this)
+                .member(this)
                 .techStack(ts).build());
     }
 
@@ -88,7 +86,6 @@ public class User {
 
     @Transactional
     public void initPreferredTechStacks() {
-        //this.preferStacks = new ArrayList<>();
         this.preferStacks.clear();
     }
 

@@ -1,22 +1,17 @@
-package Tamanegiseoul.comeet.dto.auth.response;
+package Tamanegiseoul.comeet.dto.member.request;
 
+import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class SigninResponse {
-    private String token;
-    private Long userId;
+public class JoinMemberRequest {
     private String email;
+    private String password;
     private String nickname;
-
-
+    private List<TechStack> preferStacks;
 }

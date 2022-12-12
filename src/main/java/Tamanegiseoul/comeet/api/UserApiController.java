@@ -1,22 +1,21 @@
 package Tamanegiseoul.comeet.api;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Role;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
-import Tamanegiseoul.comeet.dto.user.request.JoinUserRequest;
-import Tamanegiseoul.comeet.dto.user.response.JoinUserResponse;
-import Tamanegiseoul.comeet.dto.user.request.*;
-import Tamanegiseoul.comeet.dto.user.response.*;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.member.request.*;
+import Tamanegiseoul.comeet.dto.member.response.*;
 import Tamanegiseoul.comeet.security.JwtTokenProvider;
 import Tamanegiseoul.comeet.service.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RequestMapping("/api")
 public class UserApiController {
-    private final UserService userService;
+    private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
     private final ImageDataService imageDataService;
@@ -56,10 +55,10 @@ public class UserApiController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/validate")
-    public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateUserRequest request) {
+    public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateMemberRequest request) {
         try {
-            userService.validateUserEmail(request.getEmail());
-            userService.validateUserEmail(request.getNickname());
+            memberService.validateUserEmail(request.getEmail());
+            memberService.validateUserEmail(request.getNickname());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE, request);
         } catch (DuplicateResourceException e) {
@@ -69,42 +68,42 @@ public class UserApiController {
 
     @PostMapping("/user/join")
     //public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
-    public ResponseEntity<ApiResponse> joinNewUser(@RequestPart("request") @Valid JoinUserRequest request, @Nullable @RequestPart("image") MultipartFile file) {
+    public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
         log.error(request.toString());
         log.error("join request's password {}", request.getPassword());
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())
                 .password(request.getPassword())
                 .build();
         try {
-            userService.registerUser(newUser);
-            log.info("[%s] %s has been registered.", newUser.getNickname(), newUser.getEmail());
+            memberService.registerMember(newMember);
+            log.info("[%s] %s has been registered.", newMember.getNickname(), newMember.getEmail());
 
-            userService.addRoleToUser(newUser.getEmail(), "ROLE_USER");
+            memberService.addRoleToMember(newMember.getEmail(), "ROLE_USER");
 
-            userService.updatePreferStack(newUser.getUserId(), request.getPreferStacks());
-            log.info("%s's preferred tech stack has been registered", newUser.getNickname());
+            memberService.updatePreferStack(newMember.getMemberId(), request.getPreferStacks());
+            log.info("%s's preferred tech stack has been registered", newMember.getNickname());
 
             ImageDto imageDto = null;
 
             if(file != null) {
                 log.warn("[UserApiController:joinNewUser]file is present");
-                imageDto = imageDataService.uploadImage(newUser, file);
+                imageDto = imageDataService.uploadImage(newMember, file);
             } else {
                 log.warn("[UserApiController:joinNewUser]file is empty");
             }
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(newUser.getUserId());
+            List<TechStack> preferredStacks = memberService.findPreferredStacks(newMember.getMemberId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
-                    JoinUserResponse.builder()
-                            .userId(newUser.getUserId())
-                            .email(newUser.getEmail())
-                            .nickname(newUser.getNickname())
+                    JoinMemberResponse.builder()
+                            .memberId(newMember.getMemberId())
+                            .email(newMember.getEmail())
+                            .nickname(newMember.getNickname())
                             .preferStacks(preferredStacks)
-                            .createdTime(newUser.getCreatedTime())
-                            .modifiedTime(newUser.getModifiedTime())
+                            .createdTime(newMember.getCreatedTime())
+                            .modifiedTime(newMember.getModifiedTime())
                             .profileImage(imageDto)
                             .build()
             );
@@ -121,17 +120,17 @@ public class UserApiController {
     @PostMapping("/role/save")
     public ResponseEntity<ApiResponse> saveRole(@RequestBody @Valid Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        userService.saveRole(role);
+        memberService.saveRole(role);
         //return ResponseEntity.created(uri).body(role);
 
         return null;
     }
 
     @PostMapping("/role/addToUser")
-    public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid User user, @RequestBody @Valid Role role) {
+    public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid Member member, @RequestBody @Valid Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
-        userService.addRoleToUser(user.getNickname(), role.getRoleName());
+        memberService.addRoleToMember(member.getNickname(), role.getRoleName());
         //return ResponseEntity.created(uri).body(role);
 
         return null;
@@ -140,18 +139,18 @@ public class UserApiController {
 
 
     @DeleteMapping("/user/remove")
-    public ResponseEntity<ApiResponse> removeUser(@RequestBody @Valid RemoveUserRequest request) {
+    public ResponseEntity<ApiResponse> removeMember(@RequestBody @Valid RemoveMemberRequest request) {
         try {
             log.error("[UserApiController:removeUser]method executed");
             log.error("[UserApiController:removeUser]{}", request.toString());
-            Long userId = request.getUserId();
-            User findUser = userService.findUserById(userId);
-            RemoveUserResponse response = RemoveUserResponse.builder()
-                    .userId(findUser.getUserId())
-                    .nickname(findUser.getNickname())
+            Long memberId = request.getMemberId();
+            Member findMember = memberService.findMemberById(memberId);
+            RemoveMemberResponse response = RemoveMemberResponse.builder()
+                    .memberId(findMember.getMemberId())
+                    .nickname(findMember.getNickname())
                     .build();
 
-            int removedUserId = userService.removeUser(userId);
+            int removedMemberId = memberService.removeUser(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {
@@ -160,21 +159,21 @@ public class UserApiController {
     }
 
     @GetMapping("/user/search")
-    public ResponseEntity<ApiResponse> searchUser(@RequestBody @Valid SearchUserRequest request) {
+    public ResponseEntity<ApiResponse> searchMember(@RequestBody @Valid SearchMemberRequest request) {
         try {
-            User findUser = userService.findUserById(request.getUserId());
+            Member findMember = memberService.findMemberById(request.getMemberId());
 
-            ImageDto findImage = imageDataService.findImageByUserId(findUser.getUserId());
+            ImageDto findImage = imageDataService.findImageByMemberId(findMember.getMemberId());
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(findUser.getUserId());
+            List<TechStack> preferredStacks = memberService.findPreferredStacks(findMember.getMemberId());
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchUserResponse.builder()
-                            .userId(findUser.getUserId())
-                            .email(findUser.getEmail())
-                            .nickname(findUser.getNickname())
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchMemberResponse.builder()
+                            .memberId(findMember.getMemberId())
+                            .email(findMember.getEmail())
+                            .nickname(findMember.getNickname())
                             .preferStacks(preferredStacks)
-                            .createdTime(findUser.getCreatedTime())
-                            .modifiedTime(findUser.getModifiedTime())
+                            .createdTime(findMember.getCreatedTime())
+                            .modifiedTime(findMember.getModifiedTime())
                             .profileImage(findImage)
                             .build());
         } catch (ResourceNotFoundException e) {
@@ -184,35 +183,35 @@ public class UserApiController {
 
 
     @PatchMapping("/user/update")
-    public ResponseEntity<ApiResponse> updateUser(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateUserRequest request, @Nullable @RequestPart("image")MultipartFile file) {
+    public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
-            User updatedUser = userService.updateUser(request);
+            Member updatedMember = memberService.updateMember(request);
             ImageDto imageDto = null;
             if(file != null) {
                 log.warn("[UserApiController:updateUser] file is present");
-                ImageDto findImage = imageDataService.findImageByUserId(updatedUser.getUserId());
+                ImageDto findImage = imageDataService.findImageByMemberId(updatedMember.getMemberId());
                 if(findImage != null) {
                     log.warn("[UserApiController:updateUser] updated registered image");
-                    imageDto = imageDataService.updateImage(updatedUser, file);
+                    imageDto = imageDataService.updateImage(updatedMember, file);
                 } else {
                     log.warn("[UserApiController:updateUser] upload new profile image");
-                    imageDto = imageDataService.uploadImage(updatedUser, file);
+                    imageDto = imageDataService.uploadImage(updatedMember, file);
                 }
 
             } else {
                 log.warn("[UserApiController:updateUser] file is empty");
             }
 
-            List<TechStack> preferredStacks = userService.findPreferredStacks(updatedUser.getUserId());
+            List<TechStack> preferredStacks = memberService.findPreferredStacks(updatedMember.getMemberId());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_USER,
-                    UpdateUserResponse.builder()
-                            .userId(request.getUserId())
-                            .nickname(updatedUser.getNickname())
-                            .email(updatedUser.getEmail())
+                    UpdateMemberResponse.builder()
+                            .memberId(request.getMemberId())
+                            .nickname(updatedMember.getNickname())
+                            .email(updatedMember.getEmail())
                             .preferredStacks(preferredStacks)
-                            .createdTime(updatedUser.getCreatedTime())
-                            .modifiedTime(updatedUser.getModifiedTime())
+                            .createdTime(updatedMember.getCreatedTime())
+                            .modifiedTime(updatedMember.getModifiedTime())
                             .profileImage(imageDto)
                             .build()
             );
@@ -227,8 +226,8 @@ public class UserApiController {
     }
 
     @GetMapping("/user/users")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.findAll());
+    public ResponseEntity<List<Member>> getMembers() {
+        return ResponseEntity.ok().body(memberService.findAll());
     }
 
 
@@ -244,14 +243,14 @@ public class UserApiController {
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String userEmail = decodedJWT.getSubject();
-                User user = userService.findUserByEmail(userEmail);
+                String memberEmail = decodedJWT.getSubject();
+                Member member = memberService.findMemberByEmail(memberEmail);
 
                 String accessToken = JWT.create()
-                        .withSubject(user.getEmail()) // get email (security's username)
+                        .withSubject(member.getEmail()) // get email (security's username)
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
+                        .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();

@@ -8,6 +8,6 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreateCommentRequest {
     private Long postId;
-    private Long userId;
+    private Long memberId;
     private String content;
 }

@@ -1,4 +1,4 @@
-package Tamanegiseoul.comeet.dto.user.request;
+package Tamanegiseoul.comeet.dto.member.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class RemoveUserRequest {
-    private Long userId;
+public class SearchMemberRequest {
+    private Long memberId;
 }

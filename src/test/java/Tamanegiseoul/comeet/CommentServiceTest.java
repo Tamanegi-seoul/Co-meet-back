@@ -1,15 +1,15 @@
 package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Comment;
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.repository.PostRepository;
-import Tamanegiseoul.comeet.repository.UserRepository;
+import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,8 +28,10 @@ import java.time.LocalDate;
 @Slf4j
 public class CommentServiceTest {
 
-    @Autowired UserService userService;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository;
     @Autowired PostService postService;
     @Autowired PostRepository postRepository;
     @Autowired CommentService commentService;
@@ -37,16 +39,16 @@ public class CommentServiceTest {
     @Before
     public void initialize() {
         log.info("test initializer exceuted");
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .email("93jpark@gmail.com")
                 .nickname("케네스")
                 .password("password")
                 .build();
-        userService.registerUser(newUser);
-        log.info("new user is registered");
+        memberService.registerMember(newMember);
+        log.info("new Member is registered");
 
         Posts newPost = Posts.builder()
-                .poster(newUser)
+                .poster(newMember)
                 .contact("some_open_chat_url_/kakao.xyz")
                 .title("NEW POST!")
                 .content("this is empty content..")
@@ -63,12 +65,12 @@ public class CommentServiceTest {
     public void 덧글_작성() {
         // given
         Posts findPost = postService.findAll().get(0);
-        User findUser = userService.findAll().get(0);
+        Member findMember = memberService.findAll().get(0);
 
         // when
         Comment newComment = Comment.builder()
                 .post(findPost)
-                .user(findUser)
+                .member(findMember)
                 .content("foo boo")
                 .build();
         Long commentId = commentService.registerComment(newComment);
@@ -83,11 +85,11 @@ public class CommentServiceTest {
     public void 덧글_수정() {
         // given
         Posts findPost = postService.findAll().get(0);
-        User findUser = userService.findAll().get(0);
+        Member findMember = memberService.findAll().get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
-                .user(findUser)
+                .member(findMember)
                 .content("foo boo")
                 .build();
         Long commentId = commentService.registerComment(newComment);
@@ -109,23 +111,23 @@ public class CommentServiceTest {
     public void 덧글_조회() {
         // given
 
-        User findUser = userService.findUserByNickname("케네스");
-        Posts findPost = postService.findPostByUserId(findUser.getUserId()).get(0);
+        Member findMember = memberService.findMemberByNickname("케네스");
+        Posts findPost = postService.findPostBymemberId(findMember.getMemberId()).get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
-                .user(findUser)
+                .member(findMember)
                 .content("foo boo")
                 .build();
         Long commentId = commentService.registerComment(newComment);
 
         // when
-        Comment findCommentWithUserId = commentService.findCommentByUserId(findUser.getUserId()).get(0);
+        Comment findCommentWithmemberId = commentService.findCommentByMemberId(findMember.getMemberId()).get(0);
         Comment findCommentWithPostId = commentService.findCommentByPostId(findPost.getPostId()).get(0);
 
         // then
         Assert.assertEquals("foo boo", findCommentWithPostId.getContent());
-        Assert.assertEquals("foo boo", findCommentWithUserId.getContent());
+        Assert.assertEquals("foo boo", findCommentWithmemberId.getContent());
 
     }
 
@@ -133,11 +135,11 @@ public class CommentServiceTest {
     public void 덧글_삭제() {
         // given
         Posts findPost = postService.findAll().get(0);
-        User findUser = userService.findAll().get(0);
+        Member findMember = memberService.findAll().get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
-                .user(findUser)
+                .member(findMember)
                 .content("foo boo")
                 .build();
         Long commentId = commentService.registerComment(newComment);

@@ -1,4 +1,4 @@
-package Tamanegiseoul.comeet.dto.user.response;
+package Tamanegiseoul.comeet.dto.member.response;
 
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -9,13 +9,13 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
 @Data
+@Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class JoinUserResponse {
-    private Long userId;
-    private String nickname;
+public class SearchMemberResponse {
+    private Long memberId;
     private String email;
+    private String nickname;
     private List<TechStack> preferStacks;
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;

@@ -24,15 +24,15 @@ public class PostRepository {
                 .getResultList();
     }
 
-    public List<Posts> findPostByUserId(Long userId) {
-        return em.createQuery("select p from Posts p where p.poster.userId = :userId", Posts.class)
-                .setParameter("userId", userId)
+    public List<Posts> findPostBymemberId(Long memberId) {
+        return em.createQuery("select p from Posts p where p.poster.memberId = :memberId", Posts.class)
+                .setParameter("memberId", memberId)
                 .getResultList();
     }
 
-    public int removePostByPosterId(Long userId) {
-        return em.createQuery("delete from Posts p where p.poster.userId = :userId ")
-                .setParameter("userId", userId)
+    public int removePostByPosterId(Long memberId) {
+        return em.createQuery("delete from Posts p where p.poster.memberId = :memberId ")
+                .setParameter("memberId", memberId)
                 .executeUpdate();
     }
 

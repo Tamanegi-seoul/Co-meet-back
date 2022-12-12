@@ -1,7 +1,7 @@
 package Tamanegiseoul.comeet.api;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
@@ -17,7 +17,7 @@ import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,7 +35,7 @@ import java.util.List;
 public class PostApiController {
 
     private final PostService postService;
-    private final UserService userService;
+    private final MemberService memberService;
     private final CommentService commentService;
     private final StackRelationService stackRelationService;
 
@@ -43,14 +43,14 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
             log.warn("[PostApi:registerPost] registerPost init");
-            User findUser = userService.findUserById(request.getPosterId());
+            Member findMember = memberService.findMemberById(request.getPosterId());
 
             Posts newPost = Posts.builder()
                     .title(request.getTitle())
                     .content(request.getContent())
                     .contactType(request.getContactType())
                     .contact(request.getContact())
-                    .poster(findUser)
+                    .poster(findMember)
                     .startDate(request.getStartDate())
                     .expectedTerm(request.getExpectedTerm())
                     .recruitCapacity(request.getRecruitCapacity())
@@ -65,7 +65,7 @@ public class PostApiController {
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
                     CreatePostResponse.toDto(newPost)
-                            .posterNickname(findUser.getNickname())
+                            .posterNickname(findMember.getNickname())
                             .designatedStacks(request.getDesignatedStacks()));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
