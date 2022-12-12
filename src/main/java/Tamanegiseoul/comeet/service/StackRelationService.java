@@ -36,8 +36,8 @@ public class StackRelationService {
         return findTS;
     }
 
-    public List<TechStack> findTechStackByUserId(Long userId) {
-        List<StackRelation> findSR = stackRelationRepository.findByUserId(userId);
+    public List<TechStack> findTechStackBymemberId(Long memberId) {
+        List<StackRelation> findSR = stackRelationRepository.findByMemberId(memberId);
         List<TechStack> findTS = new ArrayList<>();
         findSR.stream().map(e -> findTS.add(e.getTechStack()));
         return findTS;

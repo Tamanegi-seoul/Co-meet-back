@@ -37,15 +37,15 @@ public class CommentRepository {
                 .getResultList();
     }
 
-    public List<Comment> findCommentByUserId(Long userId) {
-        return em.createQuery("select c from Comment c where c.user.userId = :userId", Comment.class)
-                .setParameter("userId", userId)
+    public List<Comment> findCommentByMemberId(Long memberId) {
+        return em.createQuery("select c from Comment c where c.member.memberId = :memberId", Comment.class)
+                .setParameter("memberId", memberId)
                 .getResultList();
     }
 
-    public int removeCommentByUserId(Long userId) {
-        return em.createQuery("delete from Comment c where c.user.userId = :userId")
-                .setParameter("userId", userId)
+    public int removeCommentBymemberId(Long memberId) {
+        return em.createQuery("delete from Comment c where c.member.memberId = :memberId")
+                .setParameter("memberId", memberId)
                 .executeUpdate();
     }
 

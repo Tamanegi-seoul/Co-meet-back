@@ -1,8 +1,8 @@
 package Tamanegiseoul.comeet;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Role;
-import Tamanegiseoul.comeet.domain.User;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,22 +18,22 @@ public class CoMeetApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(UserService userService) {
+	CommandLineRunner run(MemberService memberService) {
 		return args -> {
-			userService.saveRole(Role.builder().roleName("ROLE_USER").build());
-			userService.saveRole(Role.builder().roleName("ROLE_MANAGER").build());
-			userService.saveRole(Role.builder().roleName("ROLE_ADMIN").build());
+			memberService.saveRole(Role.builder().roleName("ROLE_USER").build());
+			memberService.saveRole(Role.builder().roleName("ROLE_MANAGER").build());
+			memberService.saveRole(Role.builder().roleName("ROLE_ADMIN").build());
 			//userService.saveRole(Role.builder().roleName("ROLE_SUPER_ADMIN").build());
 
-			userService.registerUser(
-					User.builder()
+			memberService.registerMember(
+					Member.builder()
 							.email("admin")
 							.nickname("관리자")
 							.password("password")
 							.build()
 			);
 
-			userService.addRoleToUser("admin", "ROLE_ADMIN");
+			memberService.addRoleToMember("admin", "ROLE_ADMIN");
 		};
 	}
 

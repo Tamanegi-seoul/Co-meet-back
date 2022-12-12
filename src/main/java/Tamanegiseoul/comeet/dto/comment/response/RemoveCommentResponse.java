@@ -18,7 +18,7 @@ public class RemoveCommentResponse {
     public static RemoveCommentResponse toDto(Comment findComment) {
         return RemoveCommentResponse.builder()
                 .commentId(findComment.getCommentId())
-                .commenterId(findComment.getUser().getUserId())
+                .commenterId(findComment.getMember().getMemberId())
                 .deletedContent(findComment.getContent())
                 .postId(findComment.getPost().getPostId())
                 .build();

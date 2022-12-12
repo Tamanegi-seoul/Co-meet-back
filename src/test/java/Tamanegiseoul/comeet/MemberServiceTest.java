@@ -1,15 +1,15 @@
 package Tamanegiseoul.comeet;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
-import Tamanegiseoul.comeet.repository.UserRepository;
+import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -31,10 +31,12 @@ import java.util.List;
 @SpringBootTest
 @Transactional
 @Slf4j
-public class UserServiceTest {
+public class MemberServiceTest {
 
-    @Autowired UserService userService;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository;
     @Autowired PostService postService;
     @Autowired CommentService commentService;
 
@@ -45,38 +47,38 @@ public class UserServiceTest {
     @Transactional
     public void 단일_유저_생성() throws Exception {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
 
         // when
-        userService.registerUser(newUser);
+        memberService.registerMember(newMember);
 
         // then
-        User findUser = userService.findUserByNickname("test_user");
-        Assert.assertEquals(findUser.getEmail(), "testuser@gmail.com");
+        Member findMember = memberService.findMemberByNickname("test_user");
+        Assert.assertEquals(findMember.getEmail(), "testuser@gmail.com");
     }
 
     @Test(expected = DuplicateResourceException.class)
     @Transactional
     public void 유저_이메일_중복검사() {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(newUser);
+        memberService.registerMember(newMember);
 
         // when
-        User otherUser = User.builder()
+        Member otherMember = Member.builder()
                 .nickname("other_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(otherUser);
+        memberService.registerMember(otherMember);
 
         // then
         Assert.fail("something goes wrong");
@@ -86,20 +88,20 @@ public class UserServiceTest {
     @Transactional
     public void 유저_닉네임_중복검사() {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(newUser);
+        memberService.registerMember(newMember);
 
         // when
-        User otherUser = User.builder()
+        Member otherMember = Member.builder()
                 .nickname("test_user")
                 .email("otherUser@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(otherUser);
+        memberService.registerMember(otherMember);
 
         // then
         Assert.fail("something goes wrong");
@@ -109,18 +111,18 @@ public class UserServiceTest {
     @Transactional
     public void 기술스택_세팅() {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(newUser);
+        memberService.registerMember(newMember);
 
         // when
-        userService.updatePreferStack(newUser.getUserId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
+        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
 
         // then
-        List<TechStack> findStacks = userService.findPreferredStacks(newUser.getUserId());
+        List<TechStack> findStacks = memberService.findPreferredStacks(newMember.getMemberId());
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name());
         }
@@ -132,20 +134,20 @@ public class UserServiceTest {
     //@Rollback(false)
     public void 기술스택_수정() {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("woogie")
                 .email("woogie@gmail.com")
                 .password("password")
                 .build();
-        userService.registerUser(newUser);
-        userService.updatePreferStack(newUser.getUserId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
+        memberService.registerMember(newMember);
+        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
 
 
         // when
-        userService.updatePreferStack(newUser.getUserId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
+        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
 
         // then
-        List<TechStack> findStacks = userService.findPreferredStacks(newUser.getUserId());
+        List<TechStack> findStacks = memberService.findPreferredStacks(newMember.getMemberId());
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name()); // should be javascript & python
         }
@@ -156,20 +158,20 @@ public class UserServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     public void 유저_삭제() throws Exception {
         // given
-        User newUser = User.builder()
+        Member newMember = Member.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
                 .build();
-        Long newUserId = userService.registerUser(newUser);
-        userService.updatePreferStack(newUser.getUserId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
+        Long newMemberId = memberService.registerMember(newMember);
+        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
 
         Posts newPost = Posts.builder()
                 .title("이것은 새로운 포스트입니다.")
                 .content("빈 내용")
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
-                .poster(newUser)
+                .poster(newMember)
                 .recruitCapacity(4L)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
@@ -178,15 +180,15 @@ public class UserServiceTest {
         postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // when
-        int queryExecuteTimes = userService.removeUser(newUserId);
+        int queryExecuteTimes = memberService.removeUser(newMemberId);
         em.clear();
         log.info("query executed for " + queryExecuteTimes+ " times");
 
         // then
-        User findUser = userService.findUserById(newUserId);
+        Member findMember = memberService.findMemberById(newMemberId);
 
-        log.info("find user:", findUser.getNickname());
+        log.info("find member:", findMember.getNickname());
 
-        Assert.fail("user has not been removed");
+        Assert.fail("member has not been removed");
     }
 }

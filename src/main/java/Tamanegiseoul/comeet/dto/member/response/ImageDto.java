@@ -1,4 +1,4 @@
-package Tamanegiseoul.comeet.dto.user.response;
+package Tamanegiseoul.comeet.dto.member.response;
 
 import Tamanegiseoul.comeet.domain.ImageData;
 import Tamanegiseoul.comeet.utils.ImageUtil;

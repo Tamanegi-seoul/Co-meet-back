@@ -24,8 +24,8 @@ public class Comment {
     @ManyToOne(fetch = LAZY) @JoinColumn(name = "post_id")
     private Posts post;
 
-    @ManyToOne(fetch = LAZY) @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(fetch = LAZY) @JoinColumn(name = "member_id")
+    private Member member;
 
     @NotNull
     private String content;
@@ -37,9 +37,9 @@ public class Comment {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Comment(Posts post, User user, String content) {
+    public Comment(Posts post, Member member, String content) {
         this.post = post;
-        this.user = user;
+        this.member = member;
         this.content = content;
         this.createdTime = LocalDateTime.now();
         this.modifiedTime = LocalDateTime.now();

@@ -68,8 +68,8 @@ public class PostService {
     }
 
     @Transactional
-    public void removePostByPosterId(Long userId) {
-        List<Posts> findPosts = postRepository.findPostByUserId(userId);
+    public void removePostByPosterId(Long memberId) {
+        List<Posts> findPosts = postRepository.findPostBymemberId(memberId);
         // first, remove child entity
         for(Posts p : findPosts) {
             stackRelationRepository.removeRelatedStacksByPost(p.getPostId());
@@ -77,7 +77,7 @@ public class PostService {
         }
 
         // then, remove parent entity
-        postRepository.removePostByPosterId(userId);
+        postRepository.removePostByPosterId(memberId);
     }
 
     @Transactional
@@ -108,8 +108,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findPostByUserId(Long userId) {
-        return postRepository.findPostByUserId(userId);
+    public List<Posts> findPostBymemberId(Long memberId) {
+        return postRepository.findPostBymemberId(memberId);
     }
 
 

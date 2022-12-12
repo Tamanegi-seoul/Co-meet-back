@@ -1,8 +1,8 @@
 package Tamanegiseoul.comeet.api;
 
 import Tamanegiseoul.comeet.domain.Comment;
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.User;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
@@ -15,7 +15,7 @@ import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.SearchCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
-import Tamanegiseoul.comeet.service.UserService;
+import Tamanegiseoul.comeet.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/comment")
 public class CommentApiController {
-    private final UserService userService;
+    private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
 
@@ -38,11 +38,11 @@ public class CommentApiController {
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
             Posts findPost = postService.findPostById(request.getPostId());
-            User findUser = userService.findUserById(request.getUserId());
+            Member findMember = memberService.findMemberById(request.getMemberId());
 
             Comment newComment = Comment.builder()
                     .post(findPost)
-                    .user(findUser)
+                    .member(findMember)
                     .content(request.getContent())
                     .build();
             commentService.registerComment(newComment);

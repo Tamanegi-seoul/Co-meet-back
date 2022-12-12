@@ -1,4 +1,4 @@
-package Tamanegiseoul.comeet.dto.user.response;
+package Tamanegiseoul.comeet.dto.member.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
