@@ -8,7 +8,6 @@ import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.user.request.JoinUserRequest;
-import Tamanegiseoul.comeet.dto.auth.request.SigninRequest;
 import Tamanegiseoul.comeet.dto.user.response.JoinUserResponse;
 import Tamanegiseoul.comeet.dto.user.request.*;
 import Tamanegiseoul.comeet.dto.user.response.*;
@@ -17,6 +16,7 @@ import Tamanegiseoul.comeet.service.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -260,7 +260,7 @@ public class UserApiController {
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
-            } catch (Exception e) {
+            }  catch (Exception e) {
                 response.setHeader("error", e.getMessage());
                 response.setStatus(FORBIDDEN);
                 //response.sendError(FORBIDDEN);
