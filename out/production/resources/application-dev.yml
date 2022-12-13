@@ -30,3 +30,4 @@ security:
     token:
       secret-key: secretsecretsecretsecret
       expire-length: 3600000
+

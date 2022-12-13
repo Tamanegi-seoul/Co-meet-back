@@ -11,7 +11,7 @@ import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.member.request.*;
 import Tamanegiseoul.comeet.dto.member.response.*;
-import Tamanegiseoul.comeet.security.JwtTokenProvider;
+import Tamanegiseoul.comeet.security.JwtProvider;
 import Tamanegiseoul.comeet.service.*;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -51,7 +51,7 @@ public class UserApiController {
     private final ImageDataService imageDataService;
     private final StackRelationService stackRelationService;
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/validate")

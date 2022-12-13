@@ -37,17 +37,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             log.info("catch for /api/login and /api/token/refresh");
             filterChain.doFilter(request, response);
         } else {
-            log.info("in doFilterInternal, pass validation for /api/login");
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
-                    log.info("in doFilterInternal, inside try");
+
                     String token = authorizationHeader.substring("Bearer ".length());
                     Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
                     String userEmail = decodedJWT.getSubject();
-                    log.error("userEmail is {}", userEmail);
+
                     String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {

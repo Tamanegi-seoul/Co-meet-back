@@ -1,11 +1,15 @@
 package Tamanegiseoul.comeet.security;
 
+import Tamanegiseoul.comeet.dto.ResponseMessage;
+import Tamanegiseoul.comeet.service.JwtCookieService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +33,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
+//@RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      // in UsernamePasswordAuthenticationFilter, DEFAULT_ANT_PATH_REQUEST_MATCHER defined url for login as (POST, "/login")
 
@@ -62,11 +67,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        /*
-            get cookie from request
-         */
-
-        Cookie[] cookies = request.getCookies();
 
         if(request.getHeader("Content-Type").equals(APPLICATION_JSON_VALUE)) {
             log.info("JSON LOGIN ATTEMP");
@@ -93,7 +93,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User)authentication.getPrincipal();
 
-
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
         String accessToken = JWT.create()
                 .withSubject(user.getUsername()) // get email (security's username)
@@ -108,15 +107,39 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
+        /*
         Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
+
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+         */
+
         /*
             need to return cookie with tokens
          */
+        Cookie accessCookie = new Cookie("access_token", accessToken);
+        accessCookie.setMaxAge(7 * 86400);
+        accessCookie.setComment("access_token");
+        accessCookie.setHttpOnly(true);
+        accessCookie.setPath(request.getContextPath());
+        Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+        refreshCookie.setMaxAge(7 * 86400);
+        refreshCookie.setComment("refresh_token");
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setPath(request.getContextPath());
 
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
+
+
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("status_code", String.valueOf(HttpStatus.OK));
+        responseBody.put("response_message", ResponseMessage.GENERATE_TOKEN);
+        response.setContentType(APPLICATION_JSON_VALUE);
+
+        new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
     }
 
 }
