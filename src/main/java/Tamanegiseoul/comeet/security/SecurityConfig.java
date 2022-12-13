@@ -40,22 +40,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/api/post/search/**").permitAll();
         http.authorizeRequests().antMatchers("/api/comment/search/**").permitAll();
-
-        http.authorizeRequests().antMatchers("/api/user/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-        http.authorizeRequests().antMatchers("/api/user/remove").authenticated();
-        http.authorizeRequests().antMatchers("/api/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-
-        http.authorizeRequests().antMatchers("/api/post/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-        http.authorizeRequests().antMatchers("/api/post/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-        http.authorizeRequests().antMatchers("/api/post/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-
-        http.authorizeRequests().antMatchers("/api/comment/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-        http.authorizeRequests().antMatchers("/api/comment/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-        http.authorizeRequests().antMatchers("/api/comment/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//
+//        http.authorizeRequests().antMatchers("/api/user/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//        http.authorizeRequests().antMatchers("/api/user/remove").authenticated();
+//        http.authorizeRequests().antMatchers("/api/user/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//
+//        http.authorizeRequests().antMatchers("/api/post/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//        http.authorizeRequests().antMatchers("/api/post/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//        http.authorizeRequests().antMatchers("/api/post/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//
+//        http.authorizeRequests().antMatchers("/api/comment/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//        http.authorizeRequests().antMatchers("/api/comment/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
+//        http.authorizeRequests().antMatchers("/api/comment/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 
         http.authorizeRequests().antMatchers("/api/role/**").hasAnyAuthority("ROLE_ADMIN");
 
-        http.authorizeRequests().anyRequest().authenticated();
+        http.authorizeRequests().anyRequest().permitAll();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
