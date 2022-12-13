@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/login"); // overwrite default url
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**/*").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/*").permitAll();
         http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
         http.authorizeRequests().antMatchers("/api/user/validate").permitAll();
         http.authorizeRequests().antMatchers("/api/user/join").permitAll();
