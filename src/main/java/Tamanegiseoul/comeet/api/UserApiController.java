@@ -55,12 +55,12 @@ public class UserApiController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/user/validate")
-    public ResponseEntity<ApiResponse> validate(@RequestBody @Valid ValidateMemberRequest request) {
+    public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
-            memberService.validateUserEmail(request.getEmail());
-            memberService.validateUserEmail(request.getNickname());
+            memberService.validateUserEmail(email);
+            memberService.validateUserEmail(nickname);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE, request);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE);
         } catch (DuplicateResourceException e) {
             return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
         }
