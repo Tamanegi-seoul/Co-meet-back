@@ -23,15 +23,15 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtProvider {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
+    //@Value("${security.jwt.token.secret-key}")
+    private String secretKey = "secret";
     private Algorithm algorithm;
-    private long validityInMilliseconds;
+    private long validityInMilliseconds = 3600000L;
 
-    public JwtProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") Long validityInMilliseconds) {
-        this.algorithm = Algorithm.HMAC256(secretKey.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
-    }
+//    public JwtProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") Long validityInMilliseconds) {
+//        this.algorithm = Algorithm.HMAC256(secretKey.getBytes());
+//        this.validityInMilliseconds = validityInMilliseconds;
+//    }
 
     // generate token
     public String generateAccessToken(String email, List<SimpleGrantedAuthority> roles) {
