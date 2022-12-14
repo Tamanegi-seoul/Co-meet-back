@@ -88,7 +88,7 @@ public class PostApiController {
     }
 
     @GetMapping("/search/all")
-    public ResponseEntity<ApiResponse> searchAllPost(@RequestBody @Valid SearchPostRequest request) {
+    public ResponseEntity<ApiResponse> searchAllPost() {
         try {
             log.warn("[PostApiController:searchAllPost]method execute init");
             List<Posts> allPosts = postService.findAll();
@@ -101,8 +101,8 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/search/{post_id}")
-    public ResponseEntity<ApiResponse> searchPost(@PathVariable("post_id") Long postId) {
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(postId);

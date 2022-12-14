@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -44,7 +45,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 @RequestMapping("/api")
-public class UserApiController {
+public class MemberApiController {
     private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
@@ -54,11 +55,11 @@ public class UserApiController {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/user/validate")
+    @GetMapping("/member/validate")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
-            memberService.validateUserEmail(email);
-            memberService.validateUserEmail(nickname);
+            memberService.validateMemberEmail(email);
+            memberService.validateMemberEmail(nickname);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.RESOURCE_AVAILABLE);
         } catch (DuplicateResourceException e) {
@@ -66,8 +67,8 @@ public class UserApiController {
         }
     }
 
-    @PostMapping("/user/join")
-    //public ResponseEntity<ApiResponse> joinNewUser(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
+    @PostMapping("/member/join")
+    //public ResponseEntity<ApiResponse> joinNewMember(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
         log.error(request.toString());
         log.error("join request's password {}", request.getPassword());
@@ -88,10 +89,10 @@ public class UserApiController {
             ImageDto imageDto = null;
 
             if(file != null) {
-                log.warn("[UserApiController:joinNewUser]file is present");
+                log.warn("[MemberApiController:joinNewUser]file is present");
                 imageDto = imageDataService.uploadImage(newMember, file);
             } else {
-                log.warn("[UserApiController:joinNewUser]file is empty");
+                log.warn("[MemberApiController:joinNewUser]file is empty");
             }
 
             List<TechStack> preferredStacks = memberService.findPreferredStacks(newMember.getMemberId());
@@ -138,11 +139,11 @@ public class UserApiController {
 
 
 
-    @DeleteMapping("/user/remove")
+    @DeleteMapping("/member/remove")
     public ResponseEntity<ApiResponse> removeMember(@RequestBody @Valid RemoveMemberRequest request) {
         try {
-            log.error("[UserApiController:removeUser]method executed");
-            log.error("[UserApiController:removeUser]{}", request.toString());
+            log.error("[MemberApiController:removeUser]method executed");
+            log.error("[MemberApiController:removeUser]{}", request.toString());
             Long memberId = request.getMemberId();
             Member findMember = memberService.findMemberById(memberId);
             RemoveMemberResponse response = RemoveMemberResponse.builder()
@@ -150,7 +151,7 @@ public class UserApiController {
                     .nickname(findMember.getNickname())
                     .build();
 
-            int removedMemberId = memberService.removeUser(memberId);
+            int removedMemberId = memberService.removeMember(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {
@@ -158,10 +159,10 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/user/search")
-    public ResponseEntity<ApiResponse> searchMember(@RequestBody @Valid SearchMemberRequest request) {
+    @GetMapping("/member/search")
+    public ResponseEntity<ApiResponse> searchMember(@RequestParam("member_id") Long memberId) {
         try {
-            Member findMember = memberService.findMemberById(request.getMemberId());
+            Member findMember = memberService.findMemberById(memberId);
 
             ImageDto findImage = imageDataService.findImageByMemberId(findMember.getMemberId());
 
@@ -182,24 +183,24 @@ public class UserApiController {
     }
 
 
-    @PatchMapping("/user/update")
+    @PatchMapping("/member/update")
     public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
             Member updatedMember = memberService.updateMember(request);
             ImageDto imageDto = null;
             if(file != null) {
-                log.warn("[UserApiController:updateUser] file is present");
+                log.warn("[MemberApiController:updateMember] file is present");
                 ImageDto findImage = imageDataService.findImageByMemberId(updatedMember.getMemberId());
                 if(findImage != null) {
-                    log.warn("[UserApiController:updateUser] updated registered image");
+                    log.warn("[MemberApiController:updateMember] updated registered image");
                     imageDto = imageDataService.updateImage(updatedMember, file);
                 } else {
-                    log.warn("[UserApiController:updateUser] upload new profile image");
+                    log.warn("[MemberApiController:updateMember] upload new profile image");
                     imageDto = imageDataService.uploadImage(updatedMember, file);
                 }
 
             } else {
-                log.warn("[UserApiController:updateUser] file is empty");
+                log.warn("[MemberApiController:updateMember] file is empty");
             }
 
             List<TechStack> preferredStacks = memberService.findPreferredStacks(updatedMember.getMemberId());
@@ -225,7 +226,7 @@ public class UserApiController {
         }
     }
 
-    @GetMapping("/user/users")
+    @GetMapping("/member/members")
     public ResponseEntity<List<Member>> getMembers() {
         return ResponseEntity.ok().body(memberService.findAll());
     }
@@ -233,12 +234,12 @@ public class UserApiController {
 
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.info("[UserApiController:refreshToken]method executed");
+        log.info("[MemberApiController:refreshToken]method executed");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            log.info("[UserApiController:refreshToken]authorizationHeader is valid");
+            log.info("[MemberApiController:refreshToken]authorizationHeader is valid");
             try {
-                log.info("[UserApiController:refreshToken]try refresh token");
+                log.info("[MemberApiController:refreshToken]try refresh token");
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
@@ -253,11 +254,35 @@ public class UserApiController {
                         .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
                         .sign(algorithm);
 
+                /*
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", accessToken);
                 tokens.put("refresh_token", refreshToken);
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+                 */
+                Cookie accessCookie = new Cookie("access_token", accessToken);
+                accessCookie.setMaxAge(7 * 86400);
+                accessCookie.setComment("access_token");
+                accessCookie.setHttpOnly(true);
+                accessCookie.setPath(request.getContextPath());
+                Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+                refreshCookie.setMaxAge(14 * 86400);
+                refreshCookie.setComment("refresh_token");
+                refreshCookie.setHttpOnly(true);
+                refreshCookie.setPath(request.getContextPath());
+
+                response.addCookie(accessCookie);
+                response.addCookie(refreshCookie);
+
+
+                Map<String, String> responseBody = new HashMap<>();
+                responseBody.put("status_code", String.valueOf(HttpStatus.OK));
+                responseBody.put("response_message", ResponseMessage.REFRESH_TOKEN);
+                response.setContentType(APPLICATION_JSON_VALUE);
+
+                new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
+
 
             }  catch (Exception e) {
                 response.setHeader("error", e.getMessage());

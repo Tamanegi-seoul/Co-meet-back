@@ -77,9 +77,9 @@ public class CommentApiController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse> searchComment(@RequestBody @Valid SearchCommentRequest request) {
+    public ResponseEntity<ApiResponse> searchComment(@RequestParam("post_id") Long postId) {
         try {
-            Posts findPost = postService.findPostById(request.getPostId());
+            Posts findPost = postService.findPostById(postId);
             List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
             log.warn("[CommentApiController:searchComment] comment list size is " + commentList.size());
             SearchCommentResponse response = SearchCommentResponse.builder().commentList(SearchCommentResponse.commentListToDto(commentList)).build();
