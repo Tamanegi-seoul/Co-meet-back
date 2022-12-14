@@ -264,12 +264,12 @@ public class MemberApiController {
                 Cookie accessCookie = new Cookie("access_token", accessToken);
                 accessCookie.setMaxAge(7 * 86400);
                 accessCookie.setComment("access_token");
-                accessCookie.setHttpOnly(true);
+                //accessCookie.setHttpOnly(true);
                 accessCookie.setPath(request.getContextPath());
                 Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
                 refreshCookie.setMaxAge(14 * 86400);
                 refreshCookie.setComment("refresh_token");
-                refreshCookie.setHttpOnly(true);
+                //refreshCookie.setHttpOnly(true);
                 refreshCookie.setPath(request.getContextPath());
 
                 response.addCookie(accessCookie);
