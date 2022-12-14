@@ -180,7 +180,7 @@ public class MemberServiceTest {
         postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // when
-        int queryExecuteTimes = memberService.removeUser(newMemberId);
+        int queryExecuteTimes = memberService.removeMember(newMemberId);
         em.clear();
         log.info("query executed for " + queryExecuteTimes+ " times");
 

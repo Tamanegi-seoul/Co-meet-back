@@ -42,9 +42,9 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public Long registerMember(Member member) {
-        log.info("register new user {} to the database", member.getNickname());
-        validateUserEmail(member.getEmail());
-        validateUserNickname(member.getNickname());
+        log.info("register new member {} to the database", member.getNickname());
+        validateMemberEmail(member.getEmail());
+        validateMemberNickname(member.getNickname());
         member.changePassword(passwordEncoder.encode(member.getPassword())); // encrypt password
         member.updateCreatedDate();
         member.updateModifiedDate();
@@ -60,7 +60,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void addRoleToMember(String email, String roleName) {
-        log.info("Adding role {} to user {}", roleName, email);
+        log.info("Adding role {} to member {}", roleName, email);
 
         Member member = memberRepository.findMemberByEmail(email);
         Role role = roleRepository.findByRoleName(roleName);
@@ -76,18 +76,18 @@ public class MemberService implements UserDetailsService {
      *****************************/
 
     @Transactional(readOnly = true)
-    public void validateUserEmail(String email) {
+    public void validateMemberEmail(String email) {
         Member findMember = memberRepository.findMemberByEmail(email);
         if(findMember != null) {
-            throw new DuplicateResourceException("Users Email", email);
+            throw new DuplicateResourceException("Members Email", email);
         }
     }
 
     @Transactional(readOnly = true)
-    public void validateUserNickname(String nickname) {
+    public void validateMemberNickname(String nickname) {
         Member findMember = memberRepository.findMemberByNickname(nickname);
         if(findMember != null) {
-            throw new DuplicateResourceException("Users Nickname", nickname);
+            throw new DuplicateResourceException("Members Nickname", nickname);
         }
     }
 
@@ -110,15 +110,15 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUserNickname(Long id, String newNickname) {
-        validateUserNickname(newNickname);
+    public void updateMemberNickname(Long id, String newNickname) {
+        validateMemberNickname(newNickname);
         Member findMember = memberRepository.findOne(id);
         findMember.changeNickname(newNickname);
         findMember.updateModifiedDate();
     }
 
     @Transactional
-    public void updateUserPassword(Long id, String password) {
+    public void updateMemberPassword(Long id, String password) {
         Member findMember = memberRepository.findOne(id);
         findMember.changePassword(password);
         findMember.updateModifiedDate();
@@ -126,7 +126,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public void updatePreferStack(Long memberId, List<TechStack> techStacks) {
-        log.warn("[UserService:updatePreferStack] method init");
+        log.warn("[MemberService:updatePreferStack] method init");
         Member findMember = this.findMemberById(memberId); // checked
         //findMember.initPreferredTechStacks();
         stackRelationRepository.removeRelatedStakcsByMember(memberId);
@@ -136,11 +136,11 @@ public class MemberService implements UserDetailsService {
         findMember.updateModifiedDate();
         em.flush();
         em.clear();
-        log.warn("[UserService:updatePreferStack] updated " + memberId + "'s tech stack" + techStacks.toString());
+        log.warn("[MemberService:updatePreferStack] updated " + memberId + "'s tech stack" + techStacks.toString());
     }
 
     @Transactional
-    public int removeUser(Long memberId) throws ResourceNotFoundException {
+    public int removeMember(Long memberId) throws ResourceNotFoundException {
         Member findMember = this.findMemberById(memberId);
 
         // first of all,
@@ -156,7 +156,7 @@ public class MemberService implements UserDetailsService {
     }
 
     /**********************
-     * USER SEARCH METHODS
+     * Member SEARCH METHODS
      **********************/
 
     @Transactional(readOnly = true)
@@ -164,17 +164,17 @@ public class MemberService implements UserDetailsService {
         Member findMember = memberRepository.findOne(memberId);
 
         if(findMember == null) {
-            log.info("[UserService:findMemberById] THE RESULT OF FIND ONE is NULL ");
-            throw new ResourceNotFoundException("user_id", "memberId ", memberId);
+            log.info("[MemberService:findMemberById] THE RESULT OF FIND ONE is NULL ");
+            throw new ResourceNotFoundException("member_id", "memberId ", memberId);
         } else {
-            log.info("[UserService:findMemberById] find user with provided user id : " + memberId);
+            log.info("[MemberService:findMemberById] find user with provided member id : " + memberId);
             return findMember;
         }
     }
 
     @Transactional(readOnly = true)
     public List<Member> findAll() {
-        log.info("Fetching all users");
+        log.info("Fetching all Members");
         return memberRepository.findAll();
     }
 
