@@ -51,5 +51,6 @@ public class ResponseMessage {
     public static final String FAIL_REFRESH_TOKEN = "토큰 갱신 실패";
     public static final String TOKEN_EXPIRED = "토큰 기한 만료";
     public static final String GENERATE_TOKEN = "토큰 생성 완료";
+    public static final String REFRESH_TOKEN = "토큰 재발급 완료";
 
 }
