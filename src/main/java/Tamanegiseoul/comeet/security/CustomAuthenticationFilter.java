@@ -125,7 +125,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         accessCookie.setHttpOnly(true);
         accessCookie.setPath(request.getContextPath());
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-        refreshCookie.setMaxAge(7 * 86400);
+        refreshCookie.setMaxAge(14 * 86400);
         refreshCookie.setComment("refresh_token");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setPath(request.getContextPath());
