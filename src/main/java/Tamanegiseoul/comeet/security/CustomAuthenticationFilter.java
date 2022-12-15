@@ -109,18 +109,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
-        /*
-        Map<String, String> tokens = new HashMap<>();
-        tokens.put("access_token", accessToken);
-        tokens.put("refresh_token", refreshToken);
-        response.setContentType(APPLICATION_JSON_VALUE);
-
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-         */
+//        Map<String, String> tokens = new HashMap<>();
+//        tokens.put("access_token", accessToken);
+//        tokens.put("refresh_token", refreshToken);
+//        response.setContentType(APPLICATION_JSON_VALUE);
+//
+//        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
         /*
             need to return cookie with tokens
          */
+
         Cookie accessCookie = new Cookie("access_token", accessToken);
         accessCookie.setMaxAge(7 * 86400);
         accessCookie.setComment("access_token");
@@ -139,7 +138,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("status_code", String.valueOf(HttpStatus.OK));
         responseBody.put("response_message", ResponseMessage.GENERATE_TOKEN);
+        responseBody.put("access_token", accessToken);
+        responseBody.put("refresh_token", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
+
 
         new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
     }
