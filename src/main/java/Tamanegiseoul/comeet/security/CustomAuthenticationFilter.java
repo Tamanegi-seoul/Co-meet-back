@@ -1,7 +1,9 @@
 package Tamanegiseoul.comeet.security;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.service.JwtCookieService;
+import Tamanegiseoul.comeet.service.MemberService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,11 +39,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      // in UsernamePasswordAuthenticationFilter, DEFAULT_ANT_PATH_REQUEST_MATCHER defined url for login as (POST, "/login")
 
+    private final MemberService memberService;
     private final AuthenticationManager authenticationManager;
     private HashMap<String, String> jsonRequest;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, MemberService memberService) {
         this.authenticationManager = authenticationManager;
+        this.memberService = memberService;
     }
 
     @Override
@@ -63,8 +67,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         }
         return request.getParameter(email);
     }
-
-
 
     @SneakyThrows
     @Override
@@ -95,12 +97,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User)authentication.getPrincipal();
 
+        Member findMember = memberService.findMemberByEmail(user.getUsername());
+
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
         String accessToken = JWT.create()
                 .withSubject(user.getUsername()) // get email (security's username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim("nickname", findMember.getNickname())
+                .withClaim("member_id", findMember.getMemberId())
                 .sign(algorithm);
 
         String refreshToken = JWT.create()
