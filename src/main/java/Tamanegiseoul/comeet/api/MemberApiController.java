@@ -283,6 +283,8 @@ public class MemberApiController {
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("status_code", String.valueOf(HttpStatus.OK));
                 responseBody.put("response_message", ResponseMessage.REFRESH_TOKEN);
+                responseBody.put("access_token", accessToken);
+                responseBody.put("refresh_token", refreshToken);
                 response.setContentType(APPLICATION_JSON_VALUE);
 
                 new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
