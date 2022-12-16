@@ -13,9 +13,11 @@ import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.SearchCommentResponse;
+import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.MemberService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,7 @@ public class CommentApiController {
     private final CommentService commentService;
 
     @PostMapping("/register")
+    @ApiOperation(value="덧글 등록", notes="포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
             Posts findPost = postService.findPostById(request.getPostId());
@@ -53,18 +56,18 @@ public class CommentApiController {
     }
 
     @PatchMapping("/update")
+    @ApiOperation(value="덧글 수정", notes="등록된 덧글 수정")
     public ResponseEntity<ApiResponse> updateComment(@RequestBody @Valid UpdateCommentRequest request) {
         try {
             Comment updatedComment = commentService.updateComment(request);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_COMMNET, CreateCommentResponse.toDto(updatedComment));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_COMMNET, UpdateCommentResponse.toDto(updatedComment));
         } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, RemoveCommentResponse.builder()
-
-                    .build());
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
     @DeleteMapping("/remove")
+    @ApiOperation(value="덧글 삭제", notes="등록된 덧글 삭제")
     public ResponseEntity<ApiResponse> removeComment(@RequestBody @Valid RemoveCommentRequest request) {
         try {
             Comment findComment = commentService.findCommentById(request.getCommentId());
@@ -77,6 +80,7 @@ public class CommentApiController {
     }
 
     @GetMapping("/search")
+    @ApiOperation(value="덧글 조회", notes="등록된 덧글 단건 조회")
     public ResponseEntity<ApiResponse> searchComment(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);

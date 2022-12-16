@@ -18,6 +18,7 @@ import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
 import Tamanegiseoul.comeet.service.MemberService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,7 @@ public class PostApiController {
     private final StackRelationService stackRelationService;
 
     @PostMapping("/register")
+    @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
             log.warn("[PostApi:registerPost] registerPost init");
@@ -75,6 +77,7 @@ public class PostApiController {
     }
 
     @PatchMapping("/update")
+    @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
             Posts findPost = postService.findPostById(request.getPostId());
@@ -88,6 +91,7 @@ public class PostApiController {
     }
 
     @GetMapping("/search/all")
+    @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
     public ResponseEntity<ApiResponse> searchAllPost() {
         try {
             log.warn("[PostApiController:searchAllPost]method execute init");
@@ -102,6 +106,7 @@ public class PostApiController {
     }
 
     @GetMapping("/search")
+    @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
@@ -116,6 +121,7 @@ public class PostApiController {
     }
 
     @DeleteMapping("/remove")
+    @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
     public ResponseEntity<ApiResponse> removePost(@RequestBody @Valid RemovePostRequest request) {
         try {
             postService.removePostByPostId(request.getPostId());

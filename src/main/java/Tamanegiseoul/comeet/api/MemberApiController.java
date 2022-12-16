@@ -18,7 +18,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,7 +57,7 @@ public class MemberApiController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/member/validate")
-    //@ApiOperation(value="검증", notes="포스트에 대한 덧글 작성")
+    @ApiOperation(value="검증", notes="회원 이메일/닉네임 검증")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
             memberService.validateMemberEmail(email);
@@ -70,7 +70,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/member/join")
-    //public ResponseEntity<ApiResponse> joinNewMember(@RequestBody @Valid JoinUserRequest request, @RequestParam("image")MultipartFile file) {
+    @ApiOperation(value="회원가입", notes="새로운 회원 등록")
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
         log.error(request.toString());
         log.error("join request's password {}", request.getPassword());
@@ -121,6 +121,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/role/save")
+    @ApiOperation(value="권한 등록", notes="신규 권한 등록")
     public ResponseEntity<ApiResponse> saveRole(@RequestBody @Valid Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         memberService.saveRole(role);
@@ -130,6 +131,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/role/addToUser")
+    @ApiOperation(value="권한 지정", notes="기존 회원 권한 지정")
     public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid Member member, @RequestBody @Valid Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
@@ -142,6 +144,7 @@ public class MemberApiController {
 
 
     @DeleteMapping("/member/remove")
+    @ApiOperation(value="회원 탈퇴", notes="등록된 회원 탈퇴")
     public ResponseEntity<ApiResponse> removeMember(@RequestBody @Valid RemoveMemberRequest request) {
         try {
             log.error("[MemberApiController:removeUser]method executed");
@@ -162,6 +165,7 @@ public class MemberApiController {
     }
 
     @GetMapping("/member/search")
+    @ApiOperation(value="회원 검색", notes="등록된 회원정보 조회")
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("member_id") Long memberId) {
         try {
             Member findMember = memberService.findMemberById(memberId);
@@ -186,6 +190,7 @@ public class MemberApiController {
 
 
     @PatchMapping("/member/update")
+    @ApiOperation(value="회원 수정", notes="회원 이메일/닉네임 검증")
     public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
             Member updatedMember = memberService.updateMember(request);
@@ -229,12 +234,14 @@ public class MemberApiController {
     }
 
     @GetMapping("/member/members")
+    @ApiOperation(value="회원 전체 조회", notes="회원 전체 조회")
     public ResponseEntity<List<Member>> getMembers() {
         return ResponseEntity.ok().body(memberService.findAll());
     }
 
 
     @GetMapping("/token/refresh")
+    @ApiOperation(value="토큰 갱신", notes="발행된 토큰 재발급")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.info("[MemberApiController:refreshToken]method executed");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
