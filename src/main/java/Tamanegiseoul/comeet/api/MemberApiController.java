@@ -18,6 +18,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,7 @@ public class MemberApiController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/member/validate")
+    @ApiOperation(value="검증", notes="포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
             memberService.validateMemberEmail(email);
@@ -251,6 +253,8 @@ public class MemberApiController {
                         .withSubject(member.getEmail()) // get email (security's username)
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
                         .withIssuer(request.getRequestURL().toString())
+                        .withClaim("nickname", member.getNickname())
+                        .withClaim("member_id", member.getMemberId())
                         .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
                         .sign(algorithm);
 
