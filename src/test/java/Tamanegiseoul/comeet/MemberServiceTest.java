@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,6 +30,8 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@EnableWebMvc
+
 @Transactional
 @Slf4j
 public class MemberServiceTest {
