@@ -191,7 +191,8 @@ public class MemberApiController {
 
     @PatchMapping("/member/update")
     @ApiOperation(value="회원 수정", notes="회원 이메일/닉네임 검증")
-    public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
+    //public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
+    public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
             Member updatedMember = memberService.updateMember(request);
             ImageDto imageDto = null;
