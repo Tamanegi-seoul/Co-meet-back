@@ -17,6 +17,9 @@ spring:
         #show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 logging:
   level:
     org.hibernate.SQL: debug #하이버네이트가 생성하는 쿼리문을 다 볼 수 있다.
