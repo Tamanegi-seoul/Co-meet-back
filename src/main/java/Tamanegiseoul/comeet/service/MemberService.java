@@ -98,11 +98,11 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public Member updateMember(UpdateMemberRequest request) {
         Member findMember = this.findMemberById(request.getMemberId());
-        Long findmemberId = findMember.getMemberId();
+        Long findMemberId = findMember.getMemberId();
         findMember.changeNickname(request.getNewNickname());
         findMember.changePassword(passwordEncoder.encode(request.getNewPassword()));
         //findMember.initPreferredTechStacks();
-        this.updatePreferStack(findmemberId, request.getUpdatedStacks());
+        this.updatePreferStack(findMemberId, request.getUpdatedStacks());
         findMember.updateModifiedDate();
         em.flush();
         em.clear();
