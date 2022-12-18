@@ -19,6 +19,7 @@ public class SwaggerConfig {
     @Bean
     public Docket api() { // Docket: swagger 설정의 핵심이 되는 Bean
         return new Docket(DocumentationType.OAS_30)
+                .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.any()) // apis: api스펙이 작성되어 있는 패키지(controller)를 지정
                 .paths(PathSelectors.any()) // paths: apis에 있는 API 중 특정 path를 선택
