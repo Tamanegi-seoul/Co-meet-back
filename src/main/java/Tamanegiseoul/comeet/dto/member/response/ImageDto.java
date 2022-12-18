@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.ImageData;
 import Tamanegiseoul.comeet.utils.ImageUtil;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.annotations.ApiParam;
 import lombok.Builder;
 import lombok.Data;
 
