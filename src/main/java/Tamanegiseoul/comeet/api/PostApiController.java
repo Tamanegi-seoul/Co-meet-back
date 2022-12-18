@@ -19,6 +19,7 @@ import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
 import Tamanegiseoul.comeet.service.MemberService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/api/post")
+@Tag(name = "Post API", description = "게시글 관련 CRUD 기능 제공")
 public class PostApiController {
 
     private final PostService postService;

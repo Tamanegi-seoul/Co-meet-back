@@ -19,6 +19,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,7 +47,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping("/api/member")
+@Tag(name = "Member API", description = "회원 관련 CRUD 기능 제공")
 public class MemberApiController {
     private final MemberService memberService;
     private final PostService postService;
@@ -55,9 +58,10 @@ public class MemberApiController {
 
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
 
-    @GetMapping("/member/validate")
-    @ApiOperation(value="검증", notes="회원 이메일/닉네임 검증")
+    @GetMapping("/validate")
+    @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
             memberService.validateMemberEmail(email);
@@ -69,8 +73,8 @@ public class MemberApiController {
         }
     }
 
-    @PostMapping("/member/join")
-    @ApiOperation(value="회원가입", notes="새로운 회원 등록")
+    @PostMapping("/join")
+    @Operation(summary = "신규 회원가입", description = "새로운 회원 등록")
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
         log.error(request.toString());
         log.error("join request's password {}", request.getPassword());
@@ -120,31 +124,9 @@ public class MemberApiController {
         }
     }
 
-    @PostMapping("/role/save")
-    @ApiOperation(value="권한 등록", notes="신규 권한 등록")
-    public ResponseEntity<ApiResponse> saveRole(@RequestBody @Valid Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        memberService.saveRole(role);
-        //return ResponseEntity.created(uri).body(role);
 
-        return null;
-    }
-
-    @PostMapping("/role/addToUser")
-    @ApiOperation(value="권한 지정", notes="기존 회원 권한 지정")
-    public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid Member member, @RequestBody @Valid Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-
-        memberService.addRoleToMember(member.getNickname(), role.getRoleName());
-        //return ResponseEntity.created(uri).body(role);
-
-        return null;
-    }
-
-
-
-    @DeleteMapping("/member/remove")
-    @ApiOperation(value="회원 탈퇴", notes="등록된 회원 탈퇴")
+    @DeleteMapping("/remove")
+    @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
     public ResponseEntity<ApiResponse> removeMember(@RequestBody @Valid RemoveMemberRequest request) {
         try {
             log.error("[MemberApiController:removeUser]method executed");
@@ -164,8 +146,8 @@ public class MemberApiController {
         }
     }
 
-    @GetMapping("/member/search")
-    @ApiOperation(value="회원 검색", notes="등록된 회원정보 조회")
+    @GetMapping("/search")
+    @Operation(summary = "회원 조회", description = "등록된 회원정보 조회")
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("member_id") Long memberId) {
         try {
             Member findMember = memberService.findMemberById(memberId);
@@ -189,8 +171,8 @@ public class MemberApiController {
     }
 
 
-    @PatchMapping("/member/update")
-    @ApiOperation(value="회원 수정", notes="회원 이메일/닉네임 검증")
+    @PatchMapping("/update")
+    @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정")
     //public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
     public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
@@ -234,83 +216,10 @@ public class MemberApiController {
         }
     }
 
-    @GetMapping("/member/members")
-    @ApiOperation(value="회원 전체 조회", notes="회원 전체 조회")
+    @GetMapping("/members")
+    @Operation(summary = "회원 전체 조회", description = "회원 전체 조회")
     public ResponseEntity<List<Member>> getMembers() {
         return ResponseEntity.ok().body(memberService.findAll());
-    }
-
-
-    @GetMapping("/token/refresh")
-    @ApiOperation(value="토큰 갱신", notes="발행된 토큰 재발급")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.info("[MemberApiController:refreshToken]method executed");
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            log.info("[MemberApiController:refreshToken]authorizationHeader is valid");
-            try {
-                log.info("[MemberApiController:refreshToken]try refresh token");
-                String refreshToken = authorizationHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String memberEmail = decodedJWT.getSubject();
-                Member member = memberService.findMemberByEmail(memberEmail);
-
-                String accessToken = JWT.create()
-                        .withSubject(member.getEmail()) // get email (security's username)
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("nickname", member.getNickname())
-                        .withClaim("member_id", member.getMemberId())
-                        .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
-                        .sign(algorithm);
-
-                /*
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", accessToken);
-                tokens.put("refresh_token", refreshToken);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-                 */
-                Cookie accessCookie = new Cookie("access_token", accessToken);
-                accessCookie.setMaxAge(7 * 86400);
-                accessCookie.setComment("access_token");
-                //accessCookie.setHttpOnly(true);
-                accessCookie.setPath(request.getContextPath());
-                Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
-                refreshCookie.setMaxAge(14 * 86400);
-                refreshCookie.setComment("refresh_token");
-                //refreshCookie.setHttpOnly(true);
-                refreshCookie.setPath(request.getContextPath());
-
-                response.addCookie(accessCookie);
-                response.addCookie(refreshCookie);
-
-
-                Map<String, String> responseBody = new HashMap<>();
-                responseBody.put("status_code", String.valueOf(HttpStatus.OK));
-                responseBody.put("response_message", ResponseMessage.REFRESH_TOKEN);
-                responseBody.put("access_token", accessToken);
-                responseBody.put("refresh_token", refreshToken);
-                response.setContentType(APPLICATION_JSON_VALUE);
-
-                new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
-
-
-            }  catch (Exception e) {
-                response.setHeader("error", e.getMessage());
-                response.setStatus(FORBIDDEN);
-                //response.sendError(FORBIDDEN);
-                Map<String, String> error = new HashMap<>();
-                error.put("error_message", e.getMessage());
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
-            }
-        } else {
-            throw new RuntimeException("Refresh token is missing");
-        }
-
     }
 
 

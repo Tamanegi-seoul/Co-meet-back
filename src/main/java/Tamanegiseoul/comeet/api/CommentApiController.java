@@ -8,7 +8,6 @@ import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.RemoveCommentRequest;
-import Tamanegiseoul.comeet.dto.comment.request.SearchCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
@@ -17,7 +16,8 @@ import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.MemberService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,13 +31,14 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/api/comment")
+@Tag(name = "Comment API", description = "덧글 관련 CRUD 기능 제공")
 public class CommentApiController {
     private final MemberService memberService;
     private final PostService postService;
     private final CommentService commentService;
 
     @PostMapping("/register")
-    @ApiOperation(value="덧글 등록", notes="포스트에 대한 덧글 작성")
+    @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
             Posts findPost = postService.findPostById(request.getPostId());
@@ -56,7 +57,7 @@ public class CommentApiController {
     }
 
     @PatchMapping("/update")
-    @ApiOperation(value="덧글 수정", notes="등록된 덧글 수정")
+    @Operation(summary = "덧글 수정", description = "포스트에 작성된 덧글 수정")
     public ResponseEntity<ApiResponse> updateComment(@RequestBody @Valid UpdateCommentRequest request) {
         try {
             Comment updatedComment = commentService.updateComment(request);
@@ -67,7 +68,7 @@ public class CommentApiController {
     }
 
     @DeleteMapping("/remove")
-    @ApiOperation(value="덧글 삭제", notes="등록된 덧글 삭제")
+    @Operation(summary = "덧글 삭제", description = "포스트에 작성된 덧글 삭제")
     public ResponseEntity<ApiResponse> removeComment(@RequestBody @Valid RemoveCommentRequest request) {
         try {
             Comment findComment = commentService.findCommentById(request.getCommentId());
@@ -80,7 +81,7 @@ public class CommentApiController {
     }
 
     @GetMapping("/search")
-    @ApiOperation(value="덧글 조회", notes="등록된 덧글 단건 조회")
+    @Operation(summary = "덧글 조회", description = "포스트에 작성된 덧글 조회")
     public ResponseEntity<ApiResponse> searchComment(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
