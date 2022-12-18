@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.security;
 
 import Tamanegiseoul.comeet.service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final MemberService memberService;
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -33,19 +36,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), memberService);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/login"); // overwrite default url
-        http.cors();
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/*").permitAll();
-        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/member/validate").permitAll();
-        http.authorizeRequests().antMatchers("/api/member/join").permitAll();
-        http.authorizeRequests().antMatchers("/api/member/search").permitAll();
-        http.authorizeRequests().antMatchers("/api/member/update").permitAll();
+        customAuthenticationFilter.setFilterProcessesUrl("/api/auth/login"); // overwrite default url
 
-        http.authorizeRequests().antMatchers("/api/post/search/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/comment/search/**").permitAll();
+        http.cors()
+                .and()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
+
+
+                    .antMatchers("/api/auth/login/**", "/api/auth/token/refresh/**").permitAll()
+                    .antMatchers("/api/member/validate").permitAll()
+                    .antMatchers("/api/member/join").permitAll()
+                    .antMatchers("/api/member/search").permitAll()
+                    .antMatchers("/api/member/update").permitAll()
+                    .antMatchers("/api/member/remove").permitAll()
+
+                    .antMatchers("/api/post/search/**").permitAll()
+                    .antMatchers("/api/comment/search/**").permitAll()
 
 //        http.authorizeRequests().antMatchers("/api/member/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 //        http.authorizeRequests().antMatchers("/api/member/remove").authenticated();
@@ -59,11 +68,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.authorizeRequests().antMatchers("/api/comment/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 //        http.authorizeRequests().antMatchers("/api/comment/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
 
-        http.authorizeRequests().antMatchers("/api/role/**").hasAnyAuthority("ROLE_ADMIN");
 
-        http.authorizeRequests().anyRequest().permitAll();
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+                    .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
+                    .anyRequest().permitAll()
+                        .and()
+                    .addFilter(customAuthenticationFilter)
+                        .exceptionHandling()
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .and()
+                    .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                        .exceptionHandling()
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 
     @Bean
@@ -71,4 +87,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    
 }
