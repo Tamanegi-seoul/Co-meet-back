@@ -11,6 +11,7 @@ import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -202,6 +203,7 @@ public class MemberService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("[MemberService:loadUserByUsername]method executed");
         Member member = memberRepository.findMemberByEmail(email);
         if(member == null) {
             log.error("Member having email {} not found in the database", email);
@@ -214,6 +216,6 @@ public class MemberService implements UserDetailsService {
         member.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
         });
-        return new org.springframework.security.core.userdetails.User(member.getEmail(), member.getPassword(), authorities);
+        return new User(member.getEmail(), member.getPassword(), authorities);
     }
 }
