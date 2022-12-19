@@ -20,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
      // in UsernamePasswordAuthenticationFilter, DEFAULT_ANT_PATH_REQUEST_MATCHER defined url for login as (POST, "/login")
 
@@ -68,10 +69,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return request.getParameter(email);
     }
 
-    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
+        // below for request json parser
         if(request.getHeader("Content-Type").equals(APPLICATION_JSON_VALUE)) {
             log.info("JSON LOGIN ATTEMP");
 
@@ -84,6 +85,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 throw new AuthenticationServiceException("Request Content-Type(application/json) Parsing Error");
             }
         }
+
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 

@@ -5,10 +5,12 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -29,11 +31,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-
 
         log.info("execute doFilterInternal");
         if(request.getServletPath().equals("/api/login") || request.getServletPath().equals("/api/token/refresh")) {
@@ -58,10 +57,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userEmail, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-                    log.error("CHECK");
-                    log.error("{}", request.getAttribute("user_id"));
                     filterChain.doFilter(request, response);
-                    log.error("CHECK");
                 } catch (Exception e) {
                     log.info("in doFilterInternal, inside catch");
                     log.error("Error logging in: {}", e.getMessage());
