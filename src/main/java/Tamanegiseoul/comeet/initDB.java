@@ -3,50 +3,59 @@ package Tamanegiseoul.comeet;
 import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.Role;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.MemberService;
-import lombok.RequiredArgsConstructor;
+import Tamanegiseoul.comeet.service.PostService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 
 @Component
-//@Profile("dev")
-@RequiredArgsConstructor
 public class initDB {
-    private final InitService initService;
-    private final MemberService memberService;
 
-    @PostConstruct
-    public void init() {
-        initService.dbInit();
-    }
-
-    @Component
-    @Transactional
-    @RequiredArgsConstructor
-    static class InitService {
-        private final EntityManager em;
-
-        public void dbInit() {
+    @Bean
+    CommandLineRunner generateMockData(MemberService memberService, PostService postService, CommentService commentService) {
+        return args -> {
 
             /**
-             * implement mock-up users
+             * INIT ROLE
              */
-            Member memberA = Member.builder() // memberId = 1
+
+            memberService.saveRole(Role.builder().roleName("ROLE_USER").build());
+            memberService.saveRole(Role.builder().roleName("ROLE_MANAGER").build());
+            memberService.saveRole(Role.builder().roleName("ROLE_ADMIN").build());
+
+            /**
+             * SET UP MOCK MEMBER
+             */
+
+            memberService.registerMember(
+                    Member.builder()
+                            .email("admin")
+                            .nickname("관리자")
+                            .password("password")
+                            .build()
+            );
+
+            memberService.addRoleToMember("admin", "ROLE_ADMIN");
+
+            Member memberA = Member.builder()
                     .nickname("Pansy Stone")
                     .email("p.stone@comeet.com")
                     .password("password")
                     .build();
-            memberA.addPreferStack(TechStack.R);
-            memberA.addPreferStack(TechStack.JAVA);
+            memberA.addPreferStack(TechStack.JAVA_SCRIPT);
+            memberA.addPreferStack(TechStack.PYTHON);
             memberA.updateCreatedDate();
             memberA.updateModifiedDate();
-            em.persist(memberA);
+            memberService.registerMember(memberA);
+            memberService.addRoleToMember("p.stone@comeet.com", "ROLE_USER");
+
 
             Member memberB = Member.builder() // memberId = 2
                     .nickname("Carl Craig")
@@ -57,12 +66,13 @@ public class initDB {
             memberB.addPreferStack(TechStack.PYTHON);
             memberB.updateCreatedDate();
             memberB.updateModifiedDate();
-            em.persist(memberB);
+            memberService.registerMember(memberB);
+            memberService.addRoleToMember("c.craig@comeet.com", "ROLE_USER");
+
 
             /**
-             * implement mock-up posts
+             *  SET UT MOCK POST
              */
-
             Posts postA = Posts.builder() // postId = 5
                     .title("need JAVA study crew!")
                     .content("tba")
@@ -76,9 +86,9 @@ public class initDB {
             postA.addDesignateStack(TechStack.JAVA);
             postA.updateCreatedDate();
             postA.updateModifiedDate();
-            em.persist(postA);
+            postService.registerPost(postA);
 
-            Posts postB = Posts.builder() // postId = 7
+            Posts postB = Posts.builder()
                     .title("come on, Python algorithm study crew!")
                     .content("tba")
                     .poster(memberB)
@@ -91,11 +101,134 @@ public class initDB {
             postB.addDesignateStack(TechStack.PYTHON);
             postB.updateCreatedDate();
             postB.updateModifiedDate();
-            em.persist(postB);
+            postService.registerPost(postB);
+
+            Posts postC = Posts.builder()
+                    .title("POST C!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-01-24"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postC.addDesignateStack(TechStack.PYTHON);
+            postC.updateCreatedDate();
+            postC.updateModifiedDate();
+            postService.registerPost(postC);
+
+            Posts postD = Posts.builder()
+                    .title("POST D!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-01-25"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postD.addDesignateStack(TechStack.PYTHON);
+            postD.updateCreatedDate();
+            postD.updateModifiedDate();
+            postService.registerPost(postD);
+
+            Posts postE = Posts.builder()
+                    .title("POST E!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-01-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postE.addDesignateStack(TechStack.PYTHON);
+            postE.updateCreatedDate();
+            postE.updateModifiedDate();
+            postService.registerPost(postE);
+
+            Posts postF = Posts.builder()
+                    .title("POST F!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-02-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postF.addDesignateStack(TechStack.PYTHON);
+            postF.updateCreatedDate();
+            postF.updateModifiedDate();
+            postService.registerPost(postF);
+
+
+            Posts postG = Posts.builder()
+                    .title("POST F!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-02-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postG.addDesignateStack(TechStack.PYTHON);
+            postG.updateCreatedDate();
+            postG.updateModifiedDate();
+            postService.registerPost(postG);
+
+
+            Posts postH = Posts.builder()
+                    .title("POST H!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-03-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postH.addDesignateStack(TechStack.PYTHON);
+            postH.updateCreatedDate();
+            postH.updateModifiedDate();
+            postService.registerPost(postH);
+
+            Posts postI = Posts.builder()
+                    .title("POST I!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-03-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postI.addDesignateStack(TechStack.PYTHON);
+            postI.updateCreatedDate();
+            postI.updateModifiedDate();
+            postService.registerPost(postI);
+
+            Posts postJ = Posts.builder()
+                    .title("POST J!")
+                    .content("tba")
+                    .poster(memberB)
+                    .contact("c.carig@gmail.com")
+                    .contactType(ContactType.POSTER_EMAIL)
+                    .startDate(LocalDate.parse("2022-03-26"))
+                    .expectedTerm(90L)
+                    .recruitCapacity(4L)
+                    .build();
+            postJ.addDesignateStack(TechStack.PYTHON);
+            postJ.updateCreatedDate();
+            postJ.updateModifiedDate();
+            postService.registerPost(postJ);
 
             /**
-             * implement mock-up comments
+             * SET UP MOCK COMMENTS
              */
+
             Comment comA = Comment.builder() // commentId = 9
                     .post(postA)
                     .member(memberA)
@@ -103,7 +236,7 @@ public class initDB {
                     .build();
             comA.updateCreatedTime();
             comA.updateModifiedTime();
-            em.persist(comA);
+            commentService.registerComment(comA);
 
             Comment comB = Comment.builder() // commentId = 10
                     .post(postA)
@@ -112,7 +245,7 @@ public class initDB {
                     .build();
             comB.updateCreatedTime();
             comB.updateModifiedTime();
-            em.persist(comB);
+            commentService.registerComment(comB);
 
             Comment comC = Comment.builder() // commentId = 11
                     .post(postB)
@@ -121,11 +254,7 @@ public class initDB {
                     .build();
             comC.updateCreatedTime();
             comC.updateModifiedTime();
-            em.persist(comC);
-
-
-        }
-
-
+            commentService.registerComment(comC);
+        };
     }
 }

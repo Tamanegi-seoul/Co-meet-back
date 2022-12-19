@@ -17,26 +17,27 @@ public class CoMeetApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CoMeetApplication.class, args);
 	}
+//
+//	@Bean
+//	CommandLineRunner setAdmin(MemberService memberService) {
+//		return args -> {
+////			memberService.saveRole(Role.builder().roleName("ROLE_USER").build());
+////			memberService.saveRole(Role.builder().roleName("ROLE_MANAGER").build());
+////			memberService.saveRole(Role.builder().roleName("ROLE_ADMIN").build());
+//			//userService.saveRole(Role.builder().roleName("ROLE_SUPER_ADMIN").build());
+//
+//			memberService.registerMember(
+//					Member.builder()
+//							.email("admin")
+//							.nickname("관리자")
+//							.password("password")
+//							.build()
+//			);
+//
+//			memberService.addRoleToMember("admin", "ROLE_ADMIN");
+//		};
+//	}
 
-	@Bean
-	CommandLineRunner run(MemberService memberService) {
-		return args -> {
-			memberService.saveRole(Role.builder().roleName("ROLE_USER").build());
-			memberService.saveRole(Role.builder().roleName("ROLE_MANAGER").build());
-			memberService.saveRole(Role.builder().roleName("ROLE_ADMIN").build());
-			//userService.saveRole(Role.builder().roleName("ROLE_SUPER_ADMIN").build());
-
-			memberService.registerMember(
-					Member.builder()
-							.email("admin")
-							.nickname("관리자")
-							.password("password")
-							.build()
-			);
-
-			memberService.addRoleToMember("admin", "ROLE_ADMIN");
-		};
-	}
 
 	@Bean
 	PasswordEncoder passwordEncoder() {
