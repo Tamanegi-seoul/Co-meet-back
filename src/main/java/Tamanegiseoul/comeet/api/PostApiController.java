@@ -1,19 +1,18 @@
 package Tamanegiseoul.comeet.api;
 
+import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
+import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.RemovePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.SearchPostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
-import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
-import Tamanegiseoul.comeet.dto.post.response.RemovePostResponse;
-import Tamanegiseoul.comeet.dto.post.response.SearchPostResponse;
-import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
+import Tamanegiseoul.comeet.dto.post.response.*;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.StackRelationService;
@@ -101,7 +100,7 @@ public class PostApiController {
             log.warn("found "+allPosts.size()+"ea posts from DB");
 
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toDtoList(allPosts));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(allPosts));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -112,10 +111,13 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
+            List<CommentDto> commentDtoList = toCommentDtoList(commentService.findCommentByPostId(postId));
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(postId);
+
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST,
                     SearchPostResponse.toDto(findPost)
                             .designatedStacks(techStacks)
+                            .comments(commentDtoList)
             );
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
@@ -136,16 +138,24 @@ public class PostApiController {
     }
 
 
-    private List<SearchPostResponse> toDtoList(List<Posts> postList) {
-        List<SearchPostResponse> list = new ArrayList<>();
+    private List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
+        List<PostCompactDto> list = new ArrayList<>();
         for(Posts post : postList) {
-            SearchPostResponse response = SearchPostResponse.toDto(post);
+            PostCompactDto dto = PostCompactDto.toDto(post);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
             log.warn("[PostApiController:toDtoList]"+techStacks.toString());
-            response.designatedStacks(techStacks);
-            list.add(response);
+            dto.designatedStacks(techStacks);
+            list.add(dto);
         }
         return list;
+    }
+
+    private List<CommentDto> toCommentDtoList(List<Comment> comments) {
+        List<CommentDto> dtos = new ArrayList<>();
+        for(Comment c : comments) {
+            dtos.add(CommentDto.toDto(c));
+        }
+        return dtos;
     }
 
 }
