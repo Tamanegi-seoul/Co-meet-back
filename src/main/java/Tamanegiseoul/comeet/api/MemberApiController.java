@@ -183,7 +183,7 @@ public class MemberApiController {
                             .memberId(request.getMemberId())
                             .nickname(updatedMember.getNickname())
                             .email(updatedMember.getEmail())
-                            .preferredStacks(preferredStacks)
+                            .preferStacks(preferredStacks)
                             .createdTime(updatedMember.getCreatedTime())
                             .modifiedTime(updatedMember.getModifiedTime())
                             .profileImage(imageDto)
