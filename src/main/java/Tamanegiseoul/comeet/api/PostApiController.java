@@ -53,6 +53,7 @@ public class PostApiController {
             Posts newPost = Posts.builder()
                     .title(request.getTitle())
                     .content(request.getContent())
+                    .groupType(request.getGroupType())
                     .contactType(request.getContactType())
                     .contact(request.getContact())
                     .poster(findMember)
