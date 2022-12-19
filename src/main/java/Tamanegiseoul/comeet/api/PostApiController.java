@@ -8,6 +8,7 @@ import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.RemovePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.SearchPostRequest;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -93,14 +95,14 @@ public class PostApiController {
 
     @GetMapping("/search/all")
     @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
-    public ResponseEntity<ApiResponse> searchAllPost() {
+    public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset",defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
             log.warn("[PostApiController:searchAllPost]method execute init");
-            List<Posts> allPosts = postService.findAll();
-            log.warn("found "+allPosts.size()+"ea posts from DB");
+            //List<Posts> allPosts = postService.findAll();
+            List<Posts> findPosts = postService.findAll(offset, limit);
+            log.warn("found "+findPosts.size()+"ea posts from DB");
 
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(allPosts));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(findPosts));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }

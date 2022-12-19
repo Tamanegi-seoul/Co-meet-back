@@ -24,6 +24,13 @@ public class PostRepository {
                 .getResultList();
     }
 
+    public List<Posts> findAll(int offset, int limit) {
+        return em.createQuery("select p from Posts p order by p.postId asc", Posts.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
     public List<Posts> findPostBymemberId(Long memberId) {
         return em.createQuery("select p from Posts p where p.poster.memberId = :memberId", Posts.class)
                 .setParameter("memberId", memberId)

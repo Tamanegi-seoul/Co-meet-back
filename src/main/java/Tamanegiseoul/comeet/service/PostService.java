@@ -108,6 +108,11 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
+    public List<Posts> findAll(int offset, int limit) {
+        return postRepository.findAll(offset, limit);
+    }
+
+    @Transactional(readOnly = true)
     public List<Posts> findPostBymemberId(Long memberId) {
         return postRepository.findPostBymemberId(memberId);
     }
