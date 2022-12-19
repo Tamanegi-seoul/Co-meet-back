@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet.dto.post.response;
 
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
@@ -23,6 +24,8 @@ import java.util.List;
 public class SearchPostResponse {
     private Long postId;
     private String title;
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
     private String content;
     @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
@@ -48,6 +51,7 @@ public class SearchPostResponse {
                 .postId(findPost.getPostId())
                 .title(findPost.getTitle())
                 .content(findPost.getContent())
+                .groupType(findPost.getGroupType())
                 .posterId(findPost.getPoster().getMemberId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .contactType(findPost.getContactType())

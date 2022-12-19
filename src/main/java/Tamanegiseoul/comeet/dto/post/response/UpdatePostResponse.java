@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet.dto.post.response;
 
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -22,6 +23,8 @@ public class UpdatePostResponse {
     private Long postId;
     private String title;
     private String content;
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
     @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
     private Long recruitCapacity;
@@ -44,6 +47,7 @@ public class UpdatePostResponse {
                 .posterId(findPost.getPoster().getMemberId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .title(findPost.getTitle())
+                .groupType(findPost.getGroupType())
                 .content(findPost.getContent())
                 .contact(findPost.getContact())
                 .contactType(findPost.getContactType())

@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet.dto.post.response;
 
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -27,6 +28,8 @@ public class PostCompactDto {
     @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
 
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
     // private Boolean remote; // can be changed
 
     private LocalDate startDate;
@@ -46,6 +49,7 @@ public class PostCompactDto {
         return PostCompactDto.builder()
                 .postId(findPost.getPostId())
                 .title(findPost.getTitle())
+                .groupType(findPost.getGroupType())
                 .posterId(findPost.getPoster().getMemberId())
                 .posterNickname(findPost.getPoster().getNickname())
                 .recruitStatus(findPost.getRecruitStatus())

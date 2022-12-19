@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.dto.post.request;
 
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -30,6 +31,9 @@ public class UpdatePostRequest {
     private Long postId;
     @Schema(description = "수정할 포스트 제목", example = "(수정)자바 알고리즘 스터디 구인")
     private String title;
+    @Schema(description = "수정할 포스트의 모집 그룹 타입", example = "PROJECT")
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
     @Schema(description = "수정할 포스트 내용", example = "서울지역 자바 알고리즘 스터디원 모집해요")
     private String content;
     @Schema(description = "모집 상태", example = "DONE")
