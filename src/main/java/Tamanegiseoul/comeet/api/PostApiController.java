@@ -57,6 +57,7 @@ public class PostApiController {
                     .contactType(request.getContactType())
                     .contact(request.getContact())
                     .poster(findMember)
+                    .remote(request.getRemote())
                     .startDate(request.getStartDate())
                     .expectedTerm(request.getExpectedTerm())
                     .recruitCapacity(request.getRecruitCapacity())
