@@ -13,5 +13,5 @@ import java.util.List;
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SearchPostListResponse {
-    private List<SearchPostResponse> resultList;
+    private List<PostCompactDto> resultList;
 }
