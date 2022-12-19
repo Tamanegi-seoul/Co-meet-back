@@ -16,7 +16,7 @@ public class UpdateMemberResponse {
     private Long memberId;
     private String nickname;
     private String email;
-    private List<TechStack> preferredStacks;
+    private List<TechStack> preferStacks;
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
     private ImageDto profileImage;
