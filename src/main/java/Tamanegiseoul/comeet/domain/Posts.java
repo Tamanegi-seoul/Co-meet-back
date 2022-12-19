@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.domain;
 
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
@@ -29,6 +30,10 @@ public class Posts {
 
     @NotNull
     private String title;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private GroupType groupType;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -77,8 +82,9 @@ public class Posts {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public Posts(String title, Long recruitCapacity, String contact, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, Member poster) {
+    public Posts(String title, Long recruitCapacity, String contact, GroupType groupType, ContactType contactType, LocalDate startDate, Long expectedTerm, String content, Boolean remote, Member poster) {
         this.title = title;
+        this.groupType = groupType;
         this.recruitStatus = RecruitStatus.RECRUIT;
         this.recruitCapacity = recruitCapacity;
         this.startDate = startDate;
@@ -111,6 +117,8 @@ public class Posts {
         }
     }
 
+    public void updateGroupType(GroupType groupType) { this.groupType = groupType; }
+
     public void updateTitle(String title) {
         this.title = title;
     }
@@ -135,6 +143,7 @@ public class Posts {
         this.content = updatePost.getContent();
         this.contactType = updatePost.getContactType();
         this.contact = updatePost.getContact();
+        this.groupType = updatePost.getGroupType();
         this.recruitStatus = updatePost.getRecruitStatus();
         this.recruitCapacity = updatePost.getRecruitCapacity();
         this.startDate = updatePost.getStartDate();
