@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -40,6 +41,8 @@ public class SearchPostResponse {
     private LocalDateTime createdTime;
     private LocalDateTime modifiedTime;
 
+    private List<CommentDto> comments;
+
     public static SearchPostResponse toDto(Posts findPost) {
         return SearchPostResponse.builder()
                 .postId(findPost.getPostId())
@@ -61,6 +64,11 @@ public class SearchPostResponse {
 
     public SearchPostResponse designatedStacks(List<TechStack> stacks) {
         this.designatedStacks = stacks;
+        return this;
+    }
+
+    public SearchPostResponse comments(List<CommentDto> list) {
+        this.comments = list;
         return this;
     }
 
