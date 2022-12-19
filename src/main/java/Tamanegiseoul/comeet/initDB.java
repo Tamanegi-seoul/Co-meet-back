@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+import static Tamanegiseoul.comeet.domain.enums.GroupType.PROJECT;
+import static Tamanegiseoul.comeet.domain.enums.GroupType.STUDY;
+
 @Component
 public class initDB {
 
@@ -78,6 +81,8 @@ public class initDB {
                     .content("tba")
                     .poster(memberA)
                     .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
                     .contactType(ContactType.KAKAO_OPEN_CHAT)
                     .startDate(LocalDate.parse("2021-08-15"))
                     .expectedTerm(21L)
@@ -92,7 +97,9 @@ public class initDB {
                     .title("come on, Python algorithm study crew!")
                     .content("tba")
                     .poster(memberB)
+                    .remote(false)
                     .contact("c.carig@gmail.com")
+                    .groupType(PROJECT)
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-01-23"))
                     .expectedTerm(90L)
@@ -107,6 +114,8 @@ public class initDB {
                     .title("POST C!")
                     .content("tba")
                     .poster(memberB)
+                    .groupType(STUDY)
+                    .remote(false)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-01-24"))
@@ -122,6 +131,8 @@ public class initDB {
                     .title("POST D!")
                     .content("tba")
                     .poster(memberB)
+                    .groupType(STUDY)
+                    .remote(false)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-01-25"))
@@ -137,6 +148,8 @@ public class initDB {
                     .title("POST E!")
                     .content("tba")
                     .poster(memberB)
+                    .remote(false)
+                    .groupType(PROJECT)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-01-26"))
@@ -151,7 +164,9 @@ public class initDB {
             Posts postF = Posts.builder()
                     .title("POST F!")
                     .content("tba")
+                    .remote(false)
                     .poster(memberB)
+                    .groupType(PROJECT)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-02-26"))
@@ -167,7 +182,9 @@ public class initDB {
             Posts postG = Posts.builder()
                     .title("POST F!")
                     .content("tba")
+                    .remote(false)
                     .poster(memberB)
+                    .groupType(PROJECT)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-02-26"))
@@ -184,6 +201,8 @@ public class initDB {
                     .title("POST H!")
                     .content("tba")
                     .poster(memberB)
+                    .groupType(PROJECT)
+                    .remote(false)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-03-26"))
@@ -198,6 +217,8 @@ public class initDB {
             Posts postI = Posts.builder()
                     .title("POST I!")
                     .content("tba")
+                    .groupType(STUDY)
+                    .remote(false)
                     .poster(memberB)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
@@ -214,6 +235,8 @@ public class initDB {
                     .title("POST J!")
                     .content("tba")
                     .poster(memberB)
+                    .groupType(STUDY)
+                    .remote(false)
                     .contact("c.carig@gmail.com")
                     .contactType(ContactType.POSTER_EMAIL)
                     .startDate(LocalDate.parse("2022-03-26"))
