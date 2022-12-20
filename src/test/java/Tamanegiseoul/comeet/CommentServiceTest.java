@@ -114,7 +114,7 @@ public class CommentServiceTest {
         // given
 
         Member findMember = memberService.findMemberByNickname("케네스");
-        Posts findPost = postService.findPostBymemberId(findMember.getMemberId()).get(0);
+        Posts findPost = postService.findPostByMemberId(findMember.getMemberId()).get(0);
 
         Comment newComment = Comment.builder()
                 .post(findPost)
