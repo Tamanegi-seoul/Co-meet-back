@@ -47,7 +47,6 @@ public class PostApiController {
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
-            log.warn("[PostApi:registerPost] registerPost init");
             Member findMember = memberService.findMemberById(request.getPosterId());
 
             Posts newPost = Posts.builder()
@@ -63,12 +62,9 @@ public class PostApiController {
                     .recruitCapacity(request.getRecruitCapacity())
                     .build();
 
-            log.warn("[PostApi:registerPost] successfully build Post entity");
             postService.registerPost(newPost);
-            log.warn("[PostApi:registerPost] successfully registered");
 
             newPost.updateDesignateStack(request.getDesignatedStacks());
-            log.warn("[PostApi:registerPost] updated designate stacks");
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
                     CreatePostResponse.toDto(newPost)
@@ -99,10 +95,19 @@ public class PostApiController {
     @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
     public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset",defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
-            log.warn("[PostApiController:searchAllPost]method execute init");
-            //List<Posts> allPosts = postService.findAll();
             List<Posts> findPosts = postService.findAll(offset, limit);
-            log.warn("found "+findPosts.size()+"ea posts from DB");
+
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(findPosts));
+        } catch (ResourceNotFoundException e) {
+            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/search/by")
+    @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
+    public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="member_id") @Valid Long memberId) {
+        try {
+            List<Posts> findPosts = postService.findPostByMemberId(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(findPosts));
         } catch (ResourceNotFoundException e) {
