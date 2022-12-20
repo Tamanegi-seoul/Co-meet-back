@@ -1,9 +1,11 @@
 package Tamanegiseoul.comeet.service;
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.repository.CommentRepository;
+import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.StackRelationRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class PostService {
     private final StackRelationService stackRelationService;
 
     private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final StackRelationRepository stackRelationRepository;
 
@@ -69,7 +72,7 @@ public class PostService {
 
     @Transactional
     public void removePostByPosterId(Long memberId) {
-        List<Posts> findPosts = postRepository.findPostBymemberId(memberId);
+        List<Posts> findPosts = postRepository.findPostByMemberId(memberId);
         // first, remove child entity
         for(Posts p : findPosts) {
             stackRelationRepository.removeRelatedStacksByPost(p.getPostId());
@@ -113,8 +116,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findPostBymemberId(Long memberId) {
-        return postRepository.findPostBymemberId(memberId);
+    public List<Posts> findPostByMemberId(Long memberId) {
+        Member findMember = memberRepository.findOne(memberId);
+        if(findMember == null) {
+            throw new ResourceNotFoundException("member_id", "memberId", memberId);
+        }
+        return postRepository.findPostByMemberId(memberId);
     }
 
 
