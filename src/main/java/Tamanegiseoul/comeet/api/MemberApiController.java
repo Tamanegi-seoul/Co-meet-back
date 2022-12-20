@@ -110,11 +110,9 @@ public class MemberApiController {
 
     @DeleteMapping("/remove")
     @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
-    public ResponseEntity<ApiResponse> removeMember(@RequestBody @Valid RemoveMemberRequest request) {
+    public ResponseEntity<ApiResponse> removeMember(@RequestParam("member_id") @Valid Long memberId) {
         try {
-            log.error("[MemberApiController:removeUser]method executed");
-            log.error("[MemberApiController:removeUser]{}", request.toString());
-            Long memberId = request.getMemberId();
+
             Member findMember = memberService.findMemberById(memberId);
             RemoveMemberResponse response = RemoveMemberResponse.builder()
                     .memberId(findMember.getMemberId())
