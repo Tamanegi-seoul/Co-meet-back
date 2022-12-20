@@ -32,6 +32,7 @@ public class ImageDataService {
                 .imageData(ImageUtil.compressImage(file.getBytes()))
                 .owner(member)
                 .build());
+        member.addProfileImage(imageData);
 
         return ImageDto.toDto(imageData);
     }

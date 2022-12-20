@@ -75,6 +75,10 @@ public class Member {
                 .techStack(ts).build());
     }
 
+    public void addProfileImage(ImageData imageData) {
+        this.profileImage = imageData;
+    }
+
     // set LocalTime for created, modified date
     public void updateCreatedDate() {
         this.createdTime = LocalDateTime.now();
