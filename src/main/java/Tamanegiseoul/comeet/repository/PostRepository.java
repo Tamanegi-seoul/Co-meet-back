@@ -31,8 +31,8 @@ public class PostRepository {
                 .getResultList();
     }
 
-    public List<Posts> findPostBymemberId(Long memberId) {
-        return em.createQuery("select p from Posts p where p.poster.memberId = :memberId", Posts.class)
+    public List<Posts> findPostByMemberId(Long memberId) {
+        return em.createQuery("select p from Posts p where p.poster.memberId = :memberId order by p.postId asc", Posts.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
