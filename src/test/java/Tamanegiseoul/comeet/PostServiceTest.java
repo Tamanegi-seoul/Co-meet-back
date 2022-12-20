@@ -3,6 +3,7 @@ package Tamanegiseoul.comeet;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
@@ -66,7 +67,7 @@ public class PostServiceTest {
         postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
 
         // then
-        List<Posts> findPosts = postService.findPostBymemberId(newMember.getMemberId());
+        List<Posts> findPosts = postService.findPostByMemberId(newMember.getMemberId());
         log.info(findPosts.get(0).printout());
         Assert.assertEquals(1, findPosts.size());
     }
@@ -98,6 +99,7 @@ public class PostServiceTest {
         UpdatePostRequest updatedPost = new UpdatePostRequest(
                 newPost.getPostId(),
                 "이것은 수정된 포스트입니다.",
+                GroupType.STUDY,
                 "빈 내용",
                 RecruitStatus.DONE,
                 8L,
@@ -114,7 +116,7 @@ public class PostServiceTest {
         postService.updatePost(newPost, updatedPost);
 
         // then
-        Posts findPost = postService.findPostBymemberId(newMember.getMemberId()).get(0);
+        Posts findPost = postService.findPostByMemberId(newMember.getMemberId()).get(0);
         log.info(findPost.printout());
 
         Assert.assertEquals("이것은 수정된 포스트입니다.", findPost.getTitle());
