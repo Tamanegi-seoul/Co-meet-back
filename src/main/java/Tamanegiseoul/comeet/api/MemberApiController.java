@@ -174,6 +174,7 @@ public class MemberApiController {
 
             } else {
                 log.warn("[MemberApiController:updateMember] file is empty");
+                imageDataService.removeImage(updatedMember);
             }
 
             List<TechStack> preferredStacks = memberService.findPreferredStacks(updatedMember.getMemberId());

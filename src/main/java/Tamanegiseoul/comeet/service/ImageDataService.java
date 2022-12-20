@@ -49,6 +49,17 @@ public class ImageDataService {
         return ImageDto.toDto(dbImage);
     }
 
+    @Transactional
+    public void removeImage(Member targetMember) {
+        ImageData findImage = imageDataRepository.findByMemberId(targetMember.getMemberId());
+        if(findImage != null) {
+            em.remove(findImage);
+            log.info("registered member {}'s profile image has been removed.", targetMember.getNickname());
+        } else {
+            log.info("member {}'s profile image has not been registered yet.", targetMember.getNickname());
+        }
+    }
+
     public byte[] findImageDataByImageId(Long imageId) {
         ImageData findImageData = imageDataRepository.findOne(imageId);
         if(findImageData==null) {
