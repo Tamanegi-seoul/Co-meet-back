@@ -101,7 +101,7 @@ public class MemberService implements UserDetailsService {
         Member findMember = this.findMemberById(request.getMemberId());
         Long findMemberId = findMember.getMemberId();
         findMember.changeNickname(request.getNewNickname());
-        findMember.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        //findMember.changePassword(passwordEncoder.encode(request.getNewPassword()));
         //findMember.initPreferredTechStacks();
         this.updatePreferStack(findMemberId, request.getUpdatedStacks());
         findMember.updateModifiedDate();
