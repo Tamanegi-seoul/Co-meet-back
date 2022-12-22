@@ -51,7 +51,6 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
 
 <details>
     <summary>Response 객체와 FE의 JSON 네이밍 규칙</summary>
@@ -61,7 +60,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>Service 간에 대한 의존성 발생</summary>
@@ -71,7 +70,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>이미지 파일 저장 방법에 대한 고민</summary>
@@ -81,7 +80,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>발급한 토큰을 어디에 저장할 것인가</summary>
@@ -91,7 +90,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>언제 토큰 갱신 메소드를 호출하도록 설계할것인가</summary>
@@ -101,7 +100,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>토큰을 DB에 저장해야하는가</summary>
@@ -111,7 +110,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>Axios와 GET Request body</summary>
@@ -121,7 +120,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>CORS 이슈</summary>
@@ -131,7 +130,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>Front에서 Response의 쿠키에 대한 접근 불가 이슈</summary>
@@ -141,7 +140,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
     </div>
 </details>
-<br>
+
 
 <details>
     <summary>API 문서 수기 작성과 Swagger</summary>
