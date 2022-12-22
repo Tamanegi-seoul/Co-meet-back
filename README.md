@@ -1,3 +1,7 @@
+# PROJECT URL
+- RestAPI: 
+
+
 
 <br>
 
@@ -34,4 +38,130 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 - [RestAPI 명세서](https://docs.google.com/spreadsheets/d/14jZsVFbIVOiChAX0vDx1bMsGLhW0lYa-efDRx9FVq6Y/edit#gid=0)
 
 - [개발일지](https://docs.google.com/spreadsheets/d/1JbBsHJf1QMLOI4wpm6DCsqqa9aH1xJd8F5Pvpjw9WPM/edit#gid=0)
+
+
+## 기술적 고민들
+
+<br>
+<details>
+    <summary>게시글(post) 수정 방법에 대한 고민</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>Response 객체와 FE의 JSON 네이밍 규칙</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>Service 간에 대한 의존성 발생</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>이미지 파일 저장 방법에 대한 고민</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>발급한 토큰을 어디에 저장할 것인가</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>언제 토큰 갱신 메소드를 호출하도록 설계할것인가</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>토큰을 DB에 저장해야하는가</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>Axios와 GET Request body</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>CORS 이슈</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>Front에서 Response의 쿠키에 대한 접근 불가 이슈</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+<details>
+    <summary>API 문서 수기 작성과 Swagger</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+<br>
+
+
+
+## 추후 개선사항
+
+- [ ] 토큰 발행 시 Cookie를 이용한 전송(보안)
+- [ ] N+1이슈 발생 여부 확인 및 보완
+- [ ] https통신을 위한 SSL 인증서 발급 및 등록
+- [ ] 통합 테스트 진행
+- [ ] Interceptor를 활용한 ExceptionHandelr 구현
+
+
 
