@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.dto.comment.response;
 
 import Tamanegiseoul.comeet.domain.Comment;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.annotations.ApiParam;
@@ -19,7 +20,9 @@ public class UpdateCommentResponse {
     private Long commenterId;
     private String commenterNickname;
     private String content;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedTime;
 
     public static UpdateCommentResponse toDto(Comment comment) {

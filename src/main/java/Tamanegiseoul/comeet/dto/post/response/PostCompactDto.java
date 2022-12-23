@@ -5,6 +5,7 @@ import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -31,7 +32,7 @@ public class PostCompactDto {
     @Enumerated(EnumType.STRING)
     private GroupType groupType;
     // private Boolean remote; // can be changed
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate startDate;
 
     private Long posterId;
@@ -40,9 +41,9 @@ public class PostCompactDto {
 
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdTime;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedTime;
 
     public static PostCompactDto toDto(Posts findPost) {
