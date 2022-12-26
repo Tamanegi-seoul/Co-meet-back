@@ -1,4 +1,4 @@
-# 프로젝트 소개
+# 프로젝트 소개 😀
 
 ---
 
@@ -10,7 +10,8 @@
 ---
 
 <br>
-## 팀 소개
+
+## 팀 소개 🤼
 
 >Team `다마네기` <br>
 > - 프로젝트 총괄 및 백엔드 개발: 박준우<br>
@@ -21,7 +22,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 <br>
 
-## 팀원
+### 팀원 👈
 
 ---
 | 팀원 | 역할 |
@@ -34,14 +35,14 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 <br>
 
-## 프로젝트 아키텍처
+## 프로젝트 아키텍처 🧩
 
 <img src="/assets/images/project-architecture.jpeg" width="700" height="500">
 
 
 <br>
 
-## 프로젝트 구조 및 기술 스택
+## 프로젝트 구조 및 기술 스택 ⚒️
 
 - Spring Boot, Spring JPA(Hibernate), Spring Security
 - JWT
@@ -49,14 +50,14 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 <br>
 
-## ERD
+## ERD 📊
 
 <img src="/assets/images/comeet-db.png" width="600" height="500">
 
 
 <br>
 
-## Documents
+## Documents 📝
 
 - [요구사항 명세서](https://temporal-tie-650.notion.site/26ecc9e13b114ba5908cdf308a24c7fc)
 
@@ -65,9 +66,29 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 - [개발일지](https://docs.google.com/spreadsheets/d/1JbBsHJf1QMLOI4wpm6DCsqqa9aH1xJd8F5Pvpjw9WPM/edit#gid=0)
 
 
-## 기술적 고민들
+## 트러블 슈팅 🚀
 
 <br>
+<details>
+    <summary>Entity의 생성 - 생성자, 생성메소드, 빌더</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+
+<details>
+    <summary>Entity에 대해 Setter사용을 권하지 않는 이유</summary>
+    <div markdown="1">       
+
+    😎숨겨진 내용😎
+
+    </div>
+</details>
+
+
+
 <details>
     <summary>게시글(post) 수정 방법에 대한 고민</summary>
     <div markdown="1">       
@@ -179,7 +200,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 
 
-## 추후 개선사항
+## 추후 개선사항 ✔️
 
 - [ ] 토큰 발행 시 Cookie를 이용한 전송(보안)
 - [ ] N+1이슈 발생 여부 확인 및 보완
