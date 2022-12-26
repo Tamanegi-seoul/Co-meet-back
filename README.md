@@ -37,7 +37,7 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 ## 프로젝트 아키텍처 🧩
 
-<img src="/assets/images/project-architecture.jpeg" width="700" height="500">
+<img src="/assets/images/project-architecture.jpeg" width="820" height="500">
 
 
 <br>
