@@ -1,0 +1,36 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${AWS_DB_URL}
+    username: ${AWS_DB_ID}
+    password: ${AWS_DB_PW}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+logging:
+  level:
+    org.hibernate.SQL: debug #하이버네이트가 생성하는 쿼리문을 다 볼 수 있다.
+    org.hibernate.type: trace # 쿼리 파라미터를 ?가 아닌 실제 값으로 볼 수 있게 해준다. 단, p6spy를 추천한다.
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+security:
+  jwt:
+    token:
+      secret-key: secretsecretsecretsecret
+      expire-length: 3600000

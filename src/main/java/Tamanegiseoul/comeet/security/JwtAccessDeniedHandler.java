@@ -26,7 +26,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error_message", accessDeniedException.getMessage());
         error.put("debug_message", "AuthEntryPoint: 인증실패");
-        response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }
 }
