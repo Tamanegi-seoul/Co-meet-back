@@ -78,113 +78,101 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 </div>
 </details>
 
-<details>
-    <summary>Setter사용을 권하지 않는 이유</summary>
-    <div markdown="1">       
+<details><summary>Setter사용을 권하지 않는 이유</summary>
     
-    클래스에 @Data를 통해서 toString, Getter, Setter등을 구현할 수 있다. 엔티티를 작성함에 있어서 Setter사용을 방지하기 위해서 엔티티에 대해서 @Data를 사용하지 않고 @Getter만 사용했다.
-
-    Setter를 사용하지 않는 이유는 엔티티에 대한 변경을 추적하기 위함이다. Setter를 사용하게 되면 변경에 대한 가능성을 열어둠으로써 객체에 대한 불변성을 보장할 수 없게 된다. 또한, 객체의 정보에 대해 수정했을 때, 해당 작업이 어떤 목적으로 이루어졌는지 직관적으로 알기 어렵다. 
-
+<div>       
+    클래스에 @Data를 통해서 toString, Getter, Setter등을 구현할 수 있다. 엔티티를 작성함에 있어서 Setter사용을 방지하기 위해서 엔티티에 대해서 @Data를 사용하지 않고 @Getter만 사용했다.<br>
+    Setter를 사용하지 않는 이유는 엔티티에 대한 변경을 추적하기 위함이다. Setter를 사용하게 되면 변경에 대한 가능성을 열어둠으로써 객체에 대한 불변성을 보장할 수 없게 된다. 또한, 객체의 정보에 대해 수정했을 때, 해당 작업이 어떤 목적으로 이루어졌는지 직관적으로 알기 어렵다. <br>
     예를 들어, setAmount()를 통해 잔액을 변경하는 로직이 있다고 하자. 이 때, setAmount()가 초기 잔액을 설정하기 위함인지, 출금으로 인해 값을 변경하는 것인지 해당 메소드만을 통해서 알기 어렵다. 이러한 점을 보완하기 위해 목적에 따른 setter역할 메소드를 정의하였다. ie. initAmount(), increaseAmount(), decreaseAmount() etc.
+</div>
 
 </details>
 
 
 
-<details>
-    <summary>게시글(post) 수정 방법에 대한 고민</summary>
-    <div markdown="1">       
+<details><summary>게시글(post) 수정 방법에 대한 고민</summary>
 
-    게시글의 필드마다 update메소드를 생성하고, 작성된 포스트를 로드해서 변경부분에 대한 update 작업을 수행하도록 했다. 하지만, 변경된 필드에 대한 개별적인 수정 메소드가 필요했다. 어떤 필드가 변경되었는지 탐지하는데에 리소스가 낭비되었다.
-
+<div>       
+    게시글의 필드마다 update메소드를 생성하고, 작성된 포스트를 로드해서 변경부분에 대한 update 작업을 수행하도록 했다. 하지만, 변경된 필드에 대한 개별적인 수정 메소드가 필요했다. 어떤 필드가 변경되었는지 탐지하는데에 리소스가 낭비되었다.<br>
     따라서 변경하고자 하는 게시글의 id를 기반으로 DB에서 게시글 정보를 로드하도록 했다. 그 후, 변경된 내용을 반영한 게시글을 로드한 게시글에 덮어 씌우도록 게시글 업데이트 로직을 구성했다. 즉, post id만 동일하며 내용은 수정된 것으로 반영된다.
+</div>
 
 </details>
 
-<details>
-    <summary>Java Response 객체와 JavaScript JSON 네이밍 규칙</summary>
-    <div markdown="1">       
+<details><summary>Java Response 객체와 JavaScript JSON 네이밍 규칙</summary>
 
-    Java에서 Response를 반환할 때, 각 필드는 자바의 Camel Case를 따른다. 하지만 클라이언트 사이드에서는 JavaScript를 사용하며 Snake Case를 따른다. 협업에 있어서 클라이언트 개발자에게 변수 네이밍에 대한 혼동을 방지하기 위해서 Response를 반환할 때, Camel case의 각 필드를 Snake case로 변환해야 한다고 판단했다.
-
+<div>       
+    Java에서 Response를 반환할 때, 각 필드는 자바의 Camel Case를 따른다. 하지만 클라이언트 사이드에서는 JavaScript를 사용하며 Snake Case를 따른다. 협업에 있어서 클라이언트 개발자에게 변수 네이밍에 대한 혼동을 방지하기 위해서 Response를 반환할 때, Camel case의 각 필드를 Snake case로 변환해야 한다고 판단했다.<br>
     이에 대해 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)애노테이션을 통해 해결하였다.
+</div>
 </details>
 
 
-<details>
-    <summary>Service 간에 대한 의존성 발생</summary>
-    <div markdown="1">       
+<details><summary>Service 간에 대한 의존성 발생</summary>
 
-    개발 초기, MemberService 내에서 Post/CommentService 등 다른 서비스의 메소드를 사용하도록 코드를 작성하였다. 하지만 여기서 다른 서비스를 의존하게 되면서 Circular reference issue가 발생했다.
-
-    이후의 유사 issue를 방지하기 위해서 controller, service, repository레이어의 구분을 명확히 하였다.   service레이어에서는 필요한 repository를 참조하여 메소드를 사용하도록 코드를 작성하였다.
+<div>
+    개발 초기, MemberService 내에서 Post/CommentService 등 다른 서비스의 메소드를 사용하도록 코드를 작성하였다. 하지만 여기서 다른 서비스를 의존하게 되면서 Circular reference issue가 발생했다.<br>
+    이후의 유사 issue를 방지하기 위해서 controller, service, repository레이어의 구분을 명확히 하였다.   service레이어에서는 필요한 repository를 참조하여 메소드를 사용하도록 코드를 작성하였다.<br>
+</div>
 </details>
 
 
-<details>
-    <summary>이미지 파일 저장 방법에 대한 고민</summary>
-    <div markdown="1">       
+<details><summary>이미지 파일 저장 방법에 대한 고민</summary>
 
-    회원의 프로필 이미지를 저장하는 방법에 대해 고민하게 되었다. 
-
+<div>
+    회원의 프로필 이미지를 저장하는 방법에 대해 고민하게 되었다. <br>
     1. 원격 저장소에 이미지 파일을 저장하고 DB에는 해당 URL을 저장한다.
-    2. DB에 이미지파일을 바이트 형태로 저장한다.
-
-    a의 경우, URL형태로 저장하고 요청에 대한 응답도 URL형식으로 전송되기때문에 프론트단에서 이미지를 출력하기 편리할것으로 보였다. 또한, DB 내부에는 파일이 저장되는 것이 아니기에 용량 부하가 적다. 하지만 원격 저장소에 대한 비용이 발생한다.
-
-    b의 경우, 원격 저장소를 사용하지 않음으로써 비용절감이 가능하다. 반면, 이미지 파일을 DB에 저장한다는 것 자체가 DB 리소스를 사용하게 된다.
-
-    서버를 1개 더 들이는 것이 프로젝트 예산에 어려움이 있었기에 b안을 채용하기로 했다. 단, 이미지 업로드 시 파일의 크기에 제약을 걸기로 결정했다.
+    2. DB에 이미지파일을 바이트 형태로 저장한다.<br>
+    a의 경우, URL형태로 저장하고 요청에 대한 응답도 URL형식으로 전송되기때문에 프론트단에서 이미지를 출력하기 편리할것으로 보였다. 또한, DB 내부에는 파일이 저장되는 것이 아니기에 용량 부하가 적다. 하지만 원격 저장소에 대한 비용이 발생한다.<br>
+    b의 경우, 원격 저장소를 사용하지 않음으로써 비용절감이 가능하다. 반면, 이미지 파일을 DB에 저장한다는 것 자체가 DB 리소스를 사용하게 된다.<br>
+    서버를 1개 더 들이는 것이 프로젝트 예산에 어려움이 있었기에 b안을 채용하기로 했다. 단, 이미지 업로드 시 파일의 크기에 제약을 걸기로 결정했다.<br>
+</div>
 </details>
 
 
-<details>
-    <summary>발급한 토큰을 어디에 저장할 것인가</summary>
-    <div markdown="1">       
+<details><summary>발급한 토큰을 어디에 저장할 것인가</summary>
 
-    JWT토큰을 발행했을 때, 해당 토큰을 어디에 저장되어야할지 고민이 되었다.
-
-    JWT는 브라우저 내의 안전한 저장소에 저장되어야한다. LocalStorage에 저장 될 경우, 페이지 내부의 모든 스크립트에서 액세스할 수 있기때문에 XSS 공격대상이 되거나 외부 공격자가 토큰에 접근할 수 있게 된다. 따라서 LocalStorage/SeesionStorage에 저장하는것은 좋은 방법이 아니었다. JWT는 HTTP 요청으로만 서버에 전송되는 HttpOnly 쿠키 내에 저장되어야 한다.
+<div>
+    JWT토큰을 발행했을 때, 해당 토큰을 어디에 저장되어야할지 고민이 되었다.<br>
+    JWT는 브라우저 내의 안전한 저장소에 저장되어야한다. LocalStorage에 저장 될 경우, 페이지 내부의 모든 스크립트에서 액세스할 수 있기때문에 XSS 공격대상이 되거나 외부 공격자가 토큰에 접근할 수 있게 된다. 따라서 LocalStorage/SeesionStorage에 저장하는것은 좋은 방법이 아니었다. JWT는 HTTP 요청으로만 서버에 전송되는 HttpOnly 쿠키 내에 저장되어야 한다.<br>
+</div>
 </details>
 
 
-<details>
-    <summary>언제 토큰 갱신 메소드를 호출하도록 설계할것인가</summary>
-    <div markdown="1">       
-
-    토큰 갱신을 언제 하도록 할지 설계에 있어 고민이 되었다.
-
-    a. API콜에 대해 토큰 인증 및 유효여부만 확인하고, 만료된 경우엔 만료에 대해 response를 보내고 갱신 api를 재요청하도록 한다.
-    b. 토큰 유효성 검증 후 만료된 경우엔 refresh토큰을 서버에서 자동으로 발급하여 응답에 토큰을 추가로 함께 발급한다.
-
-    전체적인 통신의 횟수를 보았을 땐 a 방법이 좋다고 느껴졌지만, 토큰 재발급을 자동으로 하게 될 경우 보안 이슈가 있을 수 있다고 판단했다. 프론트팀과 협의하여 토큰 만료 응답을 통해 프론트에서 재요청 api를 요청하도록 설계했다.
+<details><summary>언제 토큰 갱신 메소드를 호출하도록 설계할것인가</summary>
+    
+<div>
+    토큰 갱신을 언제 하도록 할지 설계에 있어 고민이 되었다.<br>
+    a. API콜에 대해 토큰 인증 및 유효여부만 확인하고, 만료된 경우엔 만료에 대해 response를 보내고 갱신 api를 재요청하도록 한다.<br>
+    b. 토큰 유효성 검증 후 만료된 경우엔 refresh토큰을 서버에서 자동으로 발급하여 응답에 토큰을 추가로 함께 발급한다.<br><br>
+    전체적인 통신의 횟수를 보았을 땐 a 방법이 좋다고 느껴졌지만, 토큰 재발급을 자동으로 하게 될 경우 보안 이슈가 있을 수 있다고 판단했다. 프론트팀과 협의하여 토큰 만료 응답을 통해 프론트에서 재요청 api를 요청하도록 설계했다.<br>
+</div>
 </details>
 
 
-<details>
-    <summary>Axios와 GET Request body</summary>
-    <div markdown="1">       
+<details><summary>Axios와 GET Request body</summary>
 
+<div>
     처음 API를 설계할 때, 조회와 같은 api는 GET메소드를 기반으로 request body에 찾고자 하는 리소스 정보를 담도록 했다. 하지만 실제 프론트팀에서 개발해보니 Axios에서 GET요청에 대해서는 request body에 정보를 포함할 수 없었다. 이를 해결하기 위해 request param을 사용하는 방식으로 API를 재설계했다.
+</div>
 </details>
 
 
-<details>
-    <summary>CORS 이슈</summary>
-    <div markdown="1">       
+<details><summary>CORS 이슈</summary>
 
-    postman에서는 정상작동하던 api들이 프론트팀의 리액트 프로그램에서 작동하지 않았고 CORS에러를 발생시켰다. CORS는 추가적인 HTTP header를 통해 어플리케이션이 다른 Origin의 리소스에 접근할 수 있도록 하는 메커니즘을 뜻한다. 다른 Origin에서 서버의 리소스에 함부로 접근하지 못하도록 설정되어 있었다.
+<div>       
+    postman에서는 정상작동하던 api들이 프론트팀의 리액트 프로그램에서 작동하지 않았고 CORS에러를 발생시켰다. CORS는 추가적인 HTTP header를 통해 어플리케이션이 다른 Origin의 리소스에 접근할 수 있도록 하는 메커니즘을 뜻한다. 다른 Origin에서 서버의 리소스에 함부로 접근하지 못하도록 설정되어 있었다.<br>
 
-    WebConfig에서 CORS설정을 통해 allowed origin으로 localhost와 프론트의 배포된 주소를 등록하였고, maxAge를 설정하여 preflight 결과를 캐시에 저장하도록 변경하였다.
+    WebConfig에서 CORS설정을 통해 allowed origin으로 localhost와 프론트의 배포된 주소를 등록하였고, maxAge를 설정하여 preflight 결과를 캐시에 저장하도록 변경하였다.<br>
+</div>
 </details>
 
 
-<details>
-    <summary>API 문서 수기 작성과 Swagger</summary>
-    <div markdown="1">       
+<details><summary>API 문서 수기 작성과 Swagger</summary>
 
+<div>
     프로젝트 초기단계에서 프론트팀과의 협업을 위해서 수기로 API문서를 작성하였다. 작성된 API문서를 구글 스프레드시트로 공유하였고, 개발과정에서 발생하는 이슈 및 수정/보완사항은 해당 문서를 통해 소통할 수 있었다. API가 서버 배포를 통해 동작하는 상태에서 Swagger에 대해 알게 되었으며, Swagger/OpenAPI를 통해 문서 자동화와 테스트를 도모했다.
+</div>
 </details>
 <br>
 
