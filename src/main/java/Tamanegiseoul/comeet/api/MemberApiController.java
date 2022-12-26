@@ -39,7 +39,6 @@ public class MemberApiController {
     private final ImageDataService imageDataService;
     private final StackRelationService stackRelationService;
 
-    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
 

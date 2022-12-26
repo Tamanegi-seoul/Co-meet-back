@@ -2,14 +2,12 @@ package Tamanegiseoul.comeet.security;
 
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
-import Tamanegiseoul.comeet.service.JwtCookieService;
 import Tamanegiseoul.comeet.service.MemberService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +18,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -116,17 +113,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000 )) // 30min
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
-
-//        Map<String, String> tokens = new HashMap<>();
-//        tokens.put("access_token", accessToken);
-//        tokens.put("refresh_token", refreshToken);
-//        response.setContentType(APPLICATION_JSON_VALUE);
-//
-//        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-
-        /*
-            need to return cookie with tokens
-         */
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
         accessCookie.setMaxAge(7 * 86400);
