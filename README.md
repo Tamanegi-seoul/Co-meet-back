@@ -162,7 +162,6 @@ co-meet(코밋)을 기획/개발한 `다마네기`팀은 4명의 프론트엔드
 
 <div>       
     postman에서는 정상작동하던 api들이 프론트팀의 리액트 프로그램에서 작동하지 않았고 CORS에러를 발생시켰다. CORS는 추가적인 HTTP header를 통해 어플리케이션이 다른 Origin의 리소스에 접근할 수 있도록 하는 메커니즘을 뜻한다. 다른 Origin에서 서버의 리소스에 함부로 접근하지 못하도록 설정되어 있었다.<br>
-
     WebConfig에서 CORS설정을 통해 allowed origin으로 localhost와 프론트의 배포된 주소를 등록하였고, maxAge를 설정하여 preflight 결과를 캐시에 저장하도록 변경하였다.<br>
 </div>
 </details>
