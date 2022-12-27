@@ -28,7 +28,7 @@ public class ImageData {
     @NotNull
     private String fileType;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne @JoinColumn(name="member_id")
     private Member owner;
 
     @Lob
@@ -42,4 +42,5 @@ public class ImageData {
 
         return this;
     }
+
 }
