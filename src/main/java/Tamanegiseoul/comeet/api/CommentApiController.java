@@ -87,11 +87,11 @@ public class CommentApiController {
             Posts findPost = postService.findPostById(postId);
             List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
             log.warn("[CommentApiController:searchComment] comment list size is " + commentList.size());
-            SearchCommentResponse response = SearchCommentResponse.builder().commentList(SearchCommentResponse.commentListToDto(commentList)).build();
+            SearchCommentResponse response = SearchCommentResponse.builder().commentList(commentService.commentListToDto(commentList)).build();
             log.warn("[CommentApiController:searchComment] response's commentList size is " + response.getCommentList().size());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_COMMENT, SearchCommentResponse.builder()
-                            .commentList(SearchCommentResponse.commentListToDto(commentList))
+                            .commentList(commentService.commentListToDto(commentList))
                             .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
