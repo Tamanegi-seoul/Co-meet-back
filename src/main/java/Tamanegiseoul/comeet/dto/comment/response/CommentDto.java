@@ -1,6 +1,8 @@
 package Tamanegiseoul.comeet.dto.comment.response;
 
 import Tamanegiseoul.comeet.domain.Comment;
+import Tamanegiseoul.comeet.domain.ImageData;
+import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -20,21 +22,16 @@ public class CommentDto {
     private Long commenterId;
     private String commenterNickname;
     private String content;
+    private ImageDto commenterProfile;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedTime;
 
-    public static CommentDto toDto(Comment comment) {
-        return CommentDto.builder()
-                .commentId(comment.getCommentId())
-                .postId(comment.getCommentId())
-                .commenterNickname(comment.getMember().getNickname())
-                .commenterId(comment.getMember().getMemberId())
-                .content(comment.getContent())
-                .createdTime(comment.getCreatedTime())
-                .modifiedTime(comment.getModifiedTime())
-                .build();
+
+    public CommentDto commenterProfile(ImageDto imageData) {
+        this.commenterProfile = imageData;
+        return this;
     }
 
 }
