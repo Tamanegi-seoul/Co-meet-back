@@ -29,8 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(APPLICATION_JSON_VALUE);
 
         Map<String, String> error = new HashMap<>();
-        error.put("error_message", authException.getMessage());
-        error.put("debug_message", "AuthEntryPoint: 인증실패");
+        error.put("error_message", "로그인 실패:"+authException.getMessage());
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }
 
