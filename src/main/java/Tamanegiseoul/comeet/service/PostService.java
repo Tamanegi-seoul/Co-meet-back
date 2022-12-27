@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -135,6 +137,22 @@ public class PostService {
         for(TechStack stack : techStacks) {
             findPost.addDesignateStack(stack);
         }
+    }
+
+    /***********************
+     * DTO TRANSFER METHODS *
+     ***********************/
+
+    public List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
+        List<PostCompactDto> list = new ArrayList<>();
+        for(Posts post : postList) {
+            PostCompactDto dto = PostCompactDto.toDto(post);
+            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
+            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
+            dto.designatedStacks(techStacks);
+            list.add(dto);
+        }
+        return list;
     }
 
 }
