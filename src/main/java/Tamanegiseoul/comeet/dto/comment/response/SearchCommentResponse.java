@@ -23,12 +23,4 @@ public class SearchCommentResponse {
 
     private List<CommentDto> commentList;
 
-    public static List<CommentDto> commentListToDto(List<Comment> commentList) {
-        log.info("[SearchCommentResponse:commentToDto] commentList param's size is "+commentList.size());
-        List<CommentDto> commentDtoList = new ArrayList<>();
-        for(Comment c : commentList) {
-            commentDtoList.add(CommentDto.toDto(c));
-        }
-        return commentDtoList;
-    }
 }
