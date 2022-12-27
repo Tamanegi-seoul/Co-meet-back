@@ -28,12 +28,6 @@ public class ImageDataRepository {
                 .getResultStream().findFirst().orElse(null);
     }
 
-    public int removeByMemberId(Long memberId) {
-        return em.createQuery("delete from ImageData i where i.owner.memberId = :memberId")
-                .setParameter("memberId", memberId)
-                .executeUpdate();
-    }
-
     public int removeImageByMemberId(Long memberId) {
         return em.createQuery("delete from ImageData i where i.owner.memberId = :memberId")
                 .setParameter("memberId", memberId)
