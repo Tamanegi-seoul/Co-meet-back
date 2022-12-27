@@ -42,8 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
-
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeRequests()
+                    .antMatchers("/", "/**").permitAll()
+                    .antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
                     .antMatchers("/swagger-ui.html").permitAll()
                     .antMatchers("/api/auth/login/**", "/api/auth/token/refresh/**").permitAll()
                     .antMatchers("/api/member/validate/**").permitAll()
