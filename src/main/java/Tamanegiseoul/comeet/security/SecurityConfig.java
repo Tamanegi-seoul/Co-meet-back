@@ -54,20 +54,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                     .antMatchers("/api/post/search/**").permitAll()
                     .antMatchers("/api/comment/search/**").permitAll()
-
-//        http.authorizeRequests().antMatchers("/api/member/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers("/api/member/remove").authenticated();
-//        http.authorizeRequests().antMatchers("/api/member/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//
-//        http.authorizeRequests().antMatchers("/api/post/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers("/api/post/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers("/api/post/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//
-//        http.authorizeRequests().antMatchers("/api/comment/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers("/api/comment/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-//        http.authorizeRequests().antMatchers("/api/comment/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN");
-
-
+//                    .antMatchers("/api/member/remove").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+//                    .antMatchers("/api/member/remove").authenticated()
+//                    .antMatchers("/api/member/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/post/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/post/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/post/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/comment/register").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/comment/update").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+//                    .antMatchers("/api/comment/remove").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                     .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
                     .anyRequest().permitAll()
                         .and()
