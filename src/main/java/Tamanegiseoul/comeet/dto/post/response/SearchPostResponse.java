@@ -6,6 +6,7 @@ import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
+import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -40,6 +41,8 @@ public class SearchPostResponse {
     private Long expectedTerm;
     private Long posterId;
     private String posterNickname;
+
+    private ImageDto posterProfile;
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
 
@@ -77,6 +80,11 @@ public class SearchPostResponse {
 
     public SearchPostResponse comments(List<CommentDto> list) {
         this.comments = list;
+        return this;
+    }
+
+    public SearchPostResponse posterProfile(ImageDto imageData) {
+        this.posterProfile = imageData;
         return this;
     }
 
