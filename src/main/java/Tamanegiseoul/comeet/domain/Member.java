@@ -22,7 +22,7 @@ import static javax.persistence.CascadeType.ALL;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "member_id")
     private Long memberId;
 
