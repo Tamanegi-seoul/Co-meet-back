@@ -5,12 +5,16 @@ spring:
 
   datasource:
     url: ${AWS_DB_URL}
+
     username: ${AWS_DB_ID}
+
     password: ${AWS_DB_PW}
+
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
     hibernate:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
       ddl-auto: create
     properties:
       hibernate:
