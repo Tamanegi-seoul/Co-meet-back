@@ -9,15 +9,13 @@ import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
 import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.RemovePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.SearchPostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.*;
-import Tamanegiseoul.comeet.service.CommentService;
-import Tamanegiseoul.comeet.service.PostService;
-import Tamanegiseoul.comeet.service.StackRelationService;
-import Tamanegiseoul.comeet.service.MemberService;
+import Tamanegiseoul.comeet.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +40,7 @@ public class PostApiController {
     private final MemberService memberService;
     private final CommentService commentService;
     private final StackRelationService stackRelationService;
+    private final ImageDataService imageDataService;
 
     @PostMapping("/register")
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
@@ -97,7 +96,7 @@ public class PostApiController {
         try {
             List<Posts> findPosts = postService.findAll(offset, limit);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(findPosts));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, postService.toCompactDtoList(findPosts));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -108,8 +107,7 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="member_id") @Valid Long memberId) {
         try {
             List<Posts> findPosts = postService.findPostByMemberId(memberId);
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, this.toCompactDtoList(findPosts));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, postService.toCompactDtoList(findPosts));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -120,13 +118,17 @@ public class PostApiController {
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
-            List<CommentDto> commentDtoList = toCommentDtoList(commentService.findCommentByPostId(postId));
+            Member findPoster = memberService.findMemberById(findPost.getPoster().getMemberId());
+            ImageDto findImage = imageDataService.findImageByMemberId(findPoster.getMemberId());
+            List<Comment> commentList = commentService.findCommentByPostId(postId);
+            List<CommentDto> commentDtoList = commentService.commentListToDto(commentList);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(postId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST,
-                    SearchPostResponse.toDto(findPost)
+                            SearchPostResponse.toDto(findPost)
                             .designatedStacks(techStacks)
                             .comments(commentDtoList)
+                            .posterProfile(findImage)
             );
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
@@ -147,24 +149,25 @@ public class PostApiController {
     }
 
 
-    private List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
-        List<PostCompactDto> list = new ArrayList<>();
-        for(Posts post : postList) {
-            PostCompactDto dto = PostCompactDto.toDto(post);
-            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
-            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
-            dto.designatedStacks(techStacks);
-            list.add(dto);
-        }
-        return list;
-    }
+//    private List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
+//        List<PostCompactDto> list = new ArrayList<>();
+//        for(Posts post : postList) {
+//            PostCompactDto dto = PostCompactDto.toDto(post);
+//            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
+//            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
+//            dto.designatedStacks(techStacks);
+//            list.add(dto);
+//        }
+//        return list;
+//    }
 
-    private List<CommentDto> toCommentDtoList(List<Comment> comments) {
-        List<CommentDto> dtos = new ArrayList<>();
-        for(Comment c : comments) {
-            dtos.add(CommentDto.toDto(c));
-        }
-        return dtos;
-    }
+//    private List<CommentDto> toCommentDtoList(List<Comment> comments) {
+//        List<CommentDto> dtos = new ArrayList<>();
+//        for(Comment c : comments) {
+//            c.getMember();
+//            dtos.add(CommentDto.toDto(c));
+//        }
+//        return dtos;
+//    }
 
 }
