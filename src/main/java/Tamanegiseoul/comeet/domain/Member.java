@@ -3,6 +3,7 @@ package Tamanegiseoul.comeet.domain;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.sun.istack.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,13 +39,13 @@ public class Member {
     private Collection<Role> roles = new ArrayList<>();
 
     @Nullable
-    @OneToOne @JoinColumn(name = "image_id")
+    @OneToOne(mappedBy = "owner")
     private ImageData profileImage;
 
-    @OneToMany(mappedBy = "stackRelationId", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "postId", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poster", cascade = ALL, orphanRemoval = true)
     private List<Posts> wrotePosts = new ArrayList<>();
 
     @NotNull
