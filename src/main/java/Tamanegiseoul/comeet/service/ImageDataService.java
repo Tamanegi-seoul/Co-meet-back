@@ -60,6 +60,7 @@ public class ImageDataService {
         }
     }
 
+    @Transactional(readOnly = true)
     public byte[] findImageDataByImageId(Long imageId) {
         ImageData findImageData = imageDataRepository.findOne(imageId);
         if(findImageData==null) {
@@ -69,6 +70,7 @@ public class ImageDataService {
 
     }
 
+    @Transactional(readOnly = true)
     public ImageDto findImageByMemberId(Long memberId) {
         ImageData dbImage = imageDataRepository.findByMemberId(memberId);
 
@@ -78,7 +80,6 @@ public class ImageDataService {
         }
 
         return ImageDto.toDto(dbImage);
-
-
     }
+
 }
