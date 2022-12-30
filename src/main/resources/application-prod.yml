@@ -5,9 +5,7 @@ spring:
 
   datasource:
     url: ${AWS_DB_URL}
-
     username: ${AWS_DB_ID}
-
     password: ${AWS_DB_PW}
 
     driver-class-name: org.mariadb.jdbc.Driver
@@ -36,5 +34,5 @@ server:
 security:
   jwt:
     token:
-      secret-key: secretsecretsecretsecret
-      expire-length: 3600000
+      secret-key: ${JWT_SECRET_KEY}
+      expire-length: ${JWT_EXP_LEN}

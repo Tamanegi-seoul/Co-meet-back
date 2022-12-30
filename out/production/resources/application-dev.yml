@@ -31,6 +31,5 @@ server:
 security:
   jwt:
     token:
-      secret-key: secretsecretsecretsecret
-      expire-length: 3600000
-
+      secret-key: ${JWT_SECRET_KEY}
+      expire-length: ${JWT_EXP_LEN}
