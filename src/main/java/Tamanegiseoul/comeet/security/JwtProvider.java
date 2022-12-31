@@ -1,11 +1,13 @@
 package Tamanegiseoul.comeet.security;
 
 import Tamanegiseoul.comeet.domain.Member;
+import Tamanegiseoul.comeet.domain.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -23,29 +25,32 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtProvider {
-    //@Value("${security.jwt.token.secret-key}")
-    private String secretKey = "secret";
-    private Algorithm algorithm;
-    private long validityInMilliseconds = 3600000L;
+    @Value("${security.jwt.token.secret-key}")
+    private String secretKey;
+    private Algorithm algorithm = Algorithm.HMAC256(secretKey.getBytes());
+    @Value("${security.jwt.token.expire-length}")
+    private long validityInMilliseconds; // default set as 60min
 
-//    public JwtProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") Long validityInMilliseconds) {
-//        this.algorithm = Algorithm.HMAC256(secretKey.getBytes());
-//        this.validityInMilliseconds = validityInMilliseconds;
-//    }
+    public JwtProvider(@Value("${security.jwt.token.secret-key}") String secretKey, @Value("${security.jwt.token.expire-length}") Long validityInMilliseconds) {
+        this.algorithm = Algorithm.HMAC256(secretKey.getBytes());
+        this.validityInMilliseconds = validityInMilliseconds;
+    }
 
     // generate token
-    public String generateAccessToken(String email, List<SimpleGrantedAuthority> roles) {
+    public String generateAccessToken(Member member) {
         return JWT.create()
-                .withSubject(email)
-                .withExpiresAt(new Date(System.currentTimeMillis()+ 10 * 60 * 1000 ))
-                .withClaim("roles", roles)
+                .withSubject(member.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis()+ (validityInMilliseconds / 60))) // 3 min
+                .withClaim("roles", member.getRoles().stream().map(Role ::getRoleName).collect(Collectors.toList()))
+                .withClaim("nickname", member.getNickname())
+                .withClaim("member_id", member.getMemberId())
                 .sign(algorithm);
     }
 
     public String generateRefreshToken(String email) {
         return JWT.create()
                 .withSubject(email) // get email (security's username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000 )) // 30min
+                .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000 )) // 24hr
                 .sign(algorithm);
     }
 
