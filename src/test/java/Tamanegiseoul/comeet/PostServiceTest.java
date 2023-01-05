@@ -64,7 +64,10 @@ public class PostServiceTest {
                 .expectedTerm(14L)
                 .build();
         postService.registerPost(newPost);
-        postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
+        ArrayList<TechStack> stacks = new ArrayList<TechStack>(
+                Arrays.asList(TechStack.JAVA, TechStack.SPRING)
+        );
+        postService.updateDesignateStacks(newPost.getPostId(), stacks);
 
         // then
         List<Posts> findPosts = postService.findPostByMemberId(newMember.getMemberId());
@@ -93,7 +96,10 @@ public class PostServiceTest {
                 .expectedTerm(14L)
                 .build();
         postService.registerPost(newPost);
-        postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
+        ArrayList<TechStack> stacks = new ArrayList<TechStack>(
+                Arrays.asList(TechStack.JAVA, TechStack.SPRING)
+        );
+        postService.updateDesignateStacks(newPost.getPostId(), stacks);
 
         // when
         UpdatePostRequest updatedPost = new UpdatePostRequest(

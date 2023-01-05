@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -180,7 +181,10 @@ public class MemberServiceTest {
                 .expectedTerm(14L)
                 .build();
         postService.registerPost(newPost);
-        postService.updateDesignateStacks(newPost.getPostId(), TechStack.JAVA, TechStack.SPRING);
+        ArrayList<TechStack> stacks = new ArrayList<TechStack>(
+                Arrays.asList(TechStack.JAVA, TechStack.SPRING)
+        );
+        postService.updateDesignateStacks(newPost.getPostId(), stacks);
 
         // when
         int queryExecuteTimes = memberService.removeMember(newMemberId);

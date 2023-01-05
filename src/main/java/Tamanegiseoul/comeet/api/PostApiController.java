@@ -62,8 +62,8 @@ public class PostApiController {
                     .build();
 
             postService.registerPost(newPost);
-
-            newPost.updateDesignateStack(request.getDesignatedStacks());
+            postService.updateDesignateStacks(newPost.getPostId(), request.getDesignatedStacks());
+            //newPost.updateDesignateStack(request.getDesignatedStacks());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
                     CreatePostResponse.toDto(newPost)

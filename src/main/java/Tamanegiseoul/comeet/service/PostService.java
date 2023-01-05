@@ -131,9 +131,10 @@ public class PostService {
      * POST UPDATE METHODS *
      ***********************/
     @Transactional
-    public void updateDesignateStacks(Long postId, TechStack...techStacks) {
+    public void updateDesignateStacks(Long postId, List<TechStack> techStacks) {
         Posts findPost = postRepository.findOne(postId);
-        findPost.initDesignateStack();
+        //findPost.initDesignateStack();
+        findPost.getDesignatedStack().clear();
         for(TechStack stack : techStacks) {
             findPost.addDesignateStack(stack);
         }
