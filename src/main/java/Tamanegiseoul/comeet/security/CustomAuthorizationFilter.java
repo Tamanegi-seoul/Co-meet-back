@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
+    private final JwtProvider jwtProvider;
+
+    public CustomAuthorizationFilter(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -43,17 +50,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
 
-                    String token = authorizationHeader.substring("Bearer ".length());
-                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                    JWTVerifier verifier = JWT.require(algorithm).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
-                    String userEmail = decodedJWT.getSubject();
 
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role -> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
+                    String token = authorizationHeader.substring("Bearer ".length());
+                    jwtProvider.validateToken(token);
+                    String userEmail = jwtProvider.getUserEmail(token);
+                    Collection<SimpleGrantedAuthority> authorities = jwtProvider.getAuthorities(token);
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userEmail, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 

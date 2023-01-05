@@ -3,8 +3,11 @@ package Tamanegiseoul.comeet.security;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Role;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,18 +19,15 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
+@Component
 public class JwtProvider {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
-    private Algorithm algorithm = Algorithm.HMAC256(secretKey.getBytes());
+    private Algorithm algorithm;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds; // default set as 60min
 
@@ -56,25 +56,44 @@ public class JwtProvider {
 
     // JWT 토큰에서 인증 정보 조회
     public boolean getAuthentication(String token, String email) {
-        String subject = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        String subject = JWT.require(algorithm).build()
+                .verify(token)
+                .getSubject(); // extract token's subject(member email)
 
         return subject.equals(email);
     }
 
     // 토큰에서 회원 email 추출
     public String getUserEmail(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        return JWT.require(algorithm).build()
+                .verify(token)
+                .getSubject(); // extract token's subject(member email)
+    }
+
+    public Collection<SimpleGrantedAuthority> getAuthorities(String token) {
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+
+        for(String role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+
+
+        return authorities;
     }
 
     public boolean validateToken(String token) throws ExpiredJwtException {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            //Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            verifier.verify(token);
             return true;
         } catch (SignatureException e) {
             log.error("Invalid JWT signature => {}", e.getMessage());
@@ -97,7 +116,5 @@ public class JwtProvider {
     public String getRefreshToken(HttpServletRequest request) {
         return request.getCookies()[1].getValue();
     }
-
-
 
 }

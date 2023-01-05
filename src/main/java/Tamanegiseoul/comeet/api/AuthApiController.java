@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Role;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
+import Tamanegiseoul.comeet.security.JwtProvider;
 import Tamanegiseoul.comeet.service.MemberService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -14,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Auth API", description = "인증/인가 관련 API 제공")
 public class AuthApiController {
 
+    @Autowired
+    private JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @PostMapping("/role/save")
@@ -74,6 +78,12 @@ public class AuthApiController {
             try {
                 log.info("[MemberApiController:refreshToken]try refresh token");
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
+
+                if(jwtProvider.validateToken(refreshToken)) {
+                    log.info("TOKEN VALIDATE: TRUE");
+                }else {
+                    log.info("TOKEN VALIDATE: FALSE");
+                }
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
@@ -89,22 +99,15 @@ public class AuthApiController {
                         .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
                         .sign(algorithm);
 
-                /*
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", accessToken);
-                tokens.put("refresh_token", refreshToken);
-                response.setContentType(APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-                 */
                 Cookie accessCookie = new Cookie("access_token", accessToken);
                 accessCookie.setMaxAge(7 * 86400);
                 accessCookie.setComment("access_token");
-                //accessCookie.setHttpOnly(true);
+                accessCookie.setHttpOnly(true);
                 accessCookie.setPath(request.getContextPath());
                 Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
                 refreshCookie.setMaxAge(14 * 86400);
                 refreshCookie.setComment("refresh_token");
-                //refreshCookie.setHttpOnly(true);
+                refreshCookie.setHttpOnly(true);
                 refreshCookie.setPath(request.getContextPath());
 
                 response.addCookie(accessCookie);

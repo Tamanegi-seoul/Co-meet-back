@@ -3,8 +3,6 @@ package Tamanegiseoul.comeet.security;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.service.MemberService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +13,9 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -25,7 +23,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,11 +36,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final MemberService memberService;
     private final AuthenticationManager authenticationManager;
+
+    private final JwtProvider jwtProvider;
     private HashMap<String, String> jsonRequest;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, MemberService memberService) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, MemberService memberService, JwtProvider jwtProvider) {
         this.authenticationManager = authenticationManager;
         this.memberService = memberService;
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
@@ -98,36 +98,29 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         Member findMember = memberService.findMemberByEmail(user.getUsername());
 
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-        String accessToken = JWT.create()
-                .withSubject(user.getUsername()) // get email (security's username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .withClaim("nickname", findMember.getNickname())
-                .withClaim("member_id", findMember.getMemberId())
-                .sign(algorithm);
-
-        String refreshToken = JWT.create()
-                .withSubject(user.getUsername()) // get email (security's username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000 )) // 30min
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algorithm);
+        String accessToken = jwtProvider.generateAccessToken(findMember);
+        String refreshToken = jwtProvider.generateRefreshToken(findMember.getEmail());
 
         Cookie accessCookie = new Cookie("access_token", accessToken);
         accessCookie.setMaxAge(7 * 86400);
         accessCookie.setComment("access_token");
-        //accessCookie.setHttpOnly(true);
+        accessCookie.setHttpOnly(true);
         accessCookie.setPath(request.getContextPath());
         Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
         refreshCookie.setMaxAge(14 * 86400);
         refreshCookie.setComment("refresh_token");
-        //refreshCookie.setHttpOnly(true);
+        refreshCookie.setHttpOnly(true);
         refreshCookie.setPath(request.getContextPath());
 
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
 
+        /*
+            basically, tokens should be delivered via Cookie to prevent XSS attack etc.
+            Now, front-end team has not been deployed React Application, so front app IP is not fixed yet.
+            Because of this reason, it is impossible to use Set-Cookie.
+            Temporally, use response body to deliver the generaed token.
+         */
 
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("status_code", String.valueOf(HttpStatus.OK));
