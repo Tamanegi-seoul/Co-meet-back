@@ -66,7 +66,7 @@ public class Posts {
     @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
     private List<StackRelation> designatedStack = new ArrayList<>();
 
-    @OneToMany(mappedBy="commentId", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @NotNull
@@ -134,9 +134,6 @@ public class Posts {
     public void updateModifiedDate() { this.modifiedTime = LocalDateTime.now(); }
     public void updateRecruitStatus(RecruitStatus rs) { this.recruitStatus = rs; }
 
-    public void initDesignateStack() {
-        this.designatedStack = new ArrayList<>();
-    }
 
     public void updatePost(UpdatePostRequest updatePost) {
         this.title = updatePost.getTitle();
