@@ -79,11 +79,9 @@ public class PostApiController {
     @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
-            Posts findPost = postService.findPostById(request.getPostId());
-            postService.updatePost(request);
+            UpdatePostResponse responseDto = postService.updatePost(request);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, UpdatePostResponse.toDto(findPost)
-                    .designatedStacks(request.getDesignatedStacks()));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, responseDto.designatedStacks(request.getDesignatedStacks()));
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
