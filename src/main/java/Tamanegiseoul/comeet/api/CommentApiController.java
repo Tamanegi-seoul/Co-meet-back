@@ -7,7 +7,6 @@ import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
-import Tamanegiseoul.comeet.dto.comment.request.RemoveCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
@@ -37,7 +36,7 @@ public class CommentApiController {
     private final PostService postService;
     private final CommentService commentService;
 
-    @PostMapping("/register")
+    @PostMapping
     @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
@@ -56,39 +55,35 @@ public class CommentApiController {
         }
     }
 
-    @PatchMapping("/update")
+    @PatchMapping
     @Operation(summary = "덧글 수정", description = "포스트에 작성된 덧글 수정")
     public ResponseEntity<ApiResponse> updateComment(@RequestBody @Valid UpdateCommentRequest request) {
         try {
-            Comment updatedComment = commentService.updateComment(request);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_COMMNET, UpdateCommentResponse.toDto(updatedComment));
+            UpdateCommentResponse responseDto = commentService.updateComment(request);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_COMMNET, responseDto);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @Operation(summary = "덧글 삭제", description = "포스트에 작성된 덧글 삭제")
-    public ResponseEntity<ApiResponse> removeComment(@RequestBody @Valid RemoveCommentRequest request) {
+    public ResponseEntity<ApiResponse> removeComment(@RequestParam(name = "comment_id") Long commentId) {
         try {
-            Comment findComment = commentService.findCommentById(request.getCommentId());
-
-            commentService.removeComment(request.getCommentId());
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_COMMENT, RemoveCommentResponse.toDto(findComment));
+            RemoveCommentResponse responseDto = commentService.removeComment(commentId);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_COMMENT, responseDto);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping
     @Operation(summary = "덧글 조회", description = "포스트에 작성된 덧글 조회")
     public ResponseEntity<ApiResponse> searchComment(@RequestParam("post_id") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
             List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
-            log.warn("[CommentApiController:searchComment] comment list size is " + commentList.size());
             SearchCommentResponse response = SearchCommentResponse.builder().commentList(commentService.commentListToDto(commentList)).build();
-            log.warn("[CommentApiController:searchComment] response's commentList size is " + response.getCommentList().size());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_COMMENT, SearchCommentResponse.builder()
                             .commentList(commentService.commentListToDto(commentList))
@@ -97,6 +92,5 @@ public class CommentApiController {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
     }
-
 
 }

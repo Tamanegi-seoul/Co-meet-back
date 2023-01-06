@@ -121,7 +121,7 @@ public class PostServiceTest {
 
         log.warn(updatedPost.getTitle());
 
-        postService.updatePost(newPost, updatedPost);
+        postService.updatePost(updatedPost);
 
         // then
         Posts findPost = postService.findPostByMemberId(newMember.getMemberId()).get(0);

@@ -5,6 +5,7 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
+import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
@@ -49,26 +50,26 @@ public class PostService {
      ***********************/
 
     @Transactional
-    public void updatePost(Posts findPost, UpdatePostRequest updatedPost) {
+    public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
+        Posts findPost = postRepository.findOne(updatedPost.getPostId());
+        if(findPost == null) {
+            throw new ResourceNotFoundException("post_id", "post id", updatedPost.getPostId());
+        }
         findPost.updatePost(updatedPost);
-        //findPost.initDesignateStack();
-        stackRelationRepository.removeRelatedStacksByPost(findPost.getPostId());
-        em.flush();
-        em.clear();
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
         findPost.updateModifiedDate();
-        em.flush();
-        em.clear();
+
+        return UpdatePostResponse.toDto(findPost);
     }
 
     @Transactional
-    public int removePostByPostId(Long postId) {
-        Posts findPost = this.findPostById(postId);
-        // first, remove child entity
-        stackRelationRepository.removeRelatedStacksByPost(postId);
-        commentRepository.removeCommentByPostId(postId);
-        // then, remove parent entity
-        return postRepository.removePostByPostId(postId);
+    public void removePostByPostId(Long postId) {
+        Posts findPost = postRepository.findOne(postId);
+        if(findPost == null) {
+            throw new ResourceNotFoundException("post", "post_id", postId);
+        }
+
+        em.remove(findPost);
 
     }
 

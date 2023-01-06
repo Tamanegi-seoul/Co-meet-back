@@ -42,7 +42,7 @@ public class MemberApiController {
     private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
 
-    @GetMapping("/validate")
+    @GetMapping("/profile")
     @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
@@ -55,7 +55,7 @@ public class MemberApiController {
         }
     }
 
-    @PostMapping("/join")
+    @PostMapping
     @Operation(summary = "신규 회원가입", description = "새로운 회원 등록")
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
         log.error(request.toString());
@@ -107,7 +107,7 @@ public class MemberApiController {
     }
 
 
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
     public ResponseEntity<ApiResponse> removeMember(@RequestParam("member_id") @Valid Long memberId) {
         try {
@@ -126,10 +126,11 @@ public class MemberApiController {
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping
     @Operation(summary = "회원 조회", description = "등록된 회원정보 조회")
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("member_id") Long memberId) {
         try {
+
             Member findMember = memberService.findMemberById(memberId);
 
             ImageDto findImage = imageDataService.findImageByMemberId(findMember.getMemberId());
@@ -151,9 +152,8 @@ public class MemberApiController {
     }
 
 
-    @PatchMapping("/update")
+    @PatchMapping
     @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정")
-    //public ResponseEntity<ApiResponse> updateMember(@RequestHeader(AUTHORIZATION) String header, @RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
     public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
             Member updatedMember = memberService.updateMember(request);
@@ -196,12 +196,5 @@ public class MemberApiController {
             return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.FAIL_FILE_UPLOAD, e.getMessage());
         }
     }
-
-    @GetMapping("/members")
-    @Operation(summary = "회원 전체 조회", description = "회원 전체 조회")
-    public ResponseEntity<List<Member>> getMembers() {
-        return ResponseEntity.ok().body(memberService.findAll());
-    }
-
 
 }

@@ -4,6 +4,8 @@ import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
+import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
@@ -135,7 +137,7 @@ public class CommentServiceTest {
 
     }
 
-    @Test
+    @Test(expected = ResourceNotFoundException.class)
     public void 덧글_삭제() {
         // given
         Posts findPost = postService.findAll().get(0);
@@ -152,7 +154,8 @@ public class CommentServiceTest {
         commentService.removeComment(commentId);
 
         // then
-        //Assert.assertEquals(3, commentService.findAll().size());
+        commentService.findCommentById(commentId);
+        Assert.fail("comment has not been removed");
     }
 
 

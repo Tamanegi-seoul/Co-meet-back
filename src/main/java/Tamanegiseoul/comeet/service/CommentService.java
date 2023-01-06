@@ -5,6 +5,8 @@ import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
+import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
+import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.ImageDataRepository;
@@ -43,17 +45,26 @@ public class CommentService {
      **************************/
 
     @Transactional
-    public Comment updateComment(UpdateCommentRequest updatedComment) {
-        Comment findComment = this.findCommentById(updatedComment.getCommentId());
+    public UpdateCommentResponse updateComment(UpdateCommentRequest updatedComment) {
+        Comment findComment = commentRepository.findOne(updatedComment.getCommentId());
+        if(findComment == null) {
+            throw new ResourceNotFoundException("comment_id", "comment id", updatedComment.getCommentId());
+        }
         findComment.updateComment(updatedComment);
         findComment.updateModifiedTime();
-        return findComment;
+        return UpdateCommentResponse.toDto(findComment);
     }
 
     @Transactional
-    public void removeComment(Long commentId) {
-        Comment findComment = this.findCommentById(commentId);
+    public RemoveCommentResponse removeComment(Long commentId) {
+        Comment findComment = findCommentById(commentId);
+        if(findComment == null) {
+            throw new ResourceNotFoundException("comment_id", "comment id", commentId);
+        }
+        RemoveCommentResponse responseDto = RemoveCommentResponse.toDto(findComment);
         em.remove(findComment);
+        return responseDto;
+
     }
 
 

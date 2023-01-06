@@ -15,8 +15,6 @@ public class UpdateMemberRequest {
     private Long memberId;
     @Schema(description = "회원의 새로운 닉네임", example = "doej123")
     private String newNickname;
-//    @Schema(description = "회원의 새로운 비밀번호", example = "p@22vv0rd")
-//    private String newPassword;
     @Schema(description = "회원의 새로운 선호 기술스택", example = "JAVA_SCRIPT, REACT")
     private List<TechStack> updatedStacks;
 }
