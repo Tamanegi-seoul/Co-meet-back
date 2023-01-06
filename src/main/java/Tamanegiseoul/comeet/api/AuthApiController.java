@@ -68,7 +68,7 @@ public class AuthApiController {
         return null;
     }
 
-    @GetMapping("/token/refresh")
+    @GetMapping("/token")
     @ApiOperation(value="토큰 갱신", notes="발행된 토큰 재발급")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.info("[MemberApiController:refreshToken]method executed");
