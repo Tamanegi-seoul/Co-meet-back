@@ -42,7 +42,7 @@ public class PostApiController {
     private final StackRelationService stackRelationService;
     private final ImageDataService imageDataService;
 
-    @PostMapping("/register")
+    @PostMapping
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
@@ -63,7 +63,6 @@ public class PostApiController {
 
             postService.registerPost(newPost);
             postService.updateDesignateStacks(newPost.getPostId(), request.getDesignatedStacks());
-            //newPost.updateDesignateStack(request.getDesignatedStacks());
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
                     CreatePostResponse.toDto(newPost)
@@ -76,12 +75,12 @@ public class PostApiController {
         }
     }
 
-    @PatchMapping("/update")
+    @PatchMapping
     @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
             Posts findPost = postService.findPostById(request.getPostId());
-            postService.updatePost(findPost, request);
+            postService.updatePost(request);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, UpdatePostResponse.toDto(findPost)
                     .designatedStacks(request.getDesignatedStacks()));
@@ -90,7 +89,7 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/search/all")
+    @GetMapping("/all")
     @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
     public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset",defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
@@ -102,7 +101,7 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/search/by")
+    @GetMapping("/my")
     @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
     public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="member_id") @Valid Long memberId) {
         try {
@@ -113,7 +112,7 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/search")
+    @GetMapping
     @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
         try {
@@ -135,39 +134,17 @@ public class PostApiController {
         }
     }
 
-    @DeleteMapping("/remove")
+    @DeleteMapping
     @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
-    public ResponseEntity<ApiResponse> removePost(@RequestBody @Valid RemovePostRequest request) {
+    public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "post_id")  Long postId) {
         try {
-            postService.removePostByPostId(request.getPostId());
+            postService.removePostByPostId(postId);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, RemovePostResponse.builder()
-                            .postId(request.getPostId())
+                            .postId(postId)
                             .build());
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
     }
-
-
-//    private List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
-//        List<PostCompactDto> list = new ArrayList<>();
-//        for(Posts post : postList) {
-//            PostCompactDto dto = PostCompactDto.toDto(post);
-//            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
-//            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
-//            dto.designatedStacks(techStacks);
-//            list.add(dto);
-//        }
-//        return list;
-//    }
-
-//    private List<CommentDto> toCommentDtoList(List<Comment> comments) {
-//        List<CommentDto> dtos = new ArrayList<>();
-//        for(Comment c : comments) {
-//            c.getMember();
-//            dtos.add(CommentDto.toDto(c));
-//        }
-//        return dtos;
-//    }
 
 }
