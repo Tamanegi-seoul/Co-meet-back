@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class ImageDto {
     private Long imageId;
     private String fileName;

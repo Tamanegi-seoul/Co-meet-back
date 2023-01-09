@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Builder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdateMemberResponse {
     private Long memberId;
     private String nickname;

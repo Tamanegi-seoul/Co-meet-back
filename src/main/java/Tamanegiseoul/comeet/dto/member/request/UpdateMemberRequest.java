@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdateMemberRequest {
     @Schema(description = "수정할 회원 ID", example = "5")
     private Long memberId;

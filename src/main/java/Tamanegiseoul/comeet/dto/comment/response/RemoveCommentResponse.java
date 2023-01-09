@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class RemoveCommentResponse {
     private Long postId;
     private Long commentId;

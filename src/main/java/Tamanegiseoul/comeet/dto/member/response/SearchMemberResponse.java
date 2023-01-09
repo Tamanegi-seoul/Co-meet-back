@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @Builder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class SearchMemberResponse {
     private Long memberId;
     private String email;
