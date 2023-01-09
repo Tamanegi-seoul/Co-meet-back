@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Data @Slf4j
 @Builder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class CommentDto {
     private Long postId;
     private Long commentId;

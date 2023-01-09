@@ -11,7 +11,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class JoinMemberRequest {
     @Schema(description = "등록할 회원 이메일", example = "john.doe@gmail.com")
     private String email;

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdateCommentResponse {
     private Long commentId;
     private Long postId;
