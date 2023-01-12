@@ -109,7 +109,7 @@ public class MemberApiController {
 
     @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
-    public ResponseEntity<ApiResponse> removeMember(@RequestParam("member_id") @Valid Long memberId) {
+    public ResponseEntity<ApiResponse> removeMember(@RequestParam("memberId") @Valid Long memberId) {
         try {
 
             Member findMember = memberService.findMemberById(memberId);
@@ -128,7 +128,7 @@ public class MemberApiController {
 
     @GetMapping
     @Operation(summary = "회원 조회", description = "등록된 회원정보 조회")
-    public ResponseEntity<ApiResponse> searchMember(@RequestParam("member_id") Long memberId) {
+    public ResponseEntity<ApiResponse> searchMember(@RequestParam("memberId") Long memberId) {
         try {
 
             Member findMember = memberService.findMemberById(memberId);
