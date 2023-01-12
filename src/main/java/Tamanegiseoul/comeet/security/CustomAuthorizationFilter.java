@@ -50,7 +50,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
 
-
                     String token = authorizationHeader.substring("Bearer ".length());
                     jwtProvider.validateToken(token);
                     String userEmail = jwtProvider.getUserEmail(token);
