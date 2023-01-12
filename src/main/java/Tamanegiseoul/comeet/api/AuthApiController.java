@@ -71,12 +71,9 @@ public class AuthApiController {
     @GetMapping("/token")
     @ApiOperation(value="토큰 갱신", notes="발행된 토큰 재발급")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.info("[MemberApiController:refreshToken]method executed");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            log.info("[MemberApiController:refreshToken]authorizationHeader is valid");
             try {
-                log.info("[MemberApiController:refreshToken]try refresh token");
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
 
                 if(jwtProvider.validateToken(refreshToken)) {
@@ -84,29 +81,22 @@ public class AuthApiController {
                 }else {
                     log.info("TOKEN VALIDATE: FALSE");
                 }
+                String memberEmail = jwtProvider.getUserEmail(refreshToken);
+                Member findMember = memberService.findMemberByEmail(memberEmail);
+
+                jwtProvider.generateAccessToken(findMember);
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String memberEmail = decodedJWT.getSubject();
-                Member member = memberService.findMemberByEmail(memberEmail);
+                String accessToken = jwtProvider.generateAccessToken(findMember);
+                refreshToken = jwtProvider.generateRefreshToken(memberEmail);
 
-                String accessToken = JWT.create()
-                        .withSubject(member.getEmail()) // get email (security's username)
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000 )) // 10min
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("nickname", member.getNickname())
-                        .withClaim("member_id", member.getMemberId())
-                        .withClaim("roles", member.getRoles().stream().map(Role::getRoleName).collect(Collectors.toList()))
-                        .sign(algorithm);
-
-                Cookie accessCookie = new Cookie("access_token", accessToken);
+                Cookie accessCookie = new Cookie("accessToken", accessToken);
                 accessCookie.setMaxAge(7 * 86400);
-                accessCookie.setComment("access_token");
+                accessCookie.setComment("accessToken");
                 accessCookie.setHttpOnly(true);
                 accessCookie.setPath(request.getContextPath());
-                Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+                Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
                 refreshCookie.setMaxAge(14 * 86400);
-                refreshCookie.setComment("refresh_token");
+                refreshCookie.setComment("refreshToken");
                 refreshCookie.setHttpOnly(true);
                 refreshCookie.setPath(request.getContextPath());
 
@@ -115,10 +105,10 @@ public class AuthApiController {
 
 
                 Map<String, String> responseBody = new HashMap<>();
-                responseBody.put("status_code", String.valueOf(HttpStatus.OK));
-                responseBody.put("response_message", ResponseMessage.REFRESH_TOKEN);
-                responseBody.put("access_token", accessToken);
-                responseBody.put("refresh_token", refreshToken);
+                responseBody.put("statusCode", String.valueOf(HttpStatus.OK));
+                responseBody.put("responseMessage", ResponseMessage.REFRESH_TOKEN);
+                responseBody.put("accessToken", accessToken);
+                responseBody.put("refreshToken", refreshToken);
                 response.setContentType(APPLICATION_JSON_VALUE);
 
                 new ObjectMapper().writeValue(response.getOutputStream(), responseBody);
@@ -129,7 +119,7 @@ public class AuthApiController {
                 response.setStatus(FORBIDDEN);
                 //response.sendError(FORBIDDEN);
                 Map<String, String> error = new HashMap<>();
-                error.put("error_message", e.getMessage());
+                error.put("errorMessage", e.getMessage());
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
             }
