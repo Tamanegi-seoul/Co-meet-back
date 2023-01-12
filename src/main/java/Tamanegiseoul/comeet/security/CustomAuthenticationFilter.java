@@ -68,28 +68,29 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        try {
+            // below for request json parser
+            if(request.getHeader("Content-Type").equals(APPLICATION_JSON_VALUE)) {
 
-        // below for request json parser
-        if(request.getHeader("Content-Type").equals(APPLICATION_JSON_VALUE)) {
-            log.info("JSON LOGIN ATTEMP");
-
-            ObjectMapper om = new ObjectMapper();
-            try {
-                this.jsonRequest = om.readValue(request.getReader().lines().collect(Collectors.joining()),
-                        new TypeReference<HashMap<String, String>>() {});
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new AuthenticationServiceException("Request Content-Type(application/json) Parsing Error");
+                ObjectMapper om = new ObjectMapper();
+                try {
+                    this.jsonRequest = om.readValue(request.getReader().lines().collect(Collectors.joining()),
+                            new TypeReference<HashMap<String, String>>() {});
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new AuthenticationServiceException("Request Content-Type(application/json) Parsing Error");
+                }
             }
+
+            String username = obtainUsername(request);
+            String password = obtainPassword(request);
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+            return authenticate;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
-
-        log.info("{} attempt to login with {}", username, password);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        return authenticate;
     }
 
     @Override
@@ -119,14 +120,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             basically, tokens should be delivered via Cookie to prevent XSS attack etc.
             Now, front-end team has not been deployed React Application, so front app IP is not fixed yet.
             Because of this reason, it is impossible to use Set-Cookie.
-            Temporally, use response body to deliver the generaed token.
+            Temporally, use response body to deliver the generated token.
          */
 
         Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("status_code", String.valueOf(HttpStatus.OK));
-        responseBody.put("response_message", ResponseMessage.GENERATE_TOKEN);
-        responseBody.put("access_token", accessToken);
-        responseBody.put("refresh_token", refreshToken);
+        responseBody.put("statusCode", String.valueOf(HttpStatus.OK));
+        responseBody.put("responseMessage", ResponseMessage.GENERATE_TOKEN);
+        responseBody.put("accessToken", accessToken);
+        responseBody.put("refreshToken", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
 
 
