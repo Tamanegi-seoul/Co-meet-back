@@ -43,7 +43,7 @@ public class JwtProvider {
                 .withExpiresAt(new Date(System.currentTimeMillis()+ (validityInMilliseconds / 60))) // 3 min
                 .withClaim("roles", member.getRoles().stream().map(Role ::getRoleName).collect(Collectors.toList()))
                 .withClaim("nickname", member.getNickname())
-                .withClaim("member_id", member.getMemberId())
+                .withClaim("memberId", member.getMemberId())
                 .sign(algorithm);
     }
 
@@ -70,6 +70,7 @@ public class JwtProvider {
                 .getSubject(); // extract token's subject(member email)
     }
 
+    // 토큰으로부터 권한 정보 조회
     public Collection<SimpleGrantedAuthority> getAuthorities(String token) {
 
         JWTVerifier verifier = JWT.require(algorithm).build();
