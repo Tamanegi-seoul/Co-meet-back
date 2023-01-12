@@ -68,7 +68,7 @@ public class CommentApiController {
 
     @DeleteMapping
     @Operation(summary = "덧글 삭제", description = "포스트에 작성된 덧글 삭제")
-    public ResponseEntity<ApiResponse> removeComment(@RequestParam(name = "comment_id") Long commentId) {
+    public ResponseEntity<ApiResponse> removeComment(@RequestParam(name = "commentId") Long commentId) {
         try {
             RemoveCommentResponse responseDto = commentService.removeComment(commentId);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_COMMENT, responseDto);
@@ -79,7 +79,7 @@ public class CommentApiController {
 
     @GetMapping
     @Operation(summary = "덧글 조회", description = "포스트에 작성된 덧글 조회")
-    public ResponseEntity<ApiResponse> searchComment(@RequestParam("post_id") Long postId) {
+    public ResponseEntity<ApiResponse> searchComment(@RequestParam("postId") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
             List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
