@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.*;
+
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,8 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final MemberService memberService;
-    @Autowired
-    private JwtProvider jwtProvider;
+    private final JwtProvider jwtProvider;
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -46,55 +47,49 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and()
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                    .antMatchers("/", "/**").permitAll()
-                    .antMatchers(HttpMethod.OPTIONS, "/*").permitAll()
-                    .antMatchers("/swagger-ui.html").permitAll()
-                    .antMatchers("/api/auth/login/**", "/api/auth/token/refresh/**").permitAll()
-                    .antMatchers("/api/member/validate/**").permitAll()
-                    .antMatchers("/api/member/join/**").permitAll()
-                    .antMatchers("/api/member/search/**").permitAll()
-                    .antMatchers("/api/member/update/**").permitAll()
-                    .antMatchers("/api/member/remove/**").permitAll()
-                    .antMatchers("/api/post/search/**").permitAll()
-                    .antMatchers("/api/comment/search/**").permitAll()
-//
-//                    .antMatchers("/api/member/remove/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-//                    .antMatchers("/api/member/update/**").authenticated()
-//                    .antMatchers("/api/post/register/**").authenticated()
-//                    .antMatchers("/api/post/update/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-//                    .antMatchers("/api/post/remove/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-//                    .antMatchers("/api/comment/register/**").authenticated()
-//                    .antMatchers("/api/comment/update/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-//                    .antMatchers("/api/comment/remove/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
-//                    .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
-                    .anyRequest().permitAll()
-                        .and()
-                    .addFilter(customAuthenticationFilter)
-                        .exceptionHandling()
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                .antMatchers(OPTIONS, "/*").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/api/auth/login/**", "/api/auth/token/**").permitAll()
+
+                .antMatchers("/api/member/profile").permitAll()
+                .antMatchers(GET,"/api/member").authenticated()
+                .antMatchers(POST,"/api/member").permitAll() // sign up
+                .antMatchers(PATCH,"/api/member").authenticated()
+                .antMatchers(DELETE,"/api/member/**").authenticated()
+
+                .antMatchers(GET,"/api/comment/**").permitAll()
+                .antMatchers(POST,"/api/comment").authenticated()
+                .antMatchers(PATCH,"/api/comment/**").authenticated()
+                .antMatchers(DELETE,"/api/comment/**").authenticated()
+
+
+                .antMatchers("/api/post/all/**").permitAll()
+                .antMatchers(GET,"/api/post/my/**").permitAll()
+                .antMatchers(GET,"/api/post/**").permitAll()
+                .antMatchers(POST,"/api/post/**").authenticated()
+                .antMatchers(PATCH,"/api/post/**").authenticated()
+                .antMatchers(DELETE,"/api/post/**").authenticated()
+
+                .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
+
+                .anyRequest().authenticated()
                     .and()
-                    .addFilterBefore(new CustomAuthorizationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-                        .exceptionHandling()
-                        .accessDeniedHandler(jwtAccessDeniedHandler)
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .addFilterAfter(new CustomAuthorizationFilter(jwtProvider), CustomAuthenticationFilter.class)
+                    .exceptionHandling()
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring()
-                .antMatchers(
-                        "/v2/api-docs",
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/webjars/**",
-                        "/swagger/**"
-                );
-    }
 
     @Bean
     @Override
