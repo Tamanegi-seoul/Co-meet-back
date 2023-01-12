@@ -101,7 +101,7 @@ public class PostApiController {
 
     @GetMapping("/my")
     @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
-    public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="member_id") @Valid Long memberId) {
+    public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="memberId") @Valid Long memberId) {
         try {
             List<Posts> findPosts = postService.findPostByMemberId(memberId);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, postService.toCompactDtoList(findPosts));
@@ -112,7 +112,7 @@ public class PostApiController {
 
     @GetMapping
     @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
-    public ResponseEntity<ApiResponse> searchPost(@RequestParam("post_id") Long postId) {
+    public ResponseEntity<ApiResponse> searchPost(@RequestParam("postId") Long postId) {
         try {
             Posts findPost = postService.findPostById(postId);
             Member findPoster = memberService.findMemberById(findPost.getPoster().getMemberId());
@@ -134,7 +134,7 @@ public class PostApiController {
 
     @DeleteMapping
     @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
-    public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "post_id")  Long postId) {
+    public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "postId")  Long postId) {
         try {
             postService.removePostByPostId(postId);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, RemovePostResponse.builder()
