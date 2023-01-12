@@ -92,7 +92,6 @@ public class JwtProvider {
 
     public boolean validateToken(String token) throws ExpiredJwtException {
         try {
-            //Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             JWTVerifier verifier = JWT.require(algorithm).build();
             verifier.verify(token);
             return true;
