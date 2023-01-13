@@ -40,16 +40,9 @@ public class CommentApiController {
     @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
-            Posts findPost = postService.findPostById(request.getPostId());
-            Member findMember = memberService.findMemberById(request.getMemberId());
 
-            Comment newComment = Comment.builder()
-                    .post(findPost)
-                    .member(findMember)
-                    .content(request.getContent())
-                    .build();
-            commentService.registerComment(newComment);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, CreateCommentResponse.toDto(newComment));
+            CreateCommentResponse responseDto = commentService.registerComment(request);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, responseDto);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
