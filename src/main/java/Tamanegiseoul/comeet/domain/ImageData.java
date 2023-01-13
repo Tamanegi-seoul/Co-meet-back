@@ -11,6 +11,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 
+import static javax.persistence.CascadeType.ALL;
+
 @Builder
 @Entity
 @Getter
@@ -28,7 +30,7 @@ public class ImageData {
     @NotNull
     private String fileType;
 
-    @OneToOne @JoinColumn(name="member_id")
+    @OneToOne(mappedBy = "profileImage", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private Member owner;
 
     @Lob
