@@ -7,7 +7,10 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.repository.MemberRepository;
@@ -131,9 +134,10 @@ public class MemberServiceTest {
                 .preferStacks(new ArrayList<>(List.of(TechStack.R)))
                 .build();
         JoinMemberResponse response = memberService.registerMember(newMember, null);
+        Member findMember = memberRepository.findOne(response.getMemberId());
 
         // when
-        memberService.updatePreferStack(response.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
+        memberService.updatePreferStack(findMember, new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
 
         // then
         List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
@@ -157,10 +161,15 @@ public class MemberServiceTest {
         JoinMemberResponse response = memberService.registerMember(newMember, null);
 
         // when
-        memberService.updatePreferStack(response.getMemberId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
+        UpdateMemberRequest request = UpdateMemberRequest.builder()
+                .memberId(response.getMemberId())
+                .newNickname(response.getNickname())
+                .updatedStacks(new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)))
+                .build();
+        UpdateMemberResponse updateMemberResponse = memberService.updateMember(request, null);
 
         // then
-        List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
+        List<TechStack> findStacks = memberService.findPreferredStacks(updateMemberResponse.getMemberId());
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name()); // should be javascript & python
         }
@@ -196,10 +205,10 @@ public class MemberServiceTest {
         postService.updateDesignateStacks(postResponse.getPostId(), stacks);
 
         // when
-        Long removedMemberId = memberService.removeMember(response.getMemberId());
+        RemoveMemberResponse removeResponse = memberService.removeMember(response.getMemberId());
         em.flush();
         em.clear();
-        log.info("member id {} has been removed", removedMemberId);
+        log.info("member id {} has been removed", removeResponse.getMemberId());
 
         // then
         Member findMember = memberService.findMemberById(response.getMemberId());
