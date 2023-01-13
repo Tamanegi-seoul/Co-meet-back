@@ -76,14 +76,7 @@ public class MemberApiController {
     @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
     public ResponseEntity<ApiResponse> removeMember(@RequestParam("memberId") @Valid Long memberId) {
         try {
-
-            Member findMember = memberService.findMemberById(memberId);
-            RemoveMemberResponse response = RemoveMemberResponse.builder()
-                    .memberId(findMember.getMemberId())
-                    .nickname(findMember.getNickname())
-                    .build();
-
-            Long removedMemberId = memberService.removeMember(memberId);
+            RemoveMemberResponse response = memberService.removeMember(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {
@@ -102,15 +95,8 @@ public class MemberApiController {
 
             List<TechStack> preferredStacks = memberService.findPreferredStacks(findMember.getMemberId());
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchMemberResponse.builder()
-                            .memberId(findMember.getMemberId())
-                            .email(findMember.getEmail())
-                            .nickname(findMember.getNickname())
-                            .preferStacks(preferredStacks)
-                            .createdTime(findMember.getCreatedTime())
-                            .modifiedTime(findMember.getModifiedTime())
-                            .profileImage(findImage)
-                            .build());
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchMemberResponse.toDto(findMember, findImage, preferredStacks));
+
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         }
@@ -121,37 +107,8 @@ public class MemberApiController {
     @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정")
     public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
-            Member updatedMember = memberService.updateMember(request);
-            ImageDto imageDto = null;
-            if(file != null) {
-                log.warn("[MemberApiController:updateMember] file is present");
-                ImageDto findImage = imageDataService.findImageByMemberId(updatedMember.getMemberId());
-                if(findImage != null) {
-                    log.warn("[MemberApiController:updateMember] updated registered image");
-                    imageDto = imageDataService.updateImage(updatedMember, file);
-                } else {
-                    log.warn("[MemberApiController:updateMember] upload new profile image");
-                    imageDto = imageDataService.uploadImage(updatedMember, file);
-                }
-
-            } else {
-                log.warn("[MemberApiController:updateMember] file is empty");
-                imageDataService.removeImage(updatedMember);
-            }
-
-            List<TechStack> preferredStacks = memberService.findPreferredStacks(updatedMember.getMemberId());
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_USER,
-                    UpdateMemberResponse.builder()
-                            .memberId(request.getMemberId())
-                            .nickname(updatedMember.getNickname())
-                            .email(updatedMember.getEmail())
-                            .preferStacks(preferredStacks)
-                            .createdTime(updatedMember.getCreatedTime())
-                            .modifiedTime(updatedMember.getModifiedTime())
-                            .profileImage(imageDto)
-                            .build()
-            );
+            UpdateMemberResponse updateMemberResponse = memberService.updateMember(request, file);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_USER, updateMemberResponse);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         } catch (DuplicateResourceException e) {
