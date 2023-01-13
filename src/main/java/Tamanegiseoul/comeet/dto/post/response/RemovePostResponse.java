@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class RemovePostResponse {
     private Long postId;
 }
