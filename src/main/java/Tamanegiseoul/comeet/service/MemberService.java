@@ -10,6 +10,8 @@ import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,8 +67,6 @@ public class MemberService implements UserDetailsService {
         newMember.updateModifiedDate();
         memberRepository.save(newMember);
 
-        this.addRoleToMember(newMember.getEmail(), "ROLE_USER");
-        this.updatePreferStack(newMember.getMemberId(), request.getPreferStacks());
 
         if(image!=null) {
             ImageDto imageDto = imageDataService.uploadImage(newMember, image);
@@ -74,6 +74,9 @@ public class MemberService implements UserDetailsService {
             return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
         }
 
+
+        this.addRoleToMember(newMember.getEmail(), "ROLE_USER");
+        this.updatePreferStack(newMember, request.getPreferStacks());
 
         return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(null);
     }
@@ -119,15 +122,29 @@ public class MemberService implements UserDetailsService {
      **********************/
 
     @Transactional
-    public Member updateMember(UpdateMemberRequest request) {
+    public UpdateMemberResponse updateMember(UpdateMemberRequest request, MultipartFile file) throws IOException {
         Member findMember = this.findMemberById(request.getMemberId());
-        Long findMemberId = findMember.getMemberId();
+        log.info("found member");
         findMember.changeNickname(request.getNewNickname());
-        this.updatePreferStack(findMemberId, request.getUpdatedStacks());
+        log.info("updated nickname");
+        this.updatePreferStack(findMember, request.getUpdatedStacks());
+        log.info("update stacks");
         findMember.updateModifiedDate();
-        em.flush();
-        em.clear();
-        return findMember;
+
+        ImageDto imageDto = imageDataService.findImageByMemberId(findMember.getMemberId());
+
+        if(file!=null) {
+            log.info("found image");
+            if(imageDto == null) {
+                imageDto = imageDataService.uploadImage(findMember, file);
+            } else {
+                imageDto = imageDataService.updateImage(findMember, file);
+            }
+        } else {
+            imageDataService.removeImage(findMember);
+        }
+
+        return UpdateMemberResponse.toDto(findMember, imageDto);
     }
 
     @Transactional
@@ -145,27 +162,27 @@ public class MemberService implements UserDetailsService {
         findMember.updateModifiedDate();
     }
 
-    @Transactional
-    public void updatePreferStack(Long memberId, List<TechStack> techStacks) {
+
+    public void updatePreferStack(Member member, List<TechStack> techStacks) {
         log.warn("[MemberService:updatePreferStack] method init");
-        Member findMember = this.findMemberById(memberId); // checked
-        findMember.clearPreferStack();
+        member.clearPreferStack();
         for(TechStack ts : techStacks) {
-            findMember.addPreferStack(ts);
+            member.addPreferStack(ts);
         }
-        findMember.updateModifiedDate();
-        em.flush();
-        em.clear();
-        log.warn("[MemberService:updatePreferStack] updated " + memberId + "'s tech stack" + techStacks.toString());
+        log.warn("[MemberService:updatePreferStack] updated " + member.getMemberId() + "'s tech stack" + techStacks.toString());
     }
 
     @Transactional
-    public Long removeMember(Long memberId) throws ResourceNotFoundException {
+    public RemoveMemberResponse removeMember(Long memberId) throws ResourceNotFoundException {
         Member findMember = this.findMemberById(memberId);
+
+        if(findMember == null) {
+            throw new ResourceNotFoundException("member id", "memberId", memberId);
+        }
 
         em.remove(findMember);
 
-        return findMember.getMemberId();
+        return RemoveMemberResponse.toDto(findMember);
     }
 
     /**********************
