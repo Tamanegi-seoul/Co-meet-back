@@ -11,7 +11,7 @@ import java.util.List;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class SearchPostListResponse {
     private List<PostCompactDto> resultList;
 }

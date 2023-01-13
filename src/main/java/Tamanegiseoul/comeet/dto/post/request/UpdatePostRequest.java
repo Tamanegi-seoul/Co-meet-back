@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor // for implementing test code
-@NoArgsConstructor // for implementing test code
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@NoArgsConstructor
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdatePostRequest {
     @Schema(description = "수정할 포스트 ID", example = "3")
     private Long postId;
@@ -56,5 +55,19 @@ public class UpdatePostRequest {
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
 
-
+    @Builder
+    public UpdatePostRequest(Long postId, String title, GroupType groupType, String content, RecruitStatus recruitStatus, Long recruitCapacity, ContactType contactType, String contact, Boolean remote, LocalDate startDate, Long expectedTerm, List<TechStack> designatedStacks) {
+        this.postId = postId;
+        this.title = title;
+        this.groupType = groupType;
+        this.content = content;
+        this.recruitStatus = recruitStatus;
+        this.recruitCapacity = recruitCapacity;
+        this.contactType = contactType;
+        this.contact = contact;
+        this.remote = remote;
+        this.startDate = startDate;
+        this.expectedTerm = expectedTerm;
+        this.designatedStacks = designatedStacks;
+    }
 }
