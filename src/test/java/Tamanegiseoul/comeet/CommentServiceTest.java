@@ -4,9 +4,15 @@ import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
+import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.CommentService;
@@ -24,7 +30,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,18 +52,18 @@ public class CommentServiceTest {
     @Autowired CommentService commentService;
 
     @Before
-    public void initialize() {
+    public void initialize() throws IOException {
         log.info("test initializer exceuted");
-        Member newMember = Member.builder()
+        JoinMemberResponse newMemberRequest = memberService.registerMember(JoinMemberRequest.builder()
                 .email("93jpark@gmail.com")
                 .nickname("케네스")
                 .password("password")
-                .build();
-        memberService.registerMember(newMember);
+                .preferStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
+                .build(), null);
         log.info("new Member is registered");
 
-        Posts newPost = Posts.builder()
-                .poster(newMember)
+        CreatePostRequest newPostRequest = CreatePostRequest.builder()
+                .posterId(newMemberRequest.getMemberId())
                 .contact("some_open_chat_url_/kakao.xyz")
                 .title("NEW POST!")
                 .content("this is empty content..")
@@ -63,7 +72,7 @@ public class CommentServiceTest {
                 .expectedTerm(28L)
                 .startDate(LocalDate.of(2024, 10, 23))
                 .build();
-        postService.registerPost(newPost);
+        postService.registerPost(newPostRequest);
         log.info("new post is registered");
     }
 
@@ -74,15 +83,15 @@ public class CommentServiceTest {
         Member findMember = memberService.findAll().get(0);
 
         // when
-        Comment newComment = Comment.builder()
-                .post(findPost)
-                .member(findMember)
+        CreateCommentRequest request = CreateCommentRequest.builder()
+                .memberId(findMember.getMemberId())
+                .postId(findPost.getPostId())
                 .content("foo boo")
                 .build();
-        Long commentId = commentService.registerComment(newComment);
+        CreateCommentResponse responseDto = commentService.registerComment(request);
 
         // then
-        Comment findComment = commentService.findCommentById(commentId);
+        Comment findComment = commentService.findCommentById(responseDto.getCommentId());
 
         Assert.assertEquals("foo boo", findComment.getContent());
     }
@@ -93,17 +102,17 @@ public class CommentServiceTest {
         Posts findPost = postService.findAll().get(0);
         Member findMember = memberService.findAll().get(0);
 
-        Comment newComment = Comment.builder()
-                .post(findPost)
-                .member(findMember)
+        CreateCommentRequest request = CreateCommentRequest.builder()
+                .postId(findPost.getPostId())
+                .memberId(findMember.getMemberId())
                 .content("foo boo")
                 .build();
-        Long commentId = commentService.registerComment(newComment);
+        CreateCommentResponse responseDto = commentService.registerComment(request);
 
         // when
-        Comment findComment = commentService.findCommentById(commentId);
+        Comment findComment = commentService.findCommentById(responseDto.getCommentId());
         UpdateCommentRequest ucr = UpdateCommentRequest.builder()
-                .commentId(commentId)
+                .commentId(findComment.getCommentId())
                 .content("foo boo foo")
                 .build();
 
@@ -120,12 +129,12 @@ public class CommentServiceTest {
         Member findMember = memberService.findMemberByNickname("케네스");
         Posts findPost = postService.findPostByMemberId(findMember.getMemberId()).get(0);
 
-        Comment newComment = Comment.builder()
-                .post(findPost)
-                .member(findMember)
+        CreateCommentRequest request = CreateCommentRequest.builder()
+                .memberId(findMember.getMemberId())
+                .postId(findPost.getPostId())
                 .content("foo boo")
                 .build();
-        Long commentId = commentService.registerComment(newComment);
+        CreateCommentResponse responseDto = commentService.registerComment(request);
 
         // when
         Comment findCommentWithmemberId = commentService.findCommentByMemberId(findMember.getMemberId()).get(0);
@@ -143,18 +152,18 @@ public class CommentServiceTest {
         Posts findPost = postService.findAll().get(0);
         Member findMember = memberService.findAll().get(0);
 
-        Comment newComment = Comment.builder()
-                .post(findPost)
-                .member(findMember)
+        CreateCommentRequest request = CreateCommentRequest.builder()
+                .postId(findPost.getPostId())
+                .memberId(findMember.getMemberId())
                 .content("foo boo")
                 .build();
-        Long commentId = commentService.registerComment(newComment);
+        CreateCommentResponse responseDto = commentService.registerComment(request);
 
         // when
-        commentService.removeComment(commentId);
+        commentService.removeComment(responseDto.getCommentId());
 
         // then
-        commentService.findCommentById(commentId);
+        commentService.findCommentById(responseDto.getCommentId());
         Assert.fail("comment has not been removed");
     }
 
