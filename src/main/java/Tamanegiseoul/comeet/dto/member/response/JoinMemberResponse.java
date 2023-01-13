@@ -1,5 +1,6 @@
 package Tamanegiseoul.comeet.dto.member.response;
 
+import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -18,9 +19,29 @@ public class JoinMemberResponse {
     private String nickname;
     private String email;
     private List<TechStack> preferStacks;
+    private ImageDto profileImage;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedTime;
-    private ImageDto profileImage;
+
+
+    public static JoinMemberResponse toDto(Member member) {
+        return JoinMemberResponse.builder()
+                .memberId(member.getMemberId())
+                .email(member.getEmail())
+                .createdTime(member.getCreatedTime())
+                .modifiedTime(member.getModifiedTime())
+                .build();
+    }
+
+    public JoinMemberResponse profileImage(ImageDto imageDto) {
+        this.profileImage = imageDto;
+        return this;
+    }
+
+    public JoinMemberResponse preferStacks(List<TechStack> stacks) {
+        this.preferStacks = stacks;
+        return this;
+    }
 }
