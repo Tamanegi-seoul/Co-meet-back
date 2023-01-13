@@ -2,14 +2,19 @@ package Tamanegiseoul.comeet.service;
 import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.ImageData;
 import Tamanegiseoul.comeet.domain.Member;
+import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
+import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.ImageDataRepository;
+import Tamanegiseoul.comeet.repository.MemberRepository;
+import Tamanegiseoul.comeet.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,19 +29,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
     private final MemberService memberService;
+
+    private final MemberRepository memberRepository;
     private final ImageDataRepository imageDataRepository;
 
     @PersistenceContext
     EntityManager em;
 
     @Transactional
-    public Long registerComment(Comment comment) {
-        commentRepository.save(comment);
-        comment.updateCreatedTime();
-        comment.updateModifiedTime();
-        return comment.getCommentId();
+    public CreateCommentResponse registerComment(CreateCommentRequest request) {
+
+        Posts findPost = postRepository.findOne(request.getPostId());
+        if(findPost==null) throw new ResourceNotFoundException("post id", "postId", request.getPostId());
+
+        Member findMember = memberRepository.findOne(request.getMemberId());
+        if(findMember==null) throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
+
+        Comment newComment = Comment.builder()
+                .post(findPost)
+                .member(findMember)
+                .content(request.getContent())
+                .build();
+        newComment.updateCreatedTime();
+        newComment.updateModifiedTime();
+        commentRepository.save(newComment);
+
+        findMember.addWroteComments(newComment);
+        findPost.addComments(newComment);
+        return CreateCommentResponse.toDto(newComment);
     }
 
 
