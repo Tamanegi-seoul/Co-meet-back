@@ -93,6 +93,18 @@ public class Member {
         this.preferStacks.clear();
     }
 
+    public List<TechStack> exportPreferStack() {
+        if(this.preferStacks.size() == 0) {
+            return null;
+        } else {
+            ArrayList<TechStack> list = new ArrayList();
+            for(StackRelation ts : this.preferStacks) {
+                list.add(ts.getTechStack());
+            }
+            return list;
+        }
+    }
+
 
     // set LocalTime for created, modified date
     public void updateCreatedDate() {

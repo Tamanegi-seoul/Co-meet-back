@@ -76,11 +76,10 @@ public class AuthApiController {
             try {
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
 
-                if(jwtProvider.validateToken(refreshToken)) {
-                    log.info("TOKEN VALIDATE: TRUE");
-                }else {
-                    log.info("TOKEN VALIDATE: FALSE");
+                if(jwtProvider.validateToken(refreshToken)){
+                    throw new IllegalArgumentException("토큰 검증 실패");
                 }
+
                 String memberEmail = jwtProvider.getUserEmail(refreshToken);
                 Member findMember = memberService.findMemberByEmail(memberEmail);
 
