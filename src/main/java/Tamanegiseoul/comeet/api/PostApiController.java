@@ -46,28 +46,10 @@ public class PostApiController {
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
-            Member findMember = memberService.findMemberById(request.getPosterId());
 
-            Posts newPost = Posts.builder()
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .groupType(request.getGroupType())
-                    .contactType(request.getContactType())
-                    .contact(request.getContact())
-                    .poster(findMember)
-                    .remote(request.getRemote())
-                    .startDate(request.getStartDate())
-                    .expectedTerm(request.getExpectedTerm())
-                    .recruitCapacity(request.getRecruitCapacity())
-                    .build();
+            CreatePostResponse responseDto = postService.registerPost(request);
 
-            postService.registerPost(newPost);
-            postService.updateDesignateStacks(newPost.getPostId(), request.getDesignatedStacks());
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST,
-                    CreatePostResponse.toDto(newPost)
-                            .posterNickname(findMember.getNickname())
-                            .designatedStacks(request.getDesignatedStacks()));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST, responseDto);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());
         } catch (Exception e) {
