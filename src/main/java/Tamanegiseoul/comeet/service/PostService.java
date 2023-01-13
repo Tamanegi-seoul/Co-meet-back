@@ -3,7 +3,9 @@ import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
 import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
 import Tamanegiseoul.comeet.repository.CommentRepository;
@@ -36,13 +38,35 @@ public class PostService {
     EntityManager em;
 
     @Transactional
-    public Long registerPost(Posts post) {
-        log.info("[PostService:registerPost] register method init");
-        postRepository.save(post);
-        post.updateModifiedDate();
-        post.updateCreatedDate();
-        log.info("[PostService:registerPost] successfully registered");
-        return post.getPostId();
+    public CreatePostResponse registerPost(CreatePostRequest request) {
+
+        Member findMember = memberRepository.findOne(request.getPosterId());
+        if(findMember == null) {
+            throw new ResourceNotFoundException("member id", "memberId", request.getPosterId());
+        }
+
+        Posts newPost = Posts.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .groupType(request.getGroupType())
+                .contactType(request.getContactType())
+                .contact(request.getContact())
+                .poster(findMember)
+                .remote(request.getRemote())
+                .startDate(request.getStartDate())
+                .expectedTerm(request.getExpectedTerm())
+                .recruitCapacity(request.getRecruitCapacity())
+                .build();
+
+        newPost.updateModifiedDate();
+        newPost.updateCreatedDate();
+        postRepository.save(newPost);
+        em.flush();
+        log.warn("check");
+        findMember.addWrotePost(newPost);
+        return CreatePostResponse.toDto(newPost)
+                .posterNickname(findMember.getNickname())
+                .designatedStacks(request.getDesignatedStacks());
     }
 
     /***********************
@@ -53,7 +77,7 @@ public class PostService {
     public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
         Posts findPost = postRepository.findOne(updatedPost.getPostId());
         if(findPost == null) {
-            throw new ResourceNotFoundException("post_id", "post id", updatedPost.getPostId());
+            throw new ResourceNotFoundException("postId", "post id", updatedPost.getPostId());
         }
         findPost.updatePost(updatedPost);
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
@@ -62,34 +86,23 @@ public class PostService {
         return UpdatePostResponse.toDto(findPost);
     }
 
+    // 포스트 ID를 기반으로 단건 포스트 삭제
     @Transactional
     public void removePostByPostId(Long postId) {
         Posts findPost = postRepository.findOne(postId);
         if(findPost == null) {
-            throw new ResourceNotFoundException("post", "post_id", postId);
+            throw new ResourceNotFoundException("post", "postId", postId);
         }
-
         em.remove(findPost);
-
     }
 
+    // 회원이 작성한 모든 포스트 삭제
     @Transactional
     public void removePostByPosterId(Long memberId) {
         List<Posts> findPosts = postRepository.findPostByMemberId(memberId);
-        // first, remove child entity
         for(Posts p : findPosts) {
-            stackRelationRepository.removeRelatedStacksByPost(p.getPostId());
-            commentRepository.removeCommentByPostId(p.getPostId());
+            em.remove(p);
         }
-
-        // then, remove parent entity
-        postRepository.removePostByPosterId(memberId);
-    }
-
-    @Transactional
-    public void increasePostHit(Long postId) {
-        Posts findPost = postRepository.findOne(postId);
-        findPost.increaseHits();
     }
 
     /***********************
@@ -150,7 +163,6 @@ public class PostService {
         for(Posts post : postList) {
             PostCompactDto dto = PostCompactDto.toDto(post);
             List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
-            log.warn("[PostApiController:toDtoList]"+techStacks.toString());
             dto.designatedStacks(techStacks);
             list.add(dto);
         }
