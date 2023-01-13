@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import com.sun.istack.NotNull;
 import lombok.AccessLevel;
@@ -59,18 +60,15 @@ public class Posts {
     private Boolean remote;
 
     @NotNull
-    @ManyToOne @JoinColumn(name="member_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="member_id")
     private Member poster;
 
     @NotNull
-    @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="post", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private List<StackRelation> designatedStack = new ArrayList<>();
 
-    @OneToMany(mappedBy="post", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="post", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
-
-    @NotNull
-    private Long hits = 0L;
 
     @NotNull
     private String content;
@@ -94,10 +92,10 @@ public class Posts {
         this.contactType = contactType;
         this.contact = contact;
         this.remote = remote;
-        this.hits = 0L;
         this.createdTime = LocalDateTime.now();
         this.modifiedTime = LocalDateTime.now();
     }
+
 
     public void addDesignateStack(TechStack ts) {
         this.designatedStack.add(StackRelation.builder()
@@ -105,9 +103,7 @@ public class Posts {
                 .techStack(ts).build());
     }
 
-    public void increaseHits() {
-        this.hits++;
-    }
+    public void addComments(Comment comment) { this.comments.add(comment); }
 
     public void updateDesignateStack(List<TechStack> tsArr) {
         for(TechStack stack : tsArr) {
@@ -117,22 +113,8 @@ public class Posts {
         }
     }
 
-    public void updateGroupType(GroupType groupType) { this.groupType = groupType; }
-
-    public void updateTitle(String title) {
-        this.title = title;
-    }
-    public void updateRecruitCapacity(Long newCap) {
-        this.recruitCapacity = newCap;
-    }
-    public void updateStartDate(LocalDate newDate) { this.startDate = newDate; }
-    public void updateExpectedTerm(Long newExpTerm) { this.expectedTerm = newExpTerm; }
-    public void updateContent(String newContent) { this.content = content; }
-    public void updateContactType(ContactType newCT) { this.contactType = newCT; }
-    public void updateContact(String newContact) { this.contact = contact; }
     public void updateCreatedDate() { this.createdTime = LocalDateTime.now(); }
     public void updateModifiedDate() { this.modifiedTime = LocalDateTime.now(); }
-    public void updateRecruitStatus(RecruitStatus rs) { this.recruitStatus = rs; }
 
 
     public void updatePost(UpdatePostRequest updatePost) {
