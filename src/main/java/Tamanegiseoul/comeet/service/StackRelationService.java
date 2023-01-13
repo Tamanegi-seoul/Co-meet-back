@@ -23,20 +23,16 @@ public class StackRelationService {
 
     public List<TechStack> findTechStackByPostId(Long postId) {
         List<StackRelation> findSR = stackRelationRepository.findByPostId(postId);
-        log.warn("[StackRelationService:findTechStackByPostId] found "+ findSR.size() + "ea StackRelation from DB");
         List<TechStack> findTS = new ArrayList<>();
 
         for(StackRelation sr : findSR) {
-            log.warn("[StackRelationService:findTechStackByPostId] iterating.. " + sr.getTechStack());
             findTS.add(sr.getTechStack());
         }
 
-        //findSR.stream().map(e -> findTS.add(e.getTechStack())); // need to debug why it didn't work
-        log.warn("[StackRelationService:findTechStackByPostId] found "+ findTS.size() + "ea TechStack with given postId");
         return findTS;
     }
 
-    public List<TechStack> findTechStackBymemberId(Long memberId) {
+    public List<TechStack> findTechStackByMemberId(Long memberId) {
         List<StackRelation> findSR = stackRelationRepository.findByMemberId(memberId);
         List<TechStack> findTS = new ArrayList<>();
         findSR.stream().map(e -> findTS.add(e.getTechStack()));
