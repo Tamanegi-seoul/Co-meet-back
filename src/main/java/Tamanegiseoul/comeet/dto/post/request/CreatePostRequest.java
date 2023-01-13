@@ -7,7 +7,9 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,7 +17,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
+@NoArgsConstructor
 public class CreatePostRequest {
     @Schema(description = "게시글 제목", example = "자바 알고리즘 스터디 모집")
     private String title;
@@ -42,4 +45,19 @@ public class CreatePostRequest {
     @Schema(description = "사용될 또는 스터디할 기술스택", example = "JAVA, JAVA_SCRIPT")
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+
+    @Builder
+    public CreatePostRequest(String title, String content, GroupType groupType, Long recruitCapacity, ContactType contactType, String contact, Boolean remote, LocalDate startDate, Long expectedTerm, Long posterId, List<TechStack> designatedStacks) {
+        this.title = title;
+        this.content = content;
+        this.groupType = groupType;
+        this.recruitCapacity = recruitCapacity;
+        this.contactType = contactType;
+        this.contact = contact;
+        this.remote = remote;
+        this.startDate = startDate;
+        this.expectedTerm = expectedTerm;
+        this.posterId = posterId;
+        this.designatedStacks = designatedStacks;
+    }
 }

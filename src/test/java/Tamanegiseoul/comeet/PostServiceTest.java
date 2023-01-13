@@ -6,7 +6,11 @@ import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.PostService;
@@ -22,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,68 +49,68 @@ public class PostServiceTest {
     @Autowired PostRepository postRepository;
 
     @Test
-    public void 포스트_생성() {
+    public void 포스트_생성() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("케네스")
                 .email("93jpark@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
-        memberService.registerMember(newMember);
+        JoinMemberResponse response = memberService.registerMember(newMember, null);
 
         // when
-        Posts newPost = Posts.builder()
+        CreatePostRequest requset = CreatePostRequest.builder()
                 .title("이것은 새로운 포스트입니다.")
                 .content("빈 내용")
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
-                .poster(newMember)
+                .posterId(response.getMemberId())
                 .recruitCapacity(4L)
                 .remote(false)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
+                .designatedStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
-        postService.registerPost(newPost);
+        CreatePostResponse postResponse = postService.registerPost(requset);
         ArrayList<TechStack> stacks = new ArrayList<TechStack>(
                 Arrays.asList(TechStack.JAVA, TechStack.SPRING)
         );
-        postService.updateDesignateStacks(newPost.getPostId(), stacks);
+        postService.updateDesignateStacks(postResponse.getPostId(), stacks);
 
         // then
-        List<Posts> findPosts = postService.findPostByMemberId(newMember.getMemberId());
+        List<Posts> findPosts = postService.findPostByMemberId(response.getMemberId());
         log.info(findPosts.get(0).printout());
         Assert.assertEquals(1, findPosts.size());
     }
 
     @Test
-    public void 포스트_수정() {
+    public void 포스트_수정() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("케네스")
                 .email("93jpark@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
-        memberService.registerMember(newMember);
-        Posts newPost = Posts.builder()
+        JoinMemberResponse memberResponse = memberService.registerMember(newMember, null);
+        CreatePostRequest request = CreatePostRequest.builder()
                 .title("이것은 새로운 포스트입니다.")
                 .content("빈 내용")
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
-                .poster(newMember)
+                .posterId(memberResponse.getMemberId())
                 .remote(false)
                 .recruitCapacity(4L)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
+                .designatedStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
-        postService.registerPost(newPost);
-        ArrayList<TechStack> stacks = new ArrayList<TechStack>(
-                Arrays.asList(TechStack.JAVA, TechStack.SPRING)
-        );
-        postService.updateDesignateStacks(newPost.getPostId(), stacks);
+        CreatePostResponse response = postService.registerPost(request);
 
         // when
         UpdatePostRequest updatedPost = new UpdatePostRequest(
-                newPost.getPostId(),
+                response.getPostId(),
                 "이것은 수정된 포스트입니다.",
                 GroupType.STUDY,
                 "빈 내용",
@@ -124,7 +129,7 @@ public class PostServiceTest {
         postService.updatePost(updatedPost);
 
         // then
-        Posts findPost = postService.findPostByMemberId(newMember.getMemberId()).get(0);
+        Posts findPost = postService.findPostByMemberId(memberResponse.getMemberId()).get(0);
         log.info(findPost.printout());
 
         Assert.assertEquals("이것은 수정된 포스트입니다.", findPost.getTitle());

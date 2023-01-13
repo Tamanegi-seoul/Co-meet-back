@@ -6,6 +6,10 @@ import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
@@ -24,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,14 +57,15 @@ public class MemberServiceTest {
     @Transactional
     public void 단일_유저_생성() throws Exception {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest request = JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.JAVA)))
                 .build();
 
         // when
-        memberService.registerMember(newMember);
+        memberService.registerMember(request, null);
 
         // then
         Member findMember = memberService.findMemberByNickname("test_user");
@@ -68,22 +74,22 @@ public class MemberServiceTest {
 
     @Test(expected = DuplicateResourceException.class)
     @Transactional
-    public void 유저_이메일_중복검사() {
+    public void 유저_이메일_중복검사() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberResponse newMember = memberService.registerMember(JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
-                .build();
-        memberService.registerMember(newMember);
+                .preferStacks(new ArrayList<>(List.of(TechStack.PYTHON)))
+                .build(), null);
 
         // when
-        Member otherMember = Member.builder()
+        JoinMemberResponse otherMember = memberService.registerMember(JoinMemberRequest.builder()
                 .nickname("other_user")
                 .email("testuser@gmail.com")
                 .password("password")
-                .build();
-        memberService.registerMember(otherMember);
+                .preferStacks(new ArrayList<>(List.of(TechStack.R)))
+                .build(), null);
 
         // then
         Assert.fail("something goes wrong");
@@ -91,43 +97,46 @@ public class MemberServiceTest {
 
     @Test(expected = DuplicateResourceException.class)
     @Transactional
-    public void 유저_닉네임_중복검사() {
+    public void 유저_닉네임_중복검사() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.JAVA)))
                 .build();
-        memberService.registerMember(newMember);
+        memberService.registerMember(newMember, null);
 
         // when
-        Member otherMember = Member.builder()
+        JoinMemberRequest otherMember = JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("otherUser@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.R)))
                 .build();
-        memberService.registerMember(otherMember);
+        memberService.registerMember(otherMember, null);
 
         // then
-        Assert.fail("something goes wrong");
+        Assert.fail("duplicated member resource has been registered");
     }
 
     @Test
     @Transactional
-    public void 기술스택_세팅() {
+    public void 기술스택_세팅() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.R)))
                 .build();
-        memberService.registerMember(newMember);
+        JoinMemberResponse response = memberService.registerMember(newMember, null);
 
         // when
-        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
+        memberService.updatePreferStack(response.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
 
         // then
-        List<TechStack> findStacks = memberService.findPreferredStacks(newMember.getMemberId());
+        List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name());
         }
@@ -137,22 +146,21 @@ public class MemberServiceTest {
     @Test
     @Transactional
     //@Rollback(false)
-    public void 기술스택_수정() {
+    public void 기술스택_수정() throws IOException {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("woogie")
                 .email("woogie@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)))
                 .build();
-        memberService.registerMember(newMember);
-        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
-
+        JoinMemberResponse response = memberService.registerMember(newMember, null);
 
         // when
-        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
+        memberService.updatePreferStack(response.getMemberId(), new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)));
 
         // then
-        List<TechStack> findStacks = memberService.findPreferredStacks(newMember.getMemberId());
+        List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
         for(TechStack ts : findStacks) {
             log.info("TechStack : " + ts.name()); // should be javascript & python
         }
@@ -163,37 +171,38 @@ public class MemberServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     public void 유저_삭제() throws Exception {
         // given
-        Member newMember = Member.builder()
+        JoinMemberRequest newMember = JoinMemberRequest.builder()
                 .nickname("test_user")
                 .email("testuser@gmail.com")
                 .password("password")
+                .preferStacks(new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)))
                 .build();
-        Long newMemberId = memberService.registerMember(newMember);
-        memberService.updatePreferStack(newMember.getMemberId(), new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)));
+        JoinMemberResponse response = memberService.registerMember(newMember, null);
 
-        Posts newPost = Posts.builder()
+        CreatePostRequest request = CreatePostRequest.builder()
                 .title("이것은 새로운 포스트입니다.")
                 .content("빈 내용")
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
-                .poster(newMember)
+                .posterId(response.getMemberId())
                 .recruitCapacity(4L)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
                 .build();
-        postService.registerPost(newPost);
+        CreatePostResponse postResponse = postService.registerPost(request);
         ArrayList<TechStack> stacks = new ArrayList<TechStack>(
                 Arrays.asList(TechStack.JAVA, TechStack.SPRING)
         );
-        postService.updateDesignateStacks(newPost.getPostId(), stacks);
+        postService.updateDesignateStacks(postResponse.getPostId(), stacks);
 
         // when
-        int queryExecuteTimes = memberService.removeMember(newMemberId);
+        Long removedMemberId = memberService.removeMember(response.getMemberId());
+        em.flush();
         em.clear();
-        log.info("query executed for " + queryExecuteTimes+ " times");
+        log.info("member id {} has been removed", removedMemberId);
 
         // then
-        Member findMember = memberService.findMemberById(newMemberId);
+        Member findMember = memberService.findMemberById(response.getMemberId());
 
         log.info("find member:", findMember.getNickname());
 

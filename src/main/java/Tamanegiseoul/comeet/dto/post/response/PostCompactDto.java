@@ -19,7 +19,7 @@ import java.util.List;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class PostCompactDto {
 
     private Long postId;

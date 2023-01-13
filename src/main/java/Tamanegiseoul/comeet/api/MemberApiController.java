@@ -57,50 +57,15 @@ public class MemberApiController {
 
     @PostMapping
     @Operation(summary = "신규 회원가입", description = "새로운 회원 등록")
-    public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile file) {
-        log.error(request.toString());
-        log.error("join request's password {}", request.getPassword());
-        Member newMember = Member.builder()
-                .email(request.getEmail())
-                .nickname(request.getNickname())
-                .password(request.getPassword())
-                .build();
+    public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile image) {
         try {
-            memberService.registerMember(newMember);
-            log.info("[%s] %s has been registered.", newMember.getNickname(), newMember.getEmail());
+            JoinMemberResponse responseDto = memberService.registerMember(request, image);
 
-            memberService.addRoleToMember(newMember.getEmail(), "ROLE_USER");
-
-            memberService.updatePreferStack(newMember.getMemberId(), request.getPreferStacks());
-            log.info("%s's preferred tech stack has been registered", newMember.getNickname());
-
-            ImageDto imageDto = null;
-
-            if(file != null) {
-                log.warn("[MemberApiController:joinNewUser]file is present");
-                imageDto = imageDataService.uploadImage(newMember, file);
-            } else {
-                log.warn("[MemberApiController:joinNewUser]file is empty");
-            }
-
-            List<TechStack> preferredStacks = memberService.findPreferredStacks(newMember.getMemberId());
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER,
-                    JoinMemberResponse.builder()
-                            .memberId(newMember.getMemberId())
-                            .email(newMember.getEmail())
-                            .nickname(newMember.getNickname())
-                            .preferStacks(preferredStacks)
-                            .createdTime(newMember.getCreatedTime())
-                            .modifiedTime(newMember.getModifiedTime())
-                            .profileImage(imageDto)
-                            .build()
-            );
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER, responseDto);
 
         } catch (DuplicateResourceException e) {
             return ApiResponse.of(HttpStatus.FORBIDDEN, ResponseMessage.DUPLICATE_RES, e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
             log.warn(e.getMessage());
             return ApiResponse.of(HttpStatus.BAD_REQUEST, ResponseMessage.FAIL_FILE_UPLOAD, e.getMessage());
         }
@@ -118,7 +83,7 @@ public class MemberApiController {
                     .nickname(findMember.getNickname())
                     .build();
 
-            int removedMemberId = memberService.removeMember(memberId);
+            Long removedMemberId = memberService.removeMember(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
         } catch (ResourceNotFoundException e) {

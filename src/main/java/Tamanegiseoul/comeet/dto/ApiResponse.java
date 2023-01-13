@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 @Data
 @AllArgsConstructor
 @Builder
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class ApiResponse<T> {
     @NonNull
     private int statusCode;

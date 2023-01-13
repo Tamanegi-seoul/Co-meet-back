@@ -6,6 +6,12 @@ import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.Role;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
+import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
+import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
+import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
+import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
+import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.MemberService;
 import Tamanegiseoul.comeet.service.PostService;
@@ -14,6 +20,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static Tamanegiseoul.comeet.domain.enums.GroupType.PROJECT;
 import static Tamanegiseoul.comeet.domain.enums.GroupType.STUDY;
@@ -37,49 +46,33 @@ public class initDB {
              * SET UP MOCK MEMBER
              */
 
-            memberService.registerMember(
-                    Member.builder()
+            JoinMemberResponse memberA = memberService.registerMember(
+                    JoinMemberRequest.builder()
                             .email("admin")
                             .nickname("관리자")
                             .password("password")
-                            .build()
+                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)))
+                            .build(), null
             );
 
-            memberService.addRoleToMember("admin", "ROLE_ADMIN");
 
-            Member memberA = Member.builder()
-                    .nickname("Pansy Stone")
-                    .email("p.stone@comeet.com")
-                    .password("password")
-                    .build();
-            memberA.addPreferStack(TechStack.JAVA_SCRIPT);
-            memberA.addPreferStack(TechStack.PYTHON);
-            memberA.updateCreatedDate();
-            memberA.updateModifiedDate();
-            memberService.registerMember(memberA);
-            memberService.addRoleToMember("p.stone@comeet.com", "ROLE_USER");
-
-
-            Member memberB = Member.builder() // memberId = 2
-                    .nickname("Carl Craig")
-                    .email("c.craig@comeet.com")
-                    .password("password")
-                    .build();
-            memberB.addPreferStack(TechStack.JAVA_SCRIPT);
-            memberB.addPreferStack(TechStack.PYTHON);
-            memberB.updateCreatedDate();
-            memberB.updateModifiedDate();
-            memberService.registerMember(memberB);
-            memberService.addRoleToMember("c.craig@comeet.com", "ROLE_USER");
+            JoinMemberResponse memberB = memberService.registerMember(
+                    JoinMemberRequest.builder()
+                            .email("c.craig@comeet.com")
+                            .nickname("Carl Craig")
+                            .password("password")
+                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT)))
+                            .build(), null
+            );
 
 
             /**
              *  SET UT MOCK POST
              */
-            Posts postA = Posts.builder() // postId = 5
+            CreatePostRequest requestPostA = CreatePostRequest.builder() // postId = 5
                     .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(memberA)
+                    .posterId(memberA.getMemberId())
                     .contact("p.stone@kakao.com")
                     .groupType(STUDY)
                     .remote(false)
@@ -87,197 +80,191 @@ public class initDB {
                     .startDate(LocalDate.parse("2021-08-15"))
                     .expectedTerm(21L)
                     .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
                     .build();
-            postA.addDesignateStack(TechStack.JAVA);
-            postA.updateCreatedDate();
-            postA.updateModifiedDate();
-            postService.registerPost(postA);
+            CreatePostResponse postA = postService.registerPost(requestPostA);
 
-            Posts postB = Posts.builder()
-                    .title("come on, Python algorithm study crew!")
+            CreatePostRequest requestPostB = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(memberB)
-                    .remote(false)
-                    .contact("c.carig@gmail.com")
-                    .groupType(PROJECT)
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-01-23"))
-                    .expectedTerm(90L)
-                    .recruitCapacity(4L)
-                    .build();
-            postB.addDesignateStack(TechStack.PYTHON);
-            postB.updateCreatedDate();
-            postB.updateModifiedDate();
-            postService.registerPost(postB);
-
-            Posts postC = Posts.builder()
-                    .title("POST C!")
-                    .content("tba")
-                    .poster(memberB)
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
                     .groupType(STUDY)
                     .remote(false)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-01-24"))
-                    .expectedTerm(90L)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
                     .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
                     .build();
-            postC.addDesignateStack(TechStack.PYTHON);
-            postC.updateCreatedDate();
-            postC.updateModifiedDate();
-            postService.registerPost(postC);
+            CreatePostResponse postB = postService.registerPost(requestPostB);
 
-            Posts postD = Posts.builder()
-                    .title("POST D!")
+            CreatePostRequest requestPostC = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(memberB)
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
                     .groupType(STUDY)
                     .remote(false)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-01-25"))
-                    .expectedTerm(90L)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
                     .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
                     .build();
-            postD.addDesignateStack(TechStack.PYTHON);
-            postD.updateCreatedDate();
-            postD.updateModifiedDate();
-            postService.registerPost(postD);
+            CreatePostResponse postC = postService.registerPost(requestPostC);
 
-            Posts postE = Posts.builder()
-                    .title("POST E!")
+            CreatePostRequest requestPostD = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(memberB)
-                    .remote(false)
-                    .groupType(PROJECT)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-01-26"))
-                    .expectedTerm(90L)
-                    .recruitCapacity(4L)
-                    .build();
-            postE.addDesignateStack(TechStack.PYTHON);
-            postE.updateCreatedDate();
-            postE.updateModifiedDate();
-            postService.registerPost(postE);
-
-            Posts postF = Posts.builder()
-                    .title("POST F!")
-                    .content("tba")
-                    .remote(false)
-                    .poster(memberB)
-                    .groupType(PROJECT)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-02-26"))
-                    .expectedTerm(90L)
-                    .recruitCapacity(4L)
-                    .build();
-            postF.addDesignateStack(TechStack.PYTHON);
-            postF.updateCreatedDate();
-            postF.updateModifiedDate();
-            postService.registerPost(postF);
-
-
-            Posts postG = Posts.builder()
-                    .title("POST F!")
-                    .content("tba")
-                    .remote(false)
-                    .poster(memberB)
-                    .groupType(PROJECT)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-02-26"))
-                    .expectedTerm(90L)
-                    .recruitCapacity(4L)
-                    .build();
-            postG.addDesignateStack(TechStack.PYTHON);
-            postG.updateCreatedDate();
-            postG.updateModifiedDate();
-            postService.registerPost(postG);
-
-
-            Posts postH = Posts.builder()
-                    .title("POST H!")
-                    .content("tba")
-                    .poster(memberB)
-                    .groupType(PROJECT)
-                    .remote(false)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-03-26"))
-                    .expectedTerm(90L)
-                    .recruitCapacity(4L)
-                    .build();
-            postH.addDesignateStack(TechStack.PYTHON);
-            postH.updateCreatedDate();
-            postH.updateModifiedDate();
-            postService.registerPost(postH);
-
-            Posts postI = Posts.builder()
-                    .title("POST I!")
-                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
                     .groupType(STUDY)
                     .remote(false)
-                    .poster(memberB)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-03-26"))
-                    .expectedTerm(90L)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
                     .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
                     .build();
-            postI.addDesignateStack(TechStack.PYTHON);
-            postI.updateCreatedDate();
-            postI.updateModifiedDate();
-            postService.registerPost(postI);
+            CreatePostResponse postD = postService.registerPost(requestPostD);
 
-            Posts postJ = Posts.builder()
-                    .title("POST J!")
+            CreatePostRequest requestPostE = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
                     .content("tba")
-                    .poster(memberB)
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
                     .groupType(STUDY)
                     .remote(false)
-                    .contact("c.carig@gmail.com")
-                    .contactType(ContactType.POSTER_EMAIL)
-                    .startDate(LocalDate.parse("2022-03-26"))
-                    .expectedTerm(90L)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
                     .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
                     .build();
-            postJ.addDesignateStack(TechStack.PYTHON);
-            postJ.updateCreatedDate();
-            postJ.updateModifiedDate();
-            postService.registerPost(postJ);
+            CreatePostResponse postE = postService.registerPost(requestPostE);
+
+            CreatePostRequest requestPostF = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
+                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
+                    .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
+                    .build();
+            CreatePostResponse postF = postService.registerPost(requestPostF);
+
+
+            CreatePostRequest requestG = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
+                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
+                    .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
+                    .build();
+            CreatePostResponse postG = postService.registerPost(requestG);
+
+
+            CreatePostRequest requestH = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
+                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
+                    .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
+                    .build();
+            CreatePostResponse postH = postService.registerPost(requestH);
+
+            CreatePostRequest requestI = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
+                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
+                    .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
+                    .build();
+            CreatePostResponse postI = postService.registerPost(requestI);
+
+            CreatePostRequest requestJ = CreatePostRequest.builder() // postId = 5
+                    .title("need JAVA study crew!")
+                    .content("tba")
+                    .posterId(memberA.getMemberId())
+                    .contact("p.stone@kakao.com")
+                    .groupType(STUDY)
+                    .remote(false)
+                    .contactType(ContactType.KAKAO_OPEN_CHAT)
+                    .startDate(LocalDate.parse("2021-08-15"))
+                    .expectedTerm(21L)
+                    .recruitCapacity(4L)
+                    .designatedStacks(
+                            new ArrayList<>(List.of(TechStack.JAVA))
+                    )
+                    .build();
+            CreatePostResponse postJ = postService.registerPost(requestJ);
 
             /**
              * SET UP MOCK COMMENTS
              */
 
-            Comment comA = Comment.builder() // commentId = 9
-                    .post(postA)
-                    .member(memberA)
+            CreateCommentRequest requestComA = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberA.getMemberId())
                     .content("welcome whoever")
                     .build();
-            comA.updateCreatedTime();
-            comA.updateModifiedTime();
-            commentService.registerComment(comA);
+            CreateCommentResponse comA = commentService.registerComment(requestComA);
 
-            Comment comB = Comment.builder() // commentId = 10
-                    .post(postA)
-                    .member(memberB)
-                    .content("cmf!")
+            CreateCommentRequest requestComB = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberB.getMemberId())
+                    .content("welcome whoever")
                     .build();
-            comB.updateCreatedTime();
-            comB.updateModifiedTime();
-            commentService.registerComment(comB);
+            CreateCommentResponse comB = commentService.registerComment(requestComB);
 
-            Comment comC = Comment.builder() // commentId = 11
-                    .post(postB)
-                    .member(memberA)
-                    .content("what about JAVA?")
+            CreateCommentRequest requestComC = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postB.getPostId())
+                    .memberId(memberA.getMemberId())
+                    .content("welcome whoever")
                     .build();
-            comC.updateCreatedTime();
-            comC.updateModifiedTime();
-            commentService.registerComment(comC);
+            CreateCommentResponse comC = commentService.registerComment(requestComC);
         };
     }
 }

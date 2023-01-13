@@ -22,7 +22,7 @@ import java.util.List;
 
 @Builder
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class SearchPostResponse {
     private Long postId;
     private String title;

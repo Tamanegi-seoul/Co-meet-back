@@ -39,14 +39,18 @@ public class Member {
     private Collection<Role> roles = new ArrayList<>();
 
     @Nullable
-    @OneToOne(mappedBy = "owner")
+//    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner")
     private ImageData profileImage;
 
-    @OneToMany(mappedBy = "member", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private List<StackRelation> preferStacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "poster", cascade = ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poster", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private List<Posts> wrotePosts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    private List<Comment> wroteComments = new ArrayList<>();
 
     @NotNull
     private LocalDateTime createdTime;
@@ -79,6 +83,16 @@ public class Member {
     public void addProfileImage(ImageData imageData) {
         this.profileImage = imageData;
     }
+
+    public void addWrotePost(Posts post) { this.wrotePosts.add(post); }
+
+    public void addRole(Role role) { this.roles.add(role); }
+
+    public void addWroteComments(Comment comment) { this.wroteComments.add(comment); }
+    public void clearPreferStack() {
+        this.preferStacks.clear();
+    }
+
 
     // set LocalTime for created, modified date
     public void updateCreatedDate() {
