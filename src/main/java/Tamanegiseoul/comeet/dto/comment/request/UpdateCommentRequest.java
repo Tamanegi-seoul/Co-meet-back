@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdateCommentRequest {
@@ -16,4 +14,10 @@ public class UpdateCommentRequest {
     private Long commentId;
     @Schema(description = "작성할 덧글의 포스트 ID", example = "5")
     private String content;
+
+    @Builder
+    public UpdateCommentRequest(Long commentId, String content) {
+        this.commentId = commentId;
+        this.content = content;
+    }
 }
