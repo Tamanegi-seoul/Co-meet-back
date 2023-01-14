@@ -37,10 +37,6 @@ import java.util.List;
 public class PostApiController {
 
     private final PostService postService;
-    private final MemberService memberService;
-    private final CommentService commentService;
-    private final StackRelationService stackRelationService;
-    private final ImageDataService imageDataService;
 
     @PostMapping
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
@@ -63,7 +59,7 @@ public class PostApiController {
         try {
             UpdatePostResponse responseDto = postService.updatePost(request);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, responseDto.designatedStacks(request.getDesignatedStacks()));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, responseDto);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
         }
@@ -71,11 +67,11 @@ public class PostApiController {
 
     @GetMapping("/all")
     @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
-    public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset",defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
+    public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset", defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
-            List<Posts> findPosts = postService.findAll(offset, limit);
+            List<PostCompactDto> findPosts = postService.findAll(offset, limit);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, postService.toCompactDtoList(findPosts));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, findPosts);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -85,8 +81,8 @@ public class PostApiController {
     @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
     public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="memberId") @Valid Long memberId) {
         try {
-            List<Posts> findPosts = postService.findPostByMemberId(memberId);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, postService.toCompactDtoList(findPosts));
+            List<PostCompactDto> responseDtos = postService.findPostByMemberId(memberId);//
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, responseDtos);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -96,19 +92,9 @@ public class PostApiController {
     @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("postId") Long postId) {
         try {
-            Posts findPost = postService.findPostById(postId);
-            Member findPoster = memberService.findMemberById(findPost.getPoster().getMemberId());
-            ImageDto findImage = imageDataService.findImageByMemberId(findPoster.getMemberId());
-            List<Comment> commentList = commentService.findCommentByPostId(postId);
-            List<CommentDto> commentDtoList = commentService.commentListToDto(commentList);
-            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(postId);
+            SearchPostResponse response = postService.findPostById(postId);
 
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST,
-                            SearchPostResponse.toDto(findPost)
-                            .designatedStacks(techStacks)
-                            .comments(commentDtoList)
-                            .posterProfile(findImage)
-            );
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, response);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
@@ -118,10 +104,8 @@ public class PostApiController {
     @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
     public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "postId")  Long postId) {
         try {
-            postService.removePostByPostId(postId);
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, RemovePostResponse.builder()
-                            .postId(postId)
-                            .build());
+            RemovePostResponse removePostResponse = postService.removePostByPostId(postId);
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, removePostResponse);
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_POST, e.getMessage());
         }
