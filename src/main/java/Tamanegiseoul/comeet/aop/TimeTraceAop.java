@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class TimeTraceAop {
 
     @Around("execution(* Tamanegiseoul.comeet..*(..))")
+    @Profile("dev")
     public Object execute(ProceedingJoinPoint jointPoint) throws Throwable {
         long start = System.currentTimeMillis();
         log.debug("START: " + jointPoint.toShortString());
