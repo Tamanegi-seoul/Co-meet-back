@@ -1,13 +1,14 @@
 package Tamanegiseoul.comeet.service;
+import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
+import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
+import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
-import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
-import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
-import Tamanegiseoul.comeet.dto.post.response.UpdatePostResponse;
+import Tamanegiseoul.comeet.dto.post.response.*;
 import Tamanegiseoul.comeet.repository.CommentRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.repository.PostRepository;
@@ -26,8 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class PostService {
-
-    private final StackRelationService stackRelationService;
 
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
@@ -83,17 +82,20 @@ public class PostService {
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
         findPost.updateModifiedDate();
 
-        return UpdatePostResponse.toDto(findPost);
+        return UpdatePostResponse.toDto(findPost).designatedStacks(findPost.exportTechStack());
     }
 
     // 포스트 ID를 기반으로 단건 포스트 삭제
     @Transactional
-    public void removePostByPostId(Long postId) {
+    public RemovePostResponse removePostByPostId(Long postId) {
         Posts findPost = postRepository.findOne(postId);
         if(findPost == null) {
             throw new ResourceNotFoundException("post", "postId", postId);
         }
         em.remove(findPost);
+        return RemovePostResponse.builder()
+                .postId(findPost.getPostId())
+                .build();
     }
 
     // 회원이 작성한 모든 포스트 삭제
@@ -109,35 +111,49 @@ public class PostService {
      * SEARCH POST METHODS *
      ***********************/
     @Transactional(readOnly = true)
-    public Posts findPostById(Long postId) {
-        log.warn("[PostService:findPostById] find method init");
+    public SearchPostResponse findPostById(Long postId) {
         Posts findPost = postRepository.findOne(postId);
-        if(findPost == null) {
-            log.warn("[PostService:findPostById] can't find post with given post id");
-            throw new ResourceNotFoundException("Posts", "postId", postId);
-        } else {
-            log.warn("[PostService:findPostById] find post with given post id");
-            return findPost;
+
+        if(findPost == null) { throw new ResourceNotFoundException("Posts", "postId", postId); }
+
+        Member findPoster = findPost.getPoster();
+
+        ImageDto findProfileImage = ImageDto.toDto(findPoster.getProfileImage());
+
+        List<Comment> commentList = commentRepository.findCommentByPostId(postId);
+        List<CommentDto> commentDtoList = new ArrayList<>();
+
+        for(Comment comment : commentList) {
+            Member commentWriter = comment.getMember();
+            ImageDto commenterProfile = ImageDto.toDto(comment.getMember().getProfileImage());
+
+            commentDtoList.add(CommentDto.toDto(comment.getMember(), findPost, commenterProfile, comment));
         }
+
+
+        return SearchPostResponse.toDto(findPost)
+                .designatedStacks(findPost.exportTechStack())
+                .comments(commentDtoList)
+                .posterProfile(findProfileImage);
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findAll() {
-        return postRepository.findAll();
+    public List<PostCompactDto> findAll(int offset, int limit) {
+        List<Posts> findPosts = postRepository.findAll(offset, limit);
+        return PostCompactDto.toCompactDtoList(findPosts);
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> findAll(int offset, int limit) {
-        return postRepository.findAll(offset, limit);
-    }
-
-    @Transactional(readOnly = true)
-    public List<Posts> findPostByMemberId(Long memberId) {
+    public List<PostCompactDto> findPostByMemberId(Long memberId) {
         Member findMember = memberRepository.findOne(memberId);
         if(findMember == null) {
             throw new ResourceNotFoundException("member_id", "memberId", memberId);
         }
-        return postRepository.findPostByMemberId(memberId);
+
+        List<Posts> postList = postRepository.findPostByMemberId(memberId);
+        List<PostCompactDto> postCompactDtos = PostCompactDto.toCompactDtoList(postList);
+
+        return postCompactDtos;
     }
 
 
@@ -158,15 +174,6 @@ public class PostService {
      * DTO TRANSFER METHODS *
      ***********************/
 
-    public List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
-        List<PostCompactDto> list = new ArrayList<>();
-        for(Posts post : postList) {
-            PostCompactDto dto = PostCompactDto.toDto(post);
-            List<TechStack> techStacks = stackRelationService.findTechStackByPostId(post.getPostId());
-            dto.designatedStacks(techStacks);
-            list.add(dto);
-        }
-        return list;
-    }
+
 
 }
