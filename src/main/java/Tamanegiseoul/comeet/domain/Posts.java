@@ -113,6 +113,18 @@ public class Posts {
         }
     }
 
+    public List<TechStack> exportTechStack() {
+        if(this.designatedStack.size() == 0) {
+            return null;
+        } else {
+            ArrayList<TechStack> list = new ArrayList<>();
+            for(StackRelation ts : this.designatedStack) {
+                list.add(ts.getTechStack());
+            }
+            return list;
+        }
+    }
+
     public void updateCreatedDate() { this.createdTime = LocalDateTime.now(); }
     public void updateModifiedDate() { this.modifiedTime = LocalDateTime.now(); }
 
