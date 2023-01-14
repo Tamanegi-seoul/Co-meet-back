@@ -13,6 +13,7 @@ import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
+import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.CommentService;
@@ -79,7 +80,7 @@ public class CommentServiceTest {
     @Test
     public void 덧글_작성() {
         // given
-        Posts findPost = postService.findAll().get(0);
+        Posts findPost = postRepository.findAll().get(0);
         Member findMember = memberService.findAll().get(0);
 
         // when
@@ -99,7 +100,7 @@ public class CommentServiceTest {
     @Test
     public void 덧글_수정() {
         // given
-        Posts findPost = postService.findAll().get(0);
+        Posts findPost = postRepository.findAll().get(0);
         Member findMember = memberService.findAll().get(0);
 
         CreateCommentRequest request = CreateCommentRequest.builder()
@@ -127,7 +128,7 @@ public class CommentServiceTest {
         // given
 
         Member findMember = memberService.findMemberByNickname("케네스");
-        Posts findPost = postService.findPostByMemberId(findMember.getMemberId()).get(0);
+        PostCompactDto findPost = postService.findPostByMemberId(findMember.getMemberId()).get(0);
 
         CreateCommentRequest request = CreateCommentRequest.builder()
                 .memberId(findMember.getMemberId())
@@ -149,7 +150,7 @@ public class CommentServiceTest {
     @Test(expected = ResourceNotFoundException.class)
     public void 덧글_삭제() {
         // given
-        Posts findPost = postService.findAll().get(0);
+        Posts findPost = postRepository.findAll().get(0);
         Member findMember = memberService.findAll().get(0);
 
         CreateCommentRequest request = CreateCommentRequest.builder()
