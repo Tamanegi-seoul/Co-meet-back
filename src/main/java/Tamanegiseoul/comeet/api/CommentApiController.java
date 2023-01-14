@@ -70,20 +70,5 @@ public class CommentApiController {
         }
     }
 
-    @GetMapping
-    @Operation(summary = "덧글 조회", description = "포스트에 작성된 덧글 조회")
-    public ResponseEntity<ApiResponse> searchComment(@RequestParam("postId") Long postId) {
-        try {
-            Posts findPost = postService.findPostById(postId);
-            List<Comment> commentList = commentService.findCommentByPostId(findPost.getPostId());
-            SearchCommentResponse response = SearchCommentResponse.builder().commentList(commentService.commentListToDto(commentList)).build();
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_COMMENT, SearchCommentResponse.builder()
-                            .commentList(commentService.commentListToDto(commentList))
-                            .build());
-        } catch (ResourceNotFoundException e) {
-            return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.RESOURCE_NOT_FOUND, e.getMessage());
-        }
-    }
 
 }

@@ -11,6 +11,7 @@ import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
+import Tamanegiseoul.comeet.dto.post.response.PostCompactDto;
 import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.MemberRepository;
 import Tamanegiseoul.comeet.service.PostService;
@@ -79,8 +80,7 @@ public class PostServiceTest {
         postService.updateDesignateStacks(postResponse.getPostId(), stacks);
 
         // then
-        List<Posts> findPosts = postService.findPostByMemberId(response.getMemberId());
-        log.info(findPosts.get(0).printout());
+        List<PostCompactDto> findPosts = postService.findPostByMemberId(response.getMemberId());
         Assert.assertEquals(1, findPosts.size());
     }
 
@@ -129,8 +129,7 @@ public class PostServiceTest {
         postService.updatePost(updatedPost);
 
         // then
-        Posts findPost = postService.findPostByMemberId(memberResponse.getMemberId()).get(0);
-        log.info(findPost.printout());
+        PostCompactDto findPost = postService.findPostByMemberId(memberResponse.getMemberId()).get(0);
 
         Assert.assertEquals("이것은 수정된 포스트입니다.", findPost.getTitle());
 

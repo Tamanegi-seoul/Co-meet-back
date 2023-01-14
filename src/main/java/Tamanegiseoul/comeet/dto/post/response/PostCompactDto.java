@@ -15,6 +15,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -58,6 +59,16 @@ public class PostCompactDto {
                 .createdTime(findPost.getCreatedTime())
                 .modifiedTime(findPost.getModifiedTime())
                 .build();
+    }
+
+    public static List<PostCompactDto> toCompactDtoList(List<Posts> postList) {
+        List<PostCompactDto> list = new ArrayList<>();
+        for(Posts post : postList) {
+            PostCompactDto dto = PostCompactDto.toDto(post);
+            dto.designatedStacks(post.exportTechStack());
+            list.add(dto);
+        }
+        return list;
     }
 
     public PostCompactDto designatedStacks(List<TechStack> stacks) {
