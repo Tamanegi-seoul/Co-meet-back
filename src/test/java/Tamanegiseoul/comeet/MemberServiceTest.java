@@ -14,6 +14,7 @@ import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
 import Tamanegiseoul.comeet.repository.MemberRepository;
+import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
 import Tamanegiseoul.comeet.service.MemberService;
@@ -51,6 +52,7 @@ public class MemberServiceTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired PostService postService;
+    @Autowired PostRepository postRepository;
     @Autowired CommentService commentService;
 
     @PersistenceContext
@@ -199,10 +201,11 @@ public class MemberServiceTest {
                 .expectedTerm(14L)
                 .build();
         CreatePostResponse postResponse = postService.registerPost(request);
+        Posts findPost = postRepository.findOne(postResponse.getPostId());
         ArrayList<TechStack> stacks = new ArrayList<TechStack>(
                 Arrays.asList(TechStack.JAVA, TechStack.SPRING)
         );
-        postService.updateDesignateStacks(postResponse.getPostId(), stacks);
+        postService.updateDesignateStacks(findPost, stacks);
 
         // when
         RemoveMemberResponse removeResponse = memberService.removeMember(response.getMemberId());

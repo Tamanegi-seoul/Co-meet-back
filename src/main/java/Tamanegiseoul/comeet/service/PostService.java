@@ -59,7 +59,9 @@ public class PostService {
 
         newPost.updateModifiedDate();
         newPost.updateCreatedDate();
+
         postRepository.save(newPost);
+        updateDesignateStacks(newPost, request.getDesignatedStacks());
         em.flush();
         log.warn("check");
         findMember.addWrotePost(newPost);
@@ -161,9 +163,7 @@ public class PostService {
      * POST UPDATE METHODS *
      ***********************/
     @Transactional
-    public void updateDesignateStacks(Long postId, List<TechStack> techStacks) {
-        Posts findPost = postRepository.findOne(postId);
-        //findPost.initDesignateStack();
+    public void updateDesignateStacks(Posts findPost, List<TechStack> techStacks) {
         findPost.getDesignatedStack().clear();
         for(TechStack stack : techStacks) {
             findPost.addDesignateStack(stack);
