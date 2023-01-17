@@ -77,7 +77,8 @@ public class PostServiceTest {
         ArrayList<TechStack> stacks = new ArrayList<TechStack>(
                 Arrays.asList(TechStack.JAVA, TechStack.SPRING)
         );
-        postService.updateDesignateStacks(postResponse.getPostId(), stacks);
+        Posts findPost = postRepository.findOne(postResponse.getPostId());
+        postService.updateDesignateStacks(findPost, stacks);
 
         // then
         List<PostCompactDto> findPosts = postService.findPostByMemberId(response.getMemberId());
