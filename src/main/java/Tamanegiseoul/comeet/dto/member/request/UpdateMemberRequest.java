@@ -16,6 +16,10 @@ import java.util.List;
 public class UpdateMemberRequest {
     @Schema(description = "수정할 회원 ID", example = "5")
     private Long memberId;
+
+    @Schema(description = "기존의 닉네임", example = "johndoe")
+    private String prevNickname;
+
     @Schema(description = "회원의 새로운 닉네임", example = "doej123")
     private String newNickname;
     @Schema(description = "회원의 새로운 선호 기술스택", example = "JAVA_SCRIPT, REACT")
