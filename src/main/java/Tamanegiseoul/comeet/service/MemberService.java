@@ -125,8 +125,18 @@ public class MemberService implements UserDetailsService {
     public UpdateMemberResponse updateMember(UpdateMemberRequest request, MultipartFile file) throws IOException {
         Member findMember = this.findMemberById(request.getMemberId());
         log.info("found member");
-        findMember.changeNickname(request.getNewNickname());
-        log.info("updated nickname");
+
+        // validate nickname
+        if(!request.getNewNickname().equals(request.getPrevNickname())) {
+            // if new nickname is duplicated,
+            // DuplicateResourceException will be thrown
+            validateMemberNickname(request.getNewNickname());
+            findMember.changeNickname(request.getNewNickname());
+            log.info("updated nickname");
+        } else {
+            log.info("request doesn't need update nickname");
+        }
+
         this.updatePreferStack(findMember, request.getUpdatedStacks());
         log.info("update stacks");
         findMember.updateModifiedDate();
