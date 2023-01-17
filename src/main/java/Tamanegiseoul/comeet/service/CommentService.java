@@ -56,6 +56,7 @@ public class CommentService {
         newComment.updateModifiedTime();
         commentRepository.save(newComment);
 
+        // 연관관계 메핑(member-post)을 위한 편의 메소드 호출
         findMember.addWroteComments(newComment);
         findPost.addComments(newComment);
         return CreateCommentResponse.toDto(newComment);
@@ -119,46 +120,6 @@ public class CommentService {
         List<Comment> findComments = commentRepository.findCommentByPostId(postId);
         log.warn("[CommentServce:findCommentByPostId]" + " found " + findComments.size() + "ea comments for " + postId);
         return findComments;
-    }
-
-
-    /***********************
-     * DTO TRANSFER METHODS *
-     ***********************/
-
-    @Transactional(readOnly = true)
-    public CommentDto toDto(Comment comment) {
-
-        // Member 프록시의 Fetching을 위한 강제 Member 조회
-        Member findMember = memberService.findMemberById(comment.getMember().getMemberId());
-        log.warn("FOUND MEMBER IS " + findMember.getMemberId());
-        ImageData findImage = imageDataRepository.findByMemberId(findMember.getMemberId());
-        log.warn("FOUND IMAGE IS " + findImage);
-        ImageDto commentProfile = ImageDto.toDto(findImage);
-
-        log.warn("FOUND MEMBER ID IS " + findMember.getMemberId());
-        //log.warn("FOUND MEMBER PROFILE IS " + imageDataRepository.findByMemberId(findMember.getMemberId()).getImageId());
-
-        return CommentDto.builder()
-                .commentId(comment.getCommentId())
-                .postId(comment.getCommentId())
-                .commenterNickname(findMember.getNickname())
-                .commenterId(findMember.getMemberId())
-                .content(comment.getContent())
-                .createdTime(comment.getCreatedTime())
-                .modifiedTime(comment.getModifiedTime())
-                .commenterProfile(commentProfile)
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    public List<CommentDto> commentListToDto(List<Comment> commentList) {
-        log.info("[SearchCommentResponse:commentToDto] commentList param's size is "+commentList.size());
-        List<CommentDto> commentDtoList = new ArrayList<>();
-        for(Comment c : commentList) {
-            commentDtoList.add(toDto(c));
-        }
-        return commentDtoList;
     }
 
 }

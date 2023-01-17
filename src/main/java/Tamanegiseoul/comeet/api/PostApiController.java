@@ -1,18 +1,9 @@
 package Tamanegiseoul.comeet.api;
 
-import Tamanegiseoul.comeet.domain.Comment;
-import Tamanegiseoul.comeet.domain.Member;
-import Tamanegiseoul.comeet.domain.Posts;
-import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
-import Tamanegiseoul.comeet.dto.comment.response.CommentDto;
-import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
-import Tamanegiseoul.comeet.dto.member.response.ImageDto;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
-import Tamanegiseoul.comeet.dto.post.request.RemovePostRequest;
-import Tamanegiseoul.comeet.dto.post.request.SearchPostRequest;
 import Tamanegiseoul.comeet.dto.post.request.UpdatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.*;
 import Tamanegiseoul.comeet.service.*;
@@ -22,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
