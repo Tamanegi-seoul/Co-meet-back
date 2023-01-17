@@ -1,8 +1,5 @@
 package Tamanegiseoul.comeet.api;
 
-import Tamanegiseoul.comeet.domain.Comment;
-import Tamanegiseoul.comeet.domain.Member;
-import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
@@ -10,7 +7,6 @@ import Tamanegiseoul.comeet.dto.comment.request.CreateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.request.UpdateCommentRequest;
 import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
-import Tamanegiseoul.comeet.dto.comment.response.SearchCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
 import Tamanegiseoul.comeet.service.PostService;
@@ -24,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,7 +35,6 @@ public class CommentApiController {
     @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
-
             CreateCommentResponse responseDto = commentService.registerComment(request);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_COMMNET, responseDto);
         } catch (ResourceNotFoundException e) {
