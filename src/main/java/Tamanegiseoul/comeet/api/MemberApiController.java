@@ -10,9 +10,7 @@ import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.member.request.*;
 import Tamanegiseoul.comeet.dto.member.response.*;
-import Tamanegiseoul.comeet.security.JwtProvider;
 import Tamanegiseoul.comeet.service.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
@@ -34,13 +31,9 @@ import java.util.*;
 @Tag(name = "Member API", description = "회원 관련 CRUD 기능 제공")
 public class MemberApiController {
     private final MemberService memberService;
-    private final PostService postService;
-    private final CommentService commentService;
     private final ImageDataService imageDataService;
-    private final StackRelationService stackRelationService;
 
-    private final PasswordEncoder passwordEncoder;
-    private final ObjectMapper objectMapper;
+
 
     @GetMapping("/profile")
     @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
