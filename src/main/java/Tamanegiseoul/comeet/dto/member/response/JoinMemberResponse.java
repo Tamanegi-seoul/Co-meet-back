@@ -29,6 +29,7 @@ public class JoinMemberResponse {
     public static JoinMemberResponse toDto(Member member) {
         return JoinMemberResponse.builder()
                 .memberId(member.getMemberId())
+                .nickname(member.getNickname())
                 .email(member.getEmail())
                 .createdTime(member.getCreatedTime())
                 .modifiedTime(member.getModifiedTime())
