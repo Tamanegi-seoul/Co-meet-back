@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,7 +66,7 @@ public class CommentServiceTest {
 
         CreatePostRequest newPostRequest = CreatePostRequest.builder()
                 .posterId(newMemberRequest.getMemberId())
-                .contact("some_open_chat_url_/kakao.xyz")
+                .contact("some_open_chat_url/kakao.xyz")
                 .title("NEW POST!")
                 .content("this is empty content..")
                 .recruitCapacity(4L)
