@@ -6,10 +6,7 @@ import Tamanegiseoul.comeet.dto.ApiResponse;
 import Tamanegiseoul.comeet.dto.ResponseMessage;
 import Tamanegiseoul.comeet.security.JwtProvider;
 import Tamanegiseoul.comeet.service.MemberService;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,10 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static Tamanegiseoul.comeet.dto.StatusCode.FORBIDDEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -50,6 +45,7 @@ public class AuthApiController {
     @PostMapping("/role/save")
     @ApiOperation(value="권한 등록", notes="신규 권한 등록")
     public ResponseEntity<ApiResponse> saveRole(@RequestBody @Valid Role role) {
+        log.info("[AuthApiController:saveRole] controller execute");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         memberService.saveRole(role);
         //return ResponseEntity.created(uri).body(role);
@@ -60,6 +56,7 @@ public class AuthApiController {
     @PostMapping("/role/addToUser")
     @ApiOperation(value="권한 지정", notes="기존 회원 권한 지정")
     public ResponseEntity<ApiResponse> setUserRole(@RequestBody @Valid Member member, @RequestBody @Valid Role role) {
+        log.info("[AuthApiController:setUserRole] controller execute");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
         memberService.addRoleToMember(member.getNickname(), role.getRoleName());
@@ -71,6 +68,7 @@ public class AuthApiController {
     @GetMapping("/token")
     @ApiOperation(value="토큰 갱신", notes="발행된 토큰 재발급")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        log.info("[AuthApiController:refreshToken] controller execute");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             try {
