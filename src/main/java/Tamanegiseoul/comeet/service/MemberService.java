@@ -35,13 +35,8 @@ import java.util.*;
 public class MemberService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
-    private final PostRepository postRepository;
-    private final StackRelationRepository stackRelationRepository;
-    private final CommentRepository commentRepository;
-    private final ImageDataRepository imageDataRepository;
-    private final RoleRepository roleRepository;
 
-    private final PostService postService;
+    private final RoleRepository roleRepository;
 
     private final ImageDataService imageDataService;
 
@@ -62,21 +57,25 @@ public class MemberService implements UserDetailsService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-
         newMember.updateCreatedDate();
         newMember.updateModifiedDate();
         memberRepository.save(newMember);
 
+        log.info("[MemberService:registerMember] member with email '{}' nickname '{}' are registered.", request.getEmail(), request.getNickname());
 
         if(image!=null) {
             ImageDto imageDto = imageDataService.uploadImage(newMember, image);
-
+            log.info("[MemberService:registerMember] '{}' member have profile image with file name '{}'", newMember.getNickname(), imageDto.getFileName());
             return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
+        } else {
+            log.info("[MemberService:registerMember] '{}' member doesn't have profile image to register", newMember.getNickname());
         }
 
 
         this.addRoleToMember(newMember.getEmail(), "ROLE_USER");
         this.updatePreferStack(newMember, request.getPreferStacks());
+
+        log.info("[MemberService:registerMember] '{}' member prefer stacks '{}'", newMember.getNickname(), request.getPreferStacks().toString());
 
         return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(null);
     }
@@ -105,16 +104,20 @@ public class MemberService implements UserDetailsService {
     public void validateMemberEmail(String email) {
         Member findMember = memberRepository.findMemberByEmail(email);
         if(findMember != null) {
+            log.info("[MemberService:ValidateMemberEmail] {} is already in use", email);
             throw new DuplicateResourceException("Members Email", email);
         }
+        log.info("[MemberService:ValidateMemberEmail] {} is available", email);
     }
 
     @Transactional(readOnly = true)
     public void validateMemberNickname(String nickname) {
         Member findMember = memberRepository.findMemberByNickname(nickname);
         if(findMember != null) {
+            log.info("[MemberService:ValidateMemberEmail] {} is already in use", nickname);
             throw new DuplicateResourceException("Members Nickname", nickname);
         }
+        log.info("[MemberService:ValidateMemberEmail] {} is available", nickname);
     }
 
     /**********************
@@ -123,8 +126,12 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public UpdateMemberResponse updateMember(UpdateMemberRequest request, MultipartFile file) throws IOException {
-        Member findMember = this.findMemberById(request.getMemberId());
-        log.info("found member");
+        Member findMember = memberRepository.findOne(request.getMemberId());
+        if(findMember == null) {
+            log.info("[MemberService:updateMember] member with member id '{}' not exists", request.getMemberId());
+            throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
+        }
+        log.info("[MemberService:updateMember] found {} member", findMember.getNickname());
 
         // validate nickname
         if(!request.getNewNickname().equals(request.getPrevNickname())) {
@@ -132,25 +139,28 @@ public class MemberService implements UserDetailsService {
             // DuplicateResourceException will be thrown
             validateMemberNickname(request.getNewNickname());
             findMember.changeNickname(request.getNewNickname());
-            log.info("updated nickname");
+            log.info("[MemberService:updateMember] updated nickname from '{}' to '{}'", request.getPrevNickname(), request.getNewNickname());
         } else {
-            log.info("request doesn't need update nickname");
+            log.info("[MemberService:updateMember] request doesn't need update nickname");
         }
 
         this.updatePreferStack(findMember, request.getUpdatedStacks());
-        log.info("update stacks");
+        log.info("[MemberService:updateMember] updated stacks to '{}'", request.getUpdatedStacks().toString());
         findMember.updateModifiedDate();
 
         ImageDto imageDto = imageDataService.findImageByMemberId(findMember.getMemberId());
 
         if(file!=null) {
-            log.info("found image");
+            log.info("[MemberService:updateMember] request have profile image to upload or update.");
             if(imageDto == null) {
+                log.info("[MemberService:updateMember] no registered image for member '{}'", findMember.getNickname());
                 imageDto = imageDataService.uploadImage(findMember, file);
             } else {
+                log.info("[MemberService:updateMember] found registered profile image '{}'", imageDto.getFileName());
                 imageDto = imageDataService.updateImage(findMember, file);
             }
         } else {
+            log.info("[MemberService:updateMember] request does not have profile image to upload or update.");
             imageDataService.removeImage(findMember);
         }
 
@@ -158,28 +168,24 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateMemberNickname(Long id, String newNickname) {
-        validateMemberNickname(newNickname);
-        Member findMember = memberRepository.findOne(id);
-        findMember.changeNickname(newNickname);
-        findMember.updateModifiedDate();
-    }
-
-    @Transactional
     public void updateMemberPassword(Long id, String password) {
         Member findMember = memberRepository.findOne(id);
+        if(findMember == null) {
+            log.info("[MemberService:updateMemberPassword] member with member id '{}' not exists", id);
+            throw new ResourceNotFoundException("member id", "memberId", id);
+        }
         findMember.changePassword(password);
+        log.info("[MemberService:updateMemberPassword] '{}' member changed password", findMember.getNickname());
         findMember.updateModifiedDate();
     }
 
 
     public void updatePreferStack(Member member, List<TechStack> techStacks) {
-        log.warn("[MemberService:updatePreferStack] method init");
         member.clearPreferStack();
         for(TechStack ts : techStacks) {
             member.addPreferStack(ts);
         }
-        log.warn("[MemberService:updatePreferStack] updated " + member.getMemberId() + "'s tech stack" + techStacks.toString());
+        log.info("[MemberService:updatePreferStack] updated '{}' member's tech stack '{}'", member.getNickname(), member.exportPreferStack());
     }
 
     @Transactional
@@ -187,10 +193,12 @@ public class MemberService implements UserDetailsService {
         Member findMember = this.findMemberById(memberId);
 
         if(findMember == null) {
+            log.info("[MemberService:removeMember] member with member id {} not exists", memberId);
             throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
 
         em.remove(findMember);
+        log.info("[MemberService:removeMember] '{}' member removed", findMember.getNickname());
 
         return RemoveMemberResponse.toDto(findMember);
     }
@@ -204,35 +212,39 @@ public class MemberService implements UserDetailsService {
         Member findMember = memberRepository.findOne(memberId);
 
         if(findMember == null) {
-            log.info("[MemberService:findMemberById] THE RESULT OF MEMBER ID is NULL ");
+            log.info("[MemberService:findMemberById] member with member id '{}' not exists", memberId);
             throw new ResourceNotFoundException("member_id", "memberId ", memberId);
         } else {
-            log.info("[MemberService:findMemberById] find user with provided member id : " + memberId);
+            log.info("[MemberService:findMemberById] found member with member id {}", memberId);
             return findMember;
         }
     }
 
+    // this method is only for test environment
     @Transactional(readOnly = true)
     public List<Member> findAll() {
-        log.info("Fetching all Members");
+        log.info("[MemberService:findAll] finding all member");
         return memberRepository.findAll();
     }
 
+    // this method is only for test environment
     @Transactional(readOnly = true)
+
     public Member findMemberByNickname(String nickname) {
-        log.info("Fetching member {}", nickname);
+        log.info("[MemberService:findMemberByNickname] Fetching member with nickname {}", nickname);
         return memberRepository.findMemberByNickname(nickname);
     }
 
     @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        log.info("Fetching member with eamil {}", email);
+        log.info("[MemberService:findMemberByEmail] Fetching member with email {}", email);
         return memberRepository.findMemberByEmail(email);
     }
 
     @Transactional(readOnly = true)
     public List<TechStack> findPreferredStacks(Long memberId) {
         List<TechStack> findStacks = new ArrayList<>();
+        log.info("[MemberService:findPreferredStacks] Fetching all preferred stacks with member '{}'", memberId);
         List<StackRelation> findStackRelations = memberRepository.findPreferredStacks(memberId);
         for(StackRelation sr : findStackRelations) {
             findStacks.add(sr.getTechStack());
@@ -240,15 +252,16 @@ public class MemberService implements UserDetailsService {
         return findStacks;
     }
 
+    // this method is for Spring Security's UserDetailService
+    // in this method, username indicates member email
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.info("[MemberService:loadUserByUsername]method executed");
         Member member = memberRepository.findMemberByEmail(email);
         if(member == null) {
-            log.error("Member having email {} not found in the database", email);
+            log.error("[MemberService:loadUserByNickname] Member having email {} not found in the database", email);
             throw new UsernameNotFoundException("Member not found in the database");
         } else {
-            log.info("Member who has email {} found in the database", email);
+            log.info("[MemberSerivce:loadUserByNickname] Member who has email {} found in the database", email);
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();

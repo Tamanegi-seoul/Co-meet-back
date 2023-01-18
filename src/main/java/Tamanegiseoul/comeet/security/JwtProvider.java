@@ -5,6 +5,7 @@ import Tamanegiseoul.comeet.domain.Role;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import io.jsonwebtoken.*;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class JwtProvider {
 
     // generate token
     public String generateAccessToken(Member member) {
+        log.info("[JwtProvider:generateAccessToken] generate access token for {} member with {} role", member.getNickname(), member.getRoles().toString());
         return JWT.create()
                 .withSubject(member.getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis()+ validityInMilliseconds)) // 3 min
@@ -48,6 +50,7 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(String email) {
+        log.info("[JwtProvider:generateAccessToken] generate access token for member who has email {}", email);
         return JWT.create()
                 .withSubject(email) // get email (security's username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000 )) // 24hr
@@ -61,6 +64,20 @@ public class JwtProvider {
                 .getSubject(); // extract token's subject(member email)
 
         return subject.equals(email);
+    }
+
+    public Map<String, Claim> getClaims(String token) {
+        return JWT.require(algorithm).build()
+                .verify(token)
+                .getClaims();
+    }
+
+    public Long getMemberId(String token) {
+        return JWT.require(algorithm).build()
+                .verify(token)
+                .getClaims()
+                .get("memberId")
+                .asLong();
     }
 
     // 토큰에서 회원 email 추출
@@ -96,13 +113,13 @@ public class JwtProvider {
             verifier.verify(token);
             return true;
         } catch (SignatureException e) {
-            log.error("Invalid JWT signature => {}", e.getMessage());
+            log.error("[JwtProvider:validateToken] Invalid JWT signature => {}", e.getMessage());
         } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token => {}", e.getMessage());
+            log.error("[JwtProvider:validateToken] Invalid JWT token => {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token => {}", e.getMessage());
+            log.error("[JwtProvider:validateToken] Unsupported JWT token => {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty. => {}", e.getMessage());
+            log.error("[JwtProvider:validateToken] JWT claims string is empty. => {}", e.getMessage());
         }
         return false;
     }
