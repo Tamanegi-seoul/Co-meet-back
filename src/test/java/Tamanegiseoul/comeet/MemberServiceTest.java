@@ -165,9 +165,11 @@ public class MemberServiceTest {
         // when
         UpdateMemberRequest request = UpdateMemberRequest.builder()
                 .memberId(response.getMemberId())
+                .prevNickname(response.getNickname())
                 .newNickname(response.getNickname())
                 .updatedStacks(new ArrayList<>(List.of(TechStack.R, TechStack.JAVA)))
                 .build();
+
         UpdateMemberResponse updateMemberResponse = memberService.updateMember(request, null);
 
         // then
