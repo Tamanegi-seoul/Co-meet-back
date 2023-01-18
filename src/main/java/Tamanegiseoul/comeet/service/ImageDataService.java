@@ -26,12 +26,14 @@ public class ImageDataService {
 
     @Transactional
     public ImageDto uploadImage(Member member, MultipartFile file) throws IOException {
+        log.info("[ImageDataService:uploadImage] upload image for {} member with file {}", member.getNickname(), file.getName());
         ImageData imageData = imageDataRepository.save(ImageData.builder()
                 .fileName(file.getOriginalFilename())
                 .fileType(file.getContentType())
                 .imageData(ImageUtil.compressImage(file.getBytes()))
                 .owner(member)
                 .build());
+        // entity relation convenience method
         member.addProfileImage(imageData);
 
         return ImageDto.toDto(imageData);
@@ -39,11 +41,16 @@ public class ImageDataService {
 
     @Transactional
     public ImageDto updateImage(Member updatedMember, MultipartFile updatedFile) throws IOException {
+        log.info("[ImageDataService:updateImage] update image for {} member with file {}", updatedMember.getNickname(), updatedFile.getName());
         ImageData dbImage = imageDataRepository.findByMemberId(updatedMember.getMemberId());
         if(dbImage != null) {
+            log.info("[ImageDataService:updateImage] found {} profile image", updatedMember.getNickname());
             dbImage.updateImageData(updatedFile);
+            log.info("[ImageDataService:updateImage] database profile image replace with {}", updatedFile.getName());
             em.flush();
             em.clear();
+        } else {
+            log.info("[ImageDataService:updateImage] {} profile image not exists", updatedMember.getNickname());
         }
 
         return ImageDto.toDto(dbImage);
@@ -54,20 +61,10 @@ public class ImageDataService {
         ImageData findImage = imageDataRepository.findByMemberId(targetMember.getMemberId());
         if(findImage != null) {
             em.remove(findImage);
-            log.info("registered member {}'s profile image has been removed.", targetMember.getNickname());
+            log.info("[ImageDataService:removeImage] member {}'s profile image has been removed.", targetMember.getNickname());
         } else {
-            log.info("member {}'s profile image has not been registered yet.", targetMember.getNickname());
+            log.info("[ImageDataService:removeImage] member {}'s profile image has not been registered yet.", targetMember.getNickname());
         }
-    }
-
-    @Transactional(readOnly = true)
-    public byte[] findImageDataByImageId(Long imageId) {
-        ImageData findImageData = imageDataRepository.findOne(imageId);
-        if(findImageData==null) {
-            return null;
-        }
-        return ImageUtil.decompressImage(findImageData.getImageData());
-
     }
 
     @Transactional(readOnly = true)
@@ -75,9 +72,11 @@ public class ImageDataService {
         ImageData dbImage = imageDataRepository.findByMemberId(memberId);
 
         if(dbImage == null) {
+            log.info("[ImageDataService:findImageByMemberId] member with member id {} has not profile image", memberId);
             //throw new ResourceNotFoundException("ImageData", "owner:memberId", memberId);
             return null;
         }
+        log.info("[ImageDataService:findImageByMemberId] member with member id has profile image {}", dbImage.getFileName());
 
         return ImageDto.toDto(dbImage);
     }

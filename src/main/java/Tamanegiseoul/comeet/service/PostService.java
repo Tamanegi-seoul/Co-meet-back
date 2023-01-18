@@ -41,8 +41,10 @@ public class PostService {
 
         Member findMember = memberRepository.findOne(request.getPosterId());
         if(findMember == null) {
+            log.info("[PostService:registerPost] member with member id '{}' not exits", request.getPosterId());
             throw new ResourceNotFoundException("member id", "memberId", request.getPosterId());
         }
+        log.info("[PostService:registerPost] found member with member id '{}'", request.getPosterId());
 
         Posts newPost = Posts.builder()
                 .title(request.getTitle())
@@ -61,6 +63,8 @@ public class PostService {
         newPost.updateCreatedDate();
 
         postRepository.save(newPost);
+
+        log.info("[PostService:registerPost] post register with title '{}' wrote by '{}'", newPost.getTitle(), newPost.getPoster().getNickname());
         updateDesignateStacks(newPost, request.getDesignatedStacks());
         em.flush();
         log.warn("check");
@@ -78,11 +82,14 @@ public class PostService {
     public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
         Posts findPost = postRepository.findOne(updatedPost.getPostId());
         if(findPost == null) {
+            log.info("[PostService:updatePost] post with post id '{}' not exists", updatedPost.getPostId());
             throw new ResourceNotFoundException("postId", "post id", updatedPost.getPostId());
         }
+        log.info("[PostService:updatePost] found post with post id '{}'", updatedPost.getPostId());
         findPost.updatePost(updatedPost);
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
         findPost.updateModifiedDate();
+        log.info("[PostService:updatePost] updated post with post id '{}'", updatedPost.getPostId());
 
         return UpdatePostResponse.toDto(findPost).designatedStacks(findPost.exportTechStack());
     }
@@ -92,9 +99,12 @@ public class PostService {
     public RemovePostResponse removePostByPostId(Long postId) {
         Posts findPost = postRepository.findOne(postId);
         if(findPost == null) {
+            log.info("[PostService:removePostByPostId] post with post id '{}' not exists", postId);
             throw new ResourceNotFoundException("post", "postId", postId);
         }
+        log.info("[PostService:removePostByPostId] found post with post id '{}'", postId);
         em.remove(findPost);
+        log.info("[PostService:removePostByPostId] removed post id '{}'", postId);
         return RemovePostResponse.builder()
                 .postId(findPost.getPostId())
                 .build();
@@ -103,7 +113,14 @@ public class PostService {
     // 회원이 작성한 모든 포스트 삭제
     @Transactional
     public void removePostByPosterId(Long memberId) {
+        Member findMember = memberRepository.findOne(memberId);
+        if(findMember == null) {
+            log.info("[PostService:removePostByPosterId] member with member id '{}' not exists", memberId);
+            throw new ResourceNotFoundException("Member", "memberId", memberId);
+        }
+        log.info("[PostService:removePostByPosterId] found member with member id '{}'", memberId);
         List<Posts> findPosts = postRepository.findPostByMemberId(memberId);
+        log.info("[PostService:removePostByPosterId] member with member id '{}' not exists", memberId);
         for(Posts p : findPosts) {
             em.remove(p);
         }
@@ -116,22 +133,31 @@ public class PostService {
     public SearchPostResponse findPostById(Long postId) {
         Posts findPost = postRepository.findOne(postId);
 
-        if(findPost == null) { throw new ResourceNotFoundException("Posts", "postId", postId); }
+        if(findPost == null) {
+            log.info("[PostService:findPostById] post with post id '{}' not exits", postId);
+            throw new ResourceNotFoundException("Posts", "postId", postId);
+        }
+        log.info("[PostService:findPostById] found post with post id '{}'", postId);
 
         Member findPoster = findPost.getPoster();
-
+        log.info("[PostService:findPostById] post with post id '{}' wrote by '{}' member", postId, findPoster.getNickname());
         ImageDto findProfileImage = ImageDto.toDto(findPoster.getProfileImage());
+        if(findProfileImage == null) {
+            log.info("[PostService:findPostById] poster '{}' has no profile image");
+        } else {
+            log.info("[PostService:findPostById] poster '{}' has profile image '{}'", findProfileImage.getFileName());
+        }
 
         List<Comment> commentList = commentRepository.findCommentByPostId(postId);
+        log.info("[PostService:findPostById] post with post id '{}' has {} comments", findPost.getPostId(), commentList.size());
         List<CommentDto> commentDtoList = new ArrayList<>();
 
         for(Comment comment : commentList) {
             Member commentWriter = comment.getMember();
-            ImageDto commenterProfile = ImageDto.toDto(comment.getMember().getProfileImage());
-
+            ImageDto commenterProfile = ImageDto.toDto(commentWriter.getProfileImage());
+            log.info("[PostService:findPostById] fetching comment wrote by {}", commentWriter.getNickname());
             commentDtoList.add(CommentDto.toDto(comment.getMember(), findPost, commenterProfile, comment));
         }
-
 
         return SearchPostResponse.toDto(findPost)
                 .designatedStacks(findPost.exportTechStack())
@@ -141,7 +167,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostCompactDto> findAll(int offset, int limit) {
+        log.info("[PostService:findAll] fetching all registered post from {} to {}", offset, limit);
         List<Posts> findPosts = postRepository.findAll(offset, limit);
+        log.info("[PostService:findAll] found {} ea posts from database", findPosts.size());
         return PostCompactDto.toCompactDtoList(findPosts);
     }
 
@@ -149,10 +177,13 @@ public class PostService {
     public List<PostCompactDto> findPostByMemberId(Long memberId) {
         Member findMember = memberRepository.findOne(memberId);
         if(findMember == null) {
-            throw new ResourceNotFoundException("member_id", "memberId", memberId);
+            log.info("[PostService:findPostByMemberId] member with member id {} not exists", memberId);
+            throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
+        log.info("[PostService:findPostByMemberId] found member with member id {} ", memberId);
 
         List<Posts> postList = postRepository.findPostByMemberId(memberId);
+        log.info("[PostService:findPostByMemberId] {} wrote {} posts", findMember.getNickname(), postList.size());
         List<PostCompactDto> postCompactDtos = PostCompactDto.toCompactDtoList(postList);
 
         return postCompactDtos;
@@ -164,16 +195,13 @@ public class PostService {
      ***********************/
     @Transactional
     public void updateDesignateStacks(Posts findPost, List<TechStack> techStacks) {
+        log.info("[PostService:updateDesignateStacks] before update, post with id {} has {}ea stacks: {}", findPost.getPostId(), findPost.getDesignatedStack().size(), findPost.exportTechStack().toString());
         findPost.getDesignatedStack().clear();
+
         for(TechStack stack : techStacks) {
             findPost.addDesignateStack(stack);
         }
+        log.info("[PostService:updateDesignateStacks] after update, post with id {} has {}ea stacks: {}", findPost.getPostId(), findPost.getDesignatedStack().size(), findPost.exportTechStack().toString());
     }
-
-    /***********************
-     * DTO TRANSFER METHODS *
-     ***********************/
-
-
 
 }

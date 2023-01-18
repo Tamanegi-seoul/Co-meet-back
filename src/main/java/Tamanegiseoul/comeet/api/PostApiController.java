@@ -31,7 +31,7 @@ public class PostApiController {
     @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
-
+            log.info("[PostApiController:registerPost] controller execute");
             CreatePostResponse responseDto = postService.registerPost(request);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_POST, responseDto);
@@ -46,6 +46,7 @@ public class PostApiController {
     @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
+            log.info("[PostApiController:updatePost] controller execute");
             UpdatePostResponse responseDto = postService.updatePost(request);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_POST, responseDto);
@@ -58,6 +59,7 @@ public class PostApiController {
     @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
     public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset", defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
+            log.info("[PostApiController:searchAllPost] controller execute");
             List<PostCompactDto> findPosts = postService.findAll(offset, limit);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, findPosts);
@@ -70,6 +72,7 @@ public class PostApiController {
     @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
     public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="memberId") @Valid Long memberId) {
         try {
+            log.info("[PostApiController:searchPostByPosterId] controller execute");
             List<PostCompactDto> responseDtos = postService.findPostByMemberId(memberId);//
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, responseDtos);
         } catch (ResourceNotFoundException e) {
@@ -81,6 +84,7 @@ public class PostApiController {
     @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("postId") Long postId) {
         try {
+            log.info("[PostApiController:searchPost] controller execute");
             SearchPostResponse response = postService.findPostById(postId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_POST, response);
@@ -93,6 +97,7 @@ public class PostApiController {
     @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
     public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "postId")  Long postId) {
         try {
+            log.info("[PostApiController:removePost] controller execute");
             RemovePostResponse removePostResponse = postService.removePostByPostId(postId);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_POST, removePostResponse);
         } catch (ResourceNotFoundException e) {

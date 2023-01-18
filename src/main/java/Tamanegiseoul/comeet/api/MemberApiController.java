@@ -39,6 +39,7 @@ public class MemberApiController {
     @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
+            log.info("[MemberApiController:validate] controller execute");
             memberService.validateMemberEmail(email);
             memberService.validateMemberEmail(nickname);
 
@@ -52,6 +53,7 @@ public class MemberApiController {
     @Operation(summary = "신규 회원가입", description = "새로운 회원 등록")
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile image) {
         try {
+            log.info("[MemberApiController:joinNewMember] controller execute");
             JoinMemberResponse responseDto = memberService.registerMember(request, image);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.CREATED_USER, responseDto);
@@ -69,6 +71,7 @@ public class MemberApiController {
     @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
     public ResponseEntity<ApiResponse> removeMember(@RequestParam("memberId") @Valid Long memberId) {
         try {
+            log.info("[MemberApiController:removeMember] controller execute");
             RemoveMemberResponse response = memberService.removeMember(memberId);
 
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.DELETE_USER, response);
@@ -81,7 +84,7 @@ public class MemberApiController {
     @Operation(summary = "회원 조회", description = "등록된 회원정보 조회")
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("memberId") Long memberId) {
         try {
-
+            log.info("[MemberApiController:searchMember] controller execute");
             Member findMember = memberService.findMemberById(memberId);
 
             ImageDto findImage = imageDataService.findImageByMemberId(findMember.getMemberId());
@@ -100,6 +103,7 @@ public class MemberApiController {
     @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정")
     public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
+            log.info("[MemberApiController:updateMember] controller execute");
             UpdateMemberResponse updateMemberResponse = memberService.updateMember(request, file);
             return ApiResponse.of(HttpStatus.OK, ResponseMessage.UPDATE_USER, updateMemberResponse);
         } catch (ResourceNotFoundException e) {
