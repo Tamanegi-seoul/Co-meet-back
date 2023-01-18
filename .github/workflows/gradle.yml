@@ -34,7 +34,7 @@ jobs:
       
     # Build
     - name: Build with Gradle
-      run: ./gradlew build -Dspring.profiels.active=prod
+      run: ./gradlew build -Dspring.profiles.active=prod
     
     # create directory for deliver
     - name: Make Directory for deliver
