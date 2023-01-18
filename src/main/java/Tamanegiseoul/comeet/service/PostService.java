@@ -63,9 +63,15 @@ public class PostService {
         newPost.updateCreatedDate();
 
         postRepository.save(newPost);
+        log.info("[PostService:registerPost] register post with title '{}' wrote by '{}'", newPost.getTitle(), newPost.getPoster().getNickname());
 
-        log.info("[PostService:registerPost] post register with title '{}' wrote by '{}'", newPost.getTitle(), newPost.getPoster().getNickname());
-        updateDesignateStacks(newPost, request.getDesignatedStacks());
+        if(request.getDesignatedStacks() == null) {
+            log.info("[PostService:registerPost] designated stacks are not provided.");
+        } else {
+            log.info("[PostService:registerPost] designated stacks are provided: {}", request.getDesignatedStacks().toString());
+            updateDesignateStacks(newPost, request.getDesignatedStacks());
+        }
+
         em.flush();
         log.warn("check");
         findMember.addWrotePost(newPost);
@@ -193,9 +199,12 @@ public class PostService {
     /***********************
      * POST UPDATE METHODS *
      ***********************/
-    @Transactional
     public void updateDesignateStacks(Posts findPost, List<TechStack> techStacks) {
-        log.info("[PostService:updateDesignateStacks] before update, post with id {} has {}ea stacks: {}", findPost.getPostId(), findPost.getDesignatedStack().size(), findPost.exportTechStack().toString());
+        if(findPost.exportTechStack() == null) {
+            log.info("[PostService:updateDesignateStacks] post with id {} has no registered tech stack", findPost.getPostId());
+        } else {
+            log.info("[PostService:updateDesignateStacks] before update, post with id {} has {}ea stacks: {}", findPost.getPostId(), findPost.getDesignatedStack().size(), findPost.exportTechStack().toString());
+        }
         findPost.getDesignatedStack().clear();
 
         for(TechStack stack : techStacks) {
