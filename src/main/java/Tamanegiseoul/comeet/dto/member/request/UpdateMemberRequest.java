@@ -26,8 +26,9 @@ public class UpdateMemberRequest {
     private List<TechStack> updatedStacks;
 
     @Builder
-    public UpdateMemberRequest(Long memberId, String newNickname, List<TechStack> updatedStacks) {
+    public UpdateMemberRequest(Long memberId, String prevNickname, String newNickname, List<TechStack> updatedStacks) {
         this.memberId = memberId;
+        this.prevNickname = prevNickname;
         this.newNickname = newNickname;
         this.updatedStacks = updatedStacks;
     }
