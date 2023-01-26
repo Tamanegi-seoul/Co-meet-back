@@ -31,9 +31,10 @@ jobs:
         distribution: 'temurin'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
-    # Set environment variables
-    - name: set env var
+
+    # Build
+    - name: Build with Gradle
+      run: ./gradlew build -Dspring.profiles.active=prod -x test
       env:
           AWS_DB_ID: ${{ secrets.AWS_DB_ID }}
           AWS_DB_PW: ${{ secrets.AWS_DB_PW }}
@@ -41,10 +42,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           JWT_EXP_LEN: ${{ secrets.JWT_EXP_LEN }}
-
-    # Build
-    - name: Build with Gradle
-      run: ./gradlew build -Dspring.profiles.active=prod -x test
     
     # create directory for deliver
     - name: Make Directory for deliver
