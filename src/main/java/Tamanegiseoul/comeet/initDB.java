@@ -17,6 +17,7 @@ import Tamanegiseoul.comeet.service.MemberService;
 import Tamanegiseoul.comeet.service.PostService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -27,9 +28,11 @@ import java.util.List;
 import static Tamanegiseoul.comeet.domain.enums.GroupType.PROJECT;
 import static Tamanegiseoul.comeet.domain.enums.GroupType.STUDY;
 
+@Profile("dev")
 @Component
 public class initDB {
 
+    @Profile("dev")
     @Bean
     CommandLineRunner generateMockData(MemberService memberService, PostService postService, CommentService commentService) {
         return args -> {

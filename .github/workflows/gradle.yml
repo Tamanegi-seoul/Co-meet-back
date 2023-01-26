@@ -13,9 +13,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: read
-
 jobs:
   build:
 
@@ -31,10 +28,15 @@ jobs:
         distribution: 'temurin'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-      
+
     # Build
     - name: Build with Gradle
-      run: ./gradlew build -Dspring.profiels.active=prod
+      run: ./gradlew build -Dspring.profiles.active=prod -x test
+      env:
+          AWS_DB_ID: ${{ secrets.AWS_DB_ID }}
+          AWS_DB_PW: ${{ secrets.AWS_DB_PW }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_EXP_LEN: ${{ secrets.JWT_EXP_LEN }}
     
     # create directory for deliver
     - name: Make Directory for deliver
@@ -51,11 +53,11 @@ jobs:
     # Copy to S3 Bucket
     - name: Deliver to AWS S3
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         aws s3 cp \
         --region ap-northeast-2 \
-        -- acl private \
-        ./springboot-intro-build.zip s3://comeet-back-deploy/
-    
+        --acl private \
+        ./comeet-back-deploy.zip s3://comeet-back-deploy/
+  

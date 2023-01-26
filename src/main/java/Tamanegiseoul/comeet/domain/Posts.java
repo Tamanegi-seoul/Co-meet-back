@@ -106,6 +106,7 @@ public class Posts {
     public void addComments(Comment comment) { this.comments.add(comment); }
 
     public void updateDesignateStack(List<TechStack> tsArr) {
+        this.getDesignatedStack().clear();
         for(TechStack stack : tsArr) {
             this.designatedStack.add(StackRelation.builder()
                     .post(this)
