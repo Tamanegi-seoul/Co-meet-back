@@ -51,30 +51,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .authorizeRequests()
 
-//                .antMatchers(OPTIONS, "/*").permitAll()
-//                .antMatchers("/swagger-ui.html").permitAll()
-//                .antMatchers("/api/auth/login/**", "/api/auth/token/**").permitAll()
-//
-//                .antMatchers("/api/member/profile").permitAll()
-//                .antMatchers(GET,"/api/member").authenticated()
-//                .antMatchers(POST,"/api/member").permitAll() // sign up
-//                .antMatchers(PATCH,"/api/member").authenticated()
-//                .antMatchers(DELETE,"/api/member/**").authenticated()
-//
-//                .antMatchers(GET,"/api/comment/**").permitAll()
-//                .antMatchers(POST,"/api/comment").authenticated()
-//                .antMatchers(PATCH,"/api/comment/**").authenticated()
-//                .antMatchers(DELETE,"/api/comment/**").authenticated()
-//
-//
-//                .antMatchers("/api/post/all/**").permitAll()
-//                .antMatchers(GET,"/api/post/my/**").permitAll()
-//                .antMatchers(GET,"/api/post/**").permitAll()
-//                .antMatchers(POST,"/api/post/**").authenticated()
-//                .antMatchers(PATCH,"/api/post/**").authenticated()
-//                .antMatchers(DELETE,"/api/post/**").authenticated()
-//
-//                .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers(OPTIONS, "/*").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/api/auth/login/**", "/api/auth/token/**").permitAll()
+
+                .antMatchers("/api/member/profile").permitAll()
+                .antMatchers(GET,"/api/member").authenticated()
+                .antMatchers(POST,"/api/member").permitAll() // sign up
+                .antMatchers(PATCH,"/api/member").authenticated()
+                .antMatchers(DELETE,"/api/member/**").authenticated()
+
+                .antMatchers(GET,"/api/comment/**").permitAll()
+                .antMatchers(POST,"/api/comment").authenticated()
+                .antMatchers(PATCH,"/api/comment/**").authenticated()
+                .antMatchers(DELETE,"/api/comment/**").authenticated()
+
+
+                .antMatchers("/api/post/all/**").permitAll()
+                .antMatchers(GET,"/api/post/my/**").permitAll()
+                .antMatchers(GET,"/api/post/**").permitAll()
+                .antMatchers(POST,"/api/post/**").authenticated()
+                .antMatchers(PATCH,"/api/post/**").authenticated()
+                .antMatchers(DELETE,"/api/post/**").authenticated()
+
+                .antMatchers("/api/auth/role/**").hasAnyAuthority("ROLE_ADMIN")
 
                 .anyRequest().permitAll()
                     .and()
