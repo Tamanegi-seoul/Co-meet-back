@@ -61,3 +61,16 @@ jobs:
         --acl private \
         ./comeet-back-deploy.zip s3://comeet-back-deploy/
   
+
+    # Deploy
+    - name: Deploy
+      env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment \
+        --application-name comeet-back \
+        --deployment-group-name commet-back-deploy \
+        --file-exists-behavior OVERWRITE \
+        --s3-location bucket=comeet-back-deploy,bundleType=zip,key=comeet-back-deploy.zip \
+        --region ap-northeast-2
