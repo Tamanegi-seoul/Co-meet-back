@@ -42,7 +42,7 @@ public class JwtProvider {
         log.info("[JwtProvider:generateAccessToken] generate access token for {} member with {} role", member.getNickname(), member.getRoles().toString());
         return JWT.create()
                 .withSubject(member.getEmail())
-                .withExpiresAt(new Date(System.currentTimeMillis()+ validityInMilliseconds)) // 3 min
+                .withExpiresAt(new Date(System.currentTimeMillis()+ (validityInMilliseconds * 10))) // 30 min
                 .withClaim("roles", member.getRoles().stream().map(Role ::getRoleName).collect(Collectors.toList()))
                 .withClaim("nickname", member.getNickname())
                 .withClaim("memberId", member.getMemberId())
