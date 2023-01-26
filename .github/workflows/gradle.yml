@@ -31,6 +31,16 @@ jobs:
         distribution: 'temurin'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
+    # Set environment variables
+    - name: set env var
+      env:
+          AWS_DB_ID: ${{ secrets.AWS_DB_ID }}
+          AWS_DB_PW: ${{ secrets.AWS_DB_PW }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          JWT_EXP_LEN: ${{ secrets.JWT_EXP_LEN }}
 
     # Build
     - name: Build with Gradle
@@ -50,17 +60,11 @@ jobs:
     
     # Copy to S3 Bucket
     - name: Deliver to AWS S3
-      env:
-        AWS_DB_ID: ${{ secrets.AWS_DB_ID }}
-        AWS_DB_PW: ${{ secrets.AWS_DB_PW }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-        JWT_EXP_LEN: ${{ secrets.JWT_EXP_LEN }}
         
       run: |
-        aws s3 cp \
-        --region ap-northeast-2 \
-        -- acl private \
-        ./springboot-intro-build.zip s3://comeet-back-deploy/
+        aws s3 sync ./deploy s3://comeet-back-deploy/
+        #aws s3 cp \
+        #--region ap-northeast-2 \
+        #-- acl private \
+        #./deploy s3://comeet-back-deploy/
     
