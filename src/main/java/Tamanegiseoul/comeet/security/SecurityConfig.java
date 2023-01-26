@@ -55,14 +55,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/api/auth/login/**", "/api/auth/token/**").permitAll()
 
-                .antMatchers("/api/member/profile").permitAll()
-                .antMatchers(GET,"/api/member").authenticated()
-                .antMatchers(POST,"/api/member").permitAll() // sign up
-                .antMatchers(PATCH,"/api/member").authenticated()
+                .antMatchers("/api/member/profile/**").permitAll()
+                .antMatchers(GET,"/api/member/**").authenticated()
+                .antMatchers(POST,"/api/member/**").permitAll() // sign up
+                .antMatchers(PATCH,"/api/member/**").authenticated()
                 .antMatchers(DELETE,"/api/member/**").authenticated()
 
                 .antMatchers(GET,"/api/comment/**").permitAll()
-                .antMatchers(POST,"/api/comment").authenticated()
+                .antMatchers(POST,"/api/comment/**").authenticated()
                 .antMatchers(PATCH,"/api/comment/**").authenticated()
                 .antMatchers(DELETE,"/api/comment/**").authenticated()
 
