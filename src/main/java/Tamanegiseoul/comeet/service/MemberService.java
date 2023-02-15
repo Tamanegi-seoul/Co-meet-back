@@ -207,18 +207,18 @@ public class MemberService implements UserDetailsService {
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberById(Long memberId) {
         //Member findMember = memberRepository.findOne(memberId);
-        Optional<Member> findMember = memberRepository.findMemberWithImage(memberId);
+        Member findMember = memberRepository.findMemberWithStack(memberId);
 
-        if(findMember.isEmpty()) {
+        if(findMember==null) {
             log.info("[MemberService:findMemberById] member with member id '{}' not exists", memberId);
             throw new ResourceNotFoundException("member_id", "memberId ", memberId);
         }
 
-        ImageDto findImage = ImageDto.toDto(findMember.get().getProfileImage());
-        List<StackRelation> preferredStacks = findMember.get().getPreferStacks();
+        // can't fetch join profile image because it can be null when user doesn't provide it.
+        ImageDto findImage = ImageDto.toDto(findMember.getProfileImage());
 
         log.info("[MemberService:findMemberById] found member with member id {}", memberId);
-        return SearchMemberResponse.toDto(findMember.get(), findImage, preferredStacks);
+        return SearchMemberResponse.toDto(findMember, findImage, findMember.getPreferStacks());
     }
 
     // this method is only for test environment
