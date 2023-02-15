@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,6 +32,14 @@ public class MemberRepository {
 
     public Member findOne(Long id) {
         return em.find(Member.class, id);
+    }
+
+    public Optional<Member> findMemberWithImage(Long memberId) {
+        List<Member> findMember =  em.createQuery("select m from Member m join fetch m.profileImage where m.id = :memberId", Member.class)
+                .setParameter("memberId", memberId)
+                .getResultList();
+
+        return findMember.stream().findAny();
     }
 
     public Member findMemberByNickname(String nickname) {
