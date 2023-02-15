@@ -66,7 +66,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PATCH,"/api/comment/**").authenticated()
                 .antMatchers(DELETE,"/api/comment/**").authenticated()
 
-
                 .antMatchers("/api/post/all/**").permitAll()
                 .antMatchers(GET,"/api/post/my/**").permitAll()
                 .antMatchers(GET,"/api/post/**").permitAll()
