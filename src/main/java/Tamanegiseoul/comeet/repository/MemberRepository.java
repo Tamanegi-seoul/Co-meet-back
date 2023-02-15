@@ -34,12 +34,17 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Optional<Member> findMemberWithImage(Long memberId) {
-        List<Member> findMember =  em.createQuery("select m from Member m join fetch m.profileImage where m.id = :memberId", Member.class)
+    /**
+     * search method for member with fetching related stacks.
+     * @param memberId
+     * @return
+     */
+    public Member findMemberWithStack(Long memberId) {
+        Member findMember =  em.createQuery("select m from Member m join fetch m.preferStacks where m.memberId = :memberId", Member.class)
                 .setParameter("memberId", memberId)
-                .getResultList();
+                .getSingleResult();
 
-        return findMember.stream().findAny();
+        return findMember;
     }
 
     public Member findMemberByNickname(String nickname) {
