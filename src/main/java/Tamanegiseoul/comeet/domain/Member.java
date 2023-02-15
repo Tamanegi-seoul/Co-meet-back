@@ -36,6 +36,11 @@ public class Member {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "MEMBER_ROLES",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Collection<Role> roles = new ArrayList<>();
 
     @Nullable
