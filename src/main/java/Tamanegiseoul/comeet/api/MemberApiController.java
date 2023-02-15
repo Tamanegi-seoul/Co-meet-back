@@ -33,8 +33,6 @@ public class MemberApiController {
     private final MemberService memberService;
     private final ImageDataService imageDataService;
 
-
-
     @GetMapping("/profile")
     @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
