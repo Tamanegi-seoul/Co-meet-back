@@ -8,10 +8,7 @@ import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
-import Tamanegiseoul.comeet.dto.member.response.ImageDto;
-import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
-import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
-import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.*;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -190,7 +187,7 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public RemoveMemberResponse removeMember(Long memberId) throws ResourceNotFoundException {
-        Member findMember = this.findMemberById(memberId);
+        Member findMember = memberRepository.findOne(memberId);
 
         if(findMember == null) {
             log.info("[MemberService:removeMember] member with member id {} not exists", memberId);
@@ -208,16 +205,20 @@ public class MemberService implements UserDetailsService {
      **********************/
 
     @Transactional(readOnly = true)
-    public Member findMemberById(Long memberId) {
-        Member findMember = memberRepository.findOne(memberId);
+    public SearchMemberResponse findMemberById(Long memberId) {
+        //Member findMember = memberRepository.findOne(memberId);
+        Optional<Member> findMember = memberRepository.findMemberWithImage(memberId);
 
-        if(findMember == null) {
+        if(findMember.isEmpty()) {
             log.info("[MemberService:findMemberById] member with member id '{}' not exists", memberId);
             throw new ResourceNotFoundException("member_id", "memberId ", memberId);
-        } else {
-            log.info("[MemberService:findMemberById] found member with member id {}", memberId);
-            return findMember;
         }
+
+        ImageDto findImage = ImageDto.toDto(findMember.get().getProfileImage());
+        List<StackRelation> preferredStacks = findMember.get().getPreferStacks();
+
+        log.info("[MemberService:findMemberById] found member with member id {}", memberId);
+        return SearchMemberResponse.toDto(findMember.get(), findImage, preferredStacks);
     }
 
     // this method is only for test environment
@@ -261,7 +262,7 @@ public class MemberService implements UserDetailsService {
             log.error("[MemberService:loadUserByNickname] Member having email {} not found in the database", email);
             throw new UsernameNotFoundException("Member not found in the database");
         } else {
-            log.info("[MemberSerivce:loadUserByNickname] Member who has email {} found in the database", email);
+            log.info("[MemberService:loadUserByNickname] Member who has email {} found in the database", email);
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
