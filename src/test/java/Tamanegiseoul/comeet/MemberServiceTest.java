@@ -10,6 +10,7 @@ import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.SearchMemberResponse;
 import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
@@ -216,9 +217,9 @@ public class MemberServiceTest {
         log.info("member id {} has been removed", removeResponse.getMemberId());
 
         // then
-        Member findMember = memberService.findMemberById(response.getMemberId());
+        SearchMemberResponse searchResponse = memberService.findMemberById(response.getMemberId());
 
-        log.info("find member:", findMember.getNickname());
+        log.info("find member:", searchResponse.getNickname());
 
         Assert.fail("member has not been removed");
     }
