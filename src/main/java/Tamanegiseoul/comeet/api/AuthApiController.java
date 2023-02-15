@@ -38,8 +38,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Auth API", description = "인증/인가 관련 API 제공")
 public class AuthApiController {
 
-    @Autowired
-    private JwtProvider jwtProvider;
+
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @PostMapping("/role/save")
