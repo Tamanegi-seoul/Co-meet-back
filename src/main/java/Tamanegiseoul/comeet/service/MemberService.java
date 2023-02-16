@@ -124,27 +124,31 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public UpdateMemberResponse updateMember(UpdateMemberRequest request, MultipartFile file) throws IOException {
-        Member findMember = memberRepository.findOne(request.getMemberId());
-        if(findMember == null) {
-            log.info("[MemberService:updateMember] member with member id '{}' not exists", request.getMemberId());
-            throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
-        }
-        log.info("[MemberService:updateMember] found {} member", findMember.getNickname());
 
         // validate nickname
         if(!request.getNewNickname().equals(request.getPrevNickname())) {
             // if new nickname is duplicated,
             // DuplicateResourceException will be thrown
             validateMemberNickname(request.getNewNickname());
-            findMember.changeNickname(request.getNewNickname());
             log.info("[MemberService:updateMember] updated nickname from '{}' to '{}'", request.getPrevNickname(), request.getNewNickname());
         } else {
             log.info("[MemberService:updateMember] request doesn't need update nickname");
         }
 
+        Member findMember;
+        try {
+             findMember = memberRepository.findMemberWithStack(request.getMemberId());
+        } catch (EmptyResultDataAccessException e) {
+            log.info("[MemberService:updateMember] member with member id '{}' not exists", request.getMemberId());
+            throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
+        }
+        log.info("[MemberService:updateMember] found {} member", findMember.getNickname());
+
+        findMember.changeNickname(request.getNewNickname());
         this.updatePreferStack(findMember, request.getUpdatedStacks());
-        log.info("[MemberService:updateMember] updated stacks to '{}'", request.getUpdatedStacks().toString());
         findMember.updateModifiedDate();
+        log.info("[MemberService:updateMember] updated stacks to '{}'", request.getUpdatedStacks().toString());
+
 
         ImageDto imageDto = imageDataService.findImageByMemberId(findMember.getMemberId());
 
@@ -153,9 +157,11 @@ public class MemberService implements UserDetailsService {
             if(imageDto == null) {
                 log.info("[MemberService:updateMember] no registered image for member '{}'", findMember.getNickname());
                 imageDto = imageDataService.uploadImage(findMember, file);
+                log.info("image id : {}", imageDto.getImageId());
             } else {
-                log.info("[MemberService:updateMember] found registered profile image '{}'", imageDto.getFileName());
+                log.info("[MemberService:updateMember] found registered profile image type '{}'", imageDto.getFileType());
                 imageDto = imageDataService.updateImage(findMember, file);
+                log.info("image id : {}", imageDto.getImageId());
             }
         } else {
             log.info("[MemberService:updateMember] request does not have profile image to upload or update.");
@@ -188,9 +194,10 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public RemoveMemberResponse removeMember(Long memberId) throws ResourceNotFoundException {
-        Member findMember = memberRepository.findOne(memberId);
-
-        if(findMember == null) {
+        Member findMember;
+        try {
+            findMember = memberRepository.findMemberWithStack(memberId);
+        } catch (Exception e) {
             log.info("[MemberService:removeMember] member with member id {} not exists", memberId);
             throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
