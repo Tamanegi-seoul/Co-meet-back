@@ -39,6 +39,12 @@ public class MemberRepository {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
+    public Member findMemberWithAll(Long memberId) {
+        return em.createQuery("select m from Member m join fetch m.preferStacks, m.profileImage, m.wroteComments, m.wrotePosts where m.memberId = :memberId", Member.class)
+                .setParameter("memberId", memberId)
+                .getSingleResult();
+    }
+
     public List<Member> findAll() {
         return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
