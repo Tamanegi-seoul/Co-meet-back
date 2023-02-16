@@ -18,18 +18,6 @@ public class MemberRepository {
         em.persist(member);
     }
 
-    public Long remove(Member member) {
-        Long removedMemberId = member.getMemberId();
-        em.remove(member);
-        return removedMemberId;
-    }
-
-    public int removeByMemberId(Long memberId) {
-        return em.createQuery("delete from Member m where m.memberId = :memberId")
-                .setParameter("memberId", memberId)
-                .executeUpdate();
-    }
-
     public Member findOne(Long id) {
         return em.find(Member.class, id);
     }
@@ -40,11 +28,9 @@ public class MemberRepository {
      * @return
      */
     public Member findMemberWithStack(Long memberId) {
-        Member findMember =  em.createQuery("select m from Member m join fetch m.preferStacks where m.memberId = :memberId", Member.class)
+        return em.createQuery("select m from Member m join fetch m.preferStacks where m.memberId = :memberId", Member.class)
                 .setParameter("memberId", memberId)
                 .getSingleResult();
-
-        return findMember;
     }
 
     public Member findMemberByNickname(String nickname) {
@@ -65,10 +51,23 @@ public class MemberRepository {
     }
 
     public Member findMemberByEmail(String email) {
-        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+        return em.createQuery("select m from Member m join fetch m.preferStacks where m.email = :email", Member.class)
                 .setParameter("email", email)
                 .getResultList().stream().findFirst().orElse(null);
     }
+
+    public Long remove(Member member) {
+        Long removedMemberId = member.getMemberId();
+        em.remove(member);
+        return removedMemberId;
+    }
+
+    public int removeByMemberId(Long memberId) {
+        return em.createQuery("delete from Member m where m.memberId = :memberId")
+                .setParameter("memberId", memberId)
+                .executeUpdate();
+    }
+
 
 
 }
