@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
@@ -141,11 +142,14 @@ public class MemberServiceTest {
 
         // when
         memberService.updatePreferStack(findMember, new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
+        em.flush();
+        em.clear();
 
         // then
-        List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
-        for(TechStack ts : findStacks) {
-            log.info("TechStack : " + ts.name());
+
+        List<StackRelation> findStacks = findMember.getPreferStacks();
+        for(StackRelation sr : findStacks) {
+            log.info("TechStack : " + sr.getTechStack().name());
         }
         Assert.assertEquals(2, findStacks.size());
     }
@@ -211,15 +215,14 @@ public class MemberServiceTest {
         postService.updateDesignateStacks(findPost, stacks);
 
         // when
+        Long removedMemberId = response.getMemberId();
         RemoveMemberResponse removeResponse = memberService.removeMember(response.getMemberId());
         em.flush();
         em.clear();
-        log.info("member id {} has been removed", removeResponse.getMemberId());
+        log.info("member id {} has been removed", removedMemberId);
 
         // then
-        SearchMemberResponse searchResponse = memberService.findMemberById(response.getMemberId());
-
-        log.info("find member:", searchResponse.getNickname());
+        SearchMemberResponse searchResponse = memberService.findMemberById(removedMemberId);
 
         Assert.fail("member has not been removed");
     }
