@@ -46,9 +46,9 @@ public class ImageDataService {
         if(dbImage != null) {
             log.info("[ImageDataService:updateImage] found {} profile image", updatedMember.getNickname());
             dbImage.updateImageData(updatedFile);
-            log.info("[ImageDataService:updateImage] database profile image replace with {}", updatedFile.getName());
-            em.flush();
-            em.clear();
+            log.info("[ImageDataService:updateImage] database profile image replace with {}", updatedFile.getContentType());
+//            em.flush();
+//            em.clear();
         } else {
             log.info("[ImageDataService:updateImage] {} profile image not exists", updatedMember.getNickname());
         }
