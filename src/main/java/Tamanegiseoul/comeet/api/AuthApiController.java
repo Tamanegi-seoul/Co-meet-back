@@ -59,7 +59,7 @@ public class AuthApiController {
         log.info("[AuthApiController:setUserRole] controller execute");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
-        memberService.addRoleToMember(member.getNickname(), role.getRoleName());
+        memberService.addRoleToMember(member, role.getRoleName());
         //return ResponseEntity.created(uri).body(role);
 
         return null;
