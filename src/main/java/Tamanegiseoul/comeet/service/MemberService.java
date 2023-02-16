@@ -12,6 +12,7 @@ import Tamanegiseoul.comeet.dto.member.response.*;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,7 +70,7 @@ public class MemberService implements UserDetailsService {
         }
 
 
-        this.addRoleToMember(newMember.getEmail(), "ROLE_USER");
+        this.addRoleToMember(newMember, "ROLE_USER");
         this.updatePreferStack(newMember, request.getPreferStacks());
 
         log.info("[MemberService:registerMember] '{}' member prefer stacks '{}'", newMember.getNickname(), request.getPreferStacks().toString());
@@ -83,13 +84,13 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void addRoleToMember(String email, String roleName) {
-        Member findMember = memberRepository.findMemberByEmail(email);
+    public void addRoleToMember(Member targetMember, String roleName) {
         Role roleToAdd = roleRepository.findByRoleName(roleName);
         if(roleToAdd == null) {
             log.warn("no such role {}", roleName);
         } else {
-            findMember.addRole(roleToAdd);
+            log.info("{} set role with {}", targetMember.getNickname(), roleToAdd.getRoleName());
+            targetMember.addRole(roleToAdd);
         }
     }
 
@@ -206,10 +207,10 @@ public class MemberService implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberById(Long memberId) {
-        //Member findMember = memberRepository.findOne(memberId);
-        Member findMember = memberRepository.findMemberWithStack(memberId);
-
-        if(findMember==null) {
+        Member findMember;
+        try {
+            findMember = memberRepository.findMemberWithStack(memberId);
+        } catch (EmptyResultDataAccessException e) {
             log.info("[MemberService:findMemberById] member with member id '{}' not exists", memberId);
             throw new ResourceNotFoundException("member_id", "memberId ", memberId);
         }
