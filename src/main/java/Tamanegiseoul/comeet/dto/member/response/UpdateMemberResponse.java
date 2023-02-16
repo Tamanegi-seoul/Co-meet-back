@@ -33,6 +33,7 @@ public class UpdateMemberResponse {
                 .preferStacks(member.exportPreferStack())
                 .createdTime(member.getCreatedTime())
                 .modifiedTime(member.getModifiedTime())
+                .profileImage(image)
                 .build();
     }
 }
