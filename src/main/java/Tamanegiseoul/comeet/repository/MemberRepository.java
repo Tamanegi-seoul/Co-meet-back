@@ -40,6 +40,13 @@ public class MemberRepository {
                 .getSingleResult();
     }
 
+    public Member findMemberWithProfileImage(Long memberId) {
+        return em.createQuery("select m from Member m join fetch m.profileImage where m.memberId = :memberId", Member.class)
+                .setParameter("memberId", memberId)
+                .getSingleResult();
+    }
+
+
     public Member findMemberByNickname(String nickname) {
         return em.createQuery("select m from Member m where m.nickname = :nickname", Member.class)
                 .setParameter("nickname", nickname)
