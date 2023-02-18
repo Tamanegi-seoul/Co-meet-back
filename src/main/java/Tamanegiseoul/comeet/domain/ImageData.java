@@ -30,7 +30,8 @@ public class ImageData {
     @NotNull
     private String fileType;
 
-    @OneToOne(mappedBy = "profileImage", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    //@OneToOne(mappedBy = "profileImage", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id")
     private Member owner;
 
     @Lob

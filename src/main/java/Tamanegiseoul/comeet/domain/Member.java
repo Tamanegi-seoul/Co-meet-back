@@ -45,7 +45,8 @@ public class Member {
 
     @Nullable
 //    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
-    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner")
+    //@OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner")
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private ImageData profileImage;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
