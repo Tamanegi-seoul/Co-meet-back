@@ -40,7 +40,7 @@ public class CommentService {
         }
         log.info("[CommentService:registerComment] found post with post id {}", request.getPostId());
 
-        Member findMember = memberRepository.findOne(request.getMemberId());
+        Member findMember = memberRepository.findMemberWithStack(request.getMemberId());
         if(findMember==null) {
             log.info("[CommentService:registerComment] member with member id {} not exists", request.getMemberId());
             throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
