@@ -46,12 +46,13 @@ public class StackRelationRepository {
                 .executeUpdate();
     }
 
-    public int removeRelatedStakcsByMember(Long memberId) {
+    public int removeRelatedStacksByMember(Long memberId) {
         log.warn("[StackRelationRepository:removeRelatedStacksByUser]method init");
         return em.createQuery("delete from StackRelation sr where sr.member.memberId = :memberId")
                 .setParameter("memberId", memberId)
                 .executeUpdate();
     }
+
 
 
 }

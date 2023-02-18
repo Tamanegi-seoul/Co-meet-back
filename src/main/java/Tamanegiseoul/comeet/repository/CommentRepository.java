@@ -43,7 +43,7 @@ public class CommentRepository {
                 .getResultList();
     }
 
-    public int removeCommentBymemberId(Long memberId) {
+    public int removeCommentByMemberId(Long memberId) {
         return em.createQuery("delete from Comment c where c.member.memberId = :memberId")
                 .setParameter("memberId", memberId)
                 .executeUpdate();

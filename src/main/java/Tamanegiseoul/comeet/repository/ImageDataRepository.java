@@ -34,5 +34,9 @@ public class ImageDataRepository {
                 .executeUpdate();
     }
 
-
+    public int removeByMemberId(Long memberId) {
+        return em.createQuery("delete from ImageData i where i.owner.memberId = :memberId")
+                .setParameter("memberId", memberId)
+                .executeUpdate();
+    }
 }
