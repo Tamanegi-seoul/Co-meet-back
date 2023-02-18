@@ -35,7 +35,7 @@ public class Member {
     @NotNull
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "MEMBER_ROLES",
             joinColumns = @JoinColumn(name = "member_id"),
