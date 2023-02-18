@@ -36,6 +36,14 @@ public class MemberService implements UserDetailsService {
 
     private final RoleRepository roleRepository;
 
+    private final PostRepository postRepository;
+
+    private final CommentRepository commentRepository;
+
+    private final ImageDataRepository imageDataRepository;
+
+    private final StackRelationRepository stackRelationRepository;
+
     private final ImageDataService imageDataService;
 
     private final PasswordEncoder passwordEncoder;
@@ -46,8 +54,14 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public JoinMemberResponse registerMember(JoinMemberRequest request, MultipartFile image) throws IOException {
 
-        validateMemberEmail(request.getEmail());
-        validateMemberNickname(request.getNickname());
+        List<Member> findMembers = null;
+        findMembers = memberRepository.findMemberWithNameOrEmail(request.getNickname(), request.getEmail());
+        if(!findMembers.isEmpty()) {
+            log.info("[MemberService:registerMember] email or nickname is already in use");
+            throw new DuplicateResourceException("Members nickname or email in use", request.getEmail()+ " or " + request.getNickname());
+        }
+
+
 
         Member newMember = Member.builder()
                 .email(request.getEmail())
@@ -202,7 +216,16 @@ public class MemberService implements UserDetailsService {
             throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
 
-        em.remove(findMember);
+//        em.remove(findMember);
+        stackRelationRepository.removeRelatedStacksByMember(memberId);
+        imageDataRepository.removeByMemberId(memberId);
+        commentRepository.removeCommentByMemberId(memberId);
+        postRepository.removePostByPosterId(memberId);
+        memberRepository.removeMemberWithAll(memberId);
+
+
+
+
         log.info("[MemberService:removeMember] '{}' member removed", findMember.getNickname());
 
         return RemoveMemberResponse.toDto(findMember);
