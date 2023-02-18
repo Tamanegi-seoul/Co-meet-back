@@ -22,6 +22,13 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
+    public List<Member> findMemberWithNameOrEmail(String nickname, String email) {
+        return em.createQuery("select m from Member m where m.nickname = :nickname or m.email = :email", Member.class)
+                .setParameter("nickname", nickname)
+                .setParameter("email", email)
+                .getResultList();
+    }
+
     /**
      * search method for member with fetching related stacks.
      * @param memberId
@@ -70,6 +77,12 @@ public class MemberRepository {
 
     public int removeByMemberId(Long memberId) {
         return em.createQuery("delete from Member m where m.memberId = :memberId")
+                .setParameter("memberId", memberId)
+                .executeUpdate();
+    }
+
+    public void removeMemberWithAll(Long memberId) {
+        em.createQuery("delete from Member m where m.memberId = :memberId")
                 .setParameter("memberId", memberId)
                 .executeUpdate();
     }
