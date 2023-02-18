@@ -31,6 +31,12 @@ public class CommentRepository {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
+    public Comment findCommentWithPost(Long commentId) {
+        return em.createQuery("select c from Comment c join fetch c.post where c.commentId = :commentId", Comment.class)
+                .setParameter("commentId", commentId)
+                .getResultList().stream().findFirst().orElse(null);
+    }
+
     public List<Comment> findCommentByPostId(Long postId) {
         return em.createQuery("select c from Comment c where c.post.postId = :postId order by c.commentId asc", Comment.class)
                 .setParameter("postId", postId)
