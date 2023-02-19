@@ -147,9 +147,10 @@ public class PostService {
      ***********************/
     @Transactional(readOnly = true)
     public SearchPostResponse findPostById(Long postId) {
-        Posts findPost = postRepository.findOne(postId);
-
-        if(findPost == null) {
+        Posts findPost = null;
+        try {
+            findPost = postRepository.findPostWithStack(postId);
+        } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:findPostById] post with post id '{}' not exits", postId);
             throw new ResourceNotFoundException("Posts", "postId", postId);
         }
@@ -191,7 +192,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostCompactDto> findPostByMemberId(Long memberId) {
-        Member findMember = memberRepository.findOne(memberId);
+        Member findMember = memberRepository.findMemberWithStack(memberId);
         if(findMember == null) {
             log.info("[PostService:findPostByMemberId] member with member id {} not exists", memberId);
             throw new ResourceNotFoundException("member id", "memberId", memberId);
