@@ -30,7 +30,7 @@ public class PostRepository {
     }
 
     public List<Posts> findAll(int offset, int limit) {
-        return em.createQuery("select p from Posts p join fetch p.designatedStack order by p.createdTime desc", Posts.class)
+        return em.createQuery("select p from Posts p join fetch p.designatedStack join fetch p.poster order by p.createdTime desc", Posts.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
