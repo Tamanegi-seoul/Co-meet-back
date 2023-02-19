@@ -15,6 +15,7 @@ import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.StackRelationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +39,10 @@ public class PostService {
 
     @Transactional
     public CreatePostResponse registerPost(CreatePostRequest request) {
-
-        Member findMember = memberRepository.findOne(request.getPosterId());
-        if(findMember == null) {
+        Member findMember = null;
+        try {
+            findMember = memberRepository.findMemberWithStack(request.getPosterId());
+        } catch(EmptyResultDataAccessException e) {
             log.info("[PostService:registerPost] member with member id '{}' not exits", request.getPosterId());
             throw new ResourceNotFoundException("member id", "memberId", request.getPosterId());
         }
