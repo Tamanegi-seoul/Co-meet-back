@@ -88,11 +88,14 @@ public class PostService {
 
     @Transactional
     public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
-        Posts findPost = postRepository.findOne(updatedPost.getPostId());
-        if(findPost == null) {
+        Posts findPost;
+        try {
+            findPost = postRepository.findPostWithStack(updatedPost.getPostId());
+        } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:updatePost] post with post id '{}' not exists", updatedPost.getPostId());
             throw new ResourceNotFoundException("postId", "post id", updatedPost.getPostId());
         }
+
         log.info("[PostService:updatePost] found post with post id '{}'", updatedPost.getPostId());
         findPost.updatePost(updatedPost);
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
@@ -111,7 +114,12 @@ public class PostService {
             throw new ResourceNotFoundException("post", "postId", postId);
         }
         log.info("[PostService:removePostByPostId] found post with post id '{}'", postId);
-        em.remove(findPost);
+//        em.remove(findPost);
+        int removeCommentNum = commentRepository.removeCommentByPostId(findPost.getPostId());
+        log.info("[PostService:removePostByPostId] removed {}ea from Comment", removeCommentNum);
+        int removeStackNum = stackRelationRepository.removeRelatedStacksByPost(findPost.getPostId());
+        log.info("[PostService:removePostByPostId] removed {}ea from StackRelation", removeStackNum);
+        postRepository.removePostByPostId(findPost.getPostId());
         log.info("[PostService:removePostByPostId] removed post id '{}'", postId);
         return RemovePostResponse.builder()
                 .postId(findPost.getPostId())
