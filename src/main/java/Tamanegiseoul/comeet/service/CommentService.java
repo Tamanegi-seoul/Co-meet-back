@@ -70,7 +70,7 @@ public class CommentService {
 
     @Transactional
     public UpdateCommentResponse updateComment(UpdateCommentRequest updatedComment) {
-        Comment findComment = commentRepository.findCommentWithPost(updatedComment.getCommentId());
+        Comment findComment = commentRepository.findCommentWithPostAndMember(updatedComment.getCommentId());
         if(findComment == null) {
             log.info("[CommentService:updateComment] comment with id {} not exists", updatedComment.getCommentId());
             throw new ResourceNotFoundException("comment_id", "comment id", updatedComment.getCommentId());
