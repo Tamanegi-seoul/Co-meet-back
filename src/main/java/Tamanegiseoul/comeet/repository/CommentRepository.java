@@ -38,7 +38,7 @@ public class CommentRepository {
     }
 
     public List<Comment> findCommentByPostId(Long postId) {
-        return em.createQuery("select c from Comment c where c.post.postId = :postId order by c.commentId asc", Comment.class)
+        return em.createQuery("select c from Comment c join fetch c.member where c.post.postId = :postId order by c.commentId asc", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }
