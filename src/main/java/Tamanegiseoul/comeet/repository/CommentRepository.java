@@ -31,8 +31,8 @@ public class CommentRepository {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
-    public Comment findCommentWithPost(Long commentId) {
-        return em.createQuery("select c from Comment c join fetch c.post where c.commentId = :commentId", Comment.class)
+    public Comment findCommentWithPostAndMember(Long commentId) {
+        return em.createQuery("select c from Comment c join fetch c.post join fetch c.member where c.commentId = :commentId", Comment.class)
                 .setParameter("commentId", commentId)
                 .getResultList().stream().findFirst().orElse(null);
     }
