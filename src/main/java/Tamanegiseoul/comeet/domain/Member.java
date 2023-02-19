@@ -44,9 +44,7 @@ public class Member {
     private Collection<Role> roles = new ArrayList<>();
 
     @Nullable
-//    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
-    //@OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner")
-    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "owner")
     private ImageData profileImage;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
@@ -88,6 +86,7 @@ public class Member {
 
     public void addProfileImage(ImageData imageData) {
         this.profileImage = imageData;
+        imageData.setOwnMember(this);
     }
 
     public void addWrotePost(Posts post) { this.wrotePosts.add(post); }
