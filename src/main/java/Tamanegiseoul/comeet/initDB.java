@@ -68,6 +68,33 @@ public class initDB {
                             .build(), null
             );
 
+            JoinMemberResponse memberC = memberService.registerMember(
+                    JoinMemberRequest.builder()
+                            .email("j.Doe@comeet.com")
+                            .nickname("John Doe")
+                            .password("password")
+                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT)))
+                            .build(), null
+            );
+
+            JoinMemberResponse memberD = memberService.registerMember(
+                    JoinMemberRequest.builder()
+                            .email("eli@comeet.com")
+                            .nickname("Elisia")
+                            .password("password")
+                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT)))
+                            .build(), null
+            );
+
+            JoinMemberResponse memberE = memberService.registerMember(
+                    JoinMemberRequest.builder()
+                            .email("cooper@comeet.com")
+                            .nickname("Cooper")
+                            .password("password")
+                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT)))
+                            .build(), null
+            );
+
 
             /**
              *  SET UT MOCK POST
@@ -268,6 +295,34 @@ public class initDB {
                     .content("welcome whoever")
                     .build();
             CreateCommentResponse comC = commentService.registerComment(requestComC);
+
+            CreateCommentRequest requestComD = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberB.getMemberId())
+                    .content("new comment")
+                    .build();
+            CreateCommentResponse comD = commentService.registerComment(requestComD);
+
+            CreateCommentRequest requestComE = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberC.getMemberId())
+                    .content("new comment")
+                    .build();
+            CreateCommentResponse comE = commentService.registerComment(requestComE);
+
+            CreateCommentRequest requestComF = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberD.getMemberId())
+                    .content("new comment")
+                    .build();
+            CreateCommentResponse comF = commentService.registerComment(requestComF);
+
+            CreateCommentRequest requestComG = CreateCommentRequest.builder() // commentId = 9
+                    .postId(postA.getPostId())
+                    .memberId(memberE.getMemberId())
+                    .content("new comment")
+                    .build();
+            CreateCommentResponse comG = commentService.registerComment(requestComG);
         };
     }
 }
