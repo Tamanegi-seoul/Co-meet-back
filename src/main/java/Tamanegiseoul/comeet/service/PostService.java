@@ -90,7 +90,7 @@ public class PostService {
     public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
         Posts findPost;
         try {
-            findPost = postRepository.findPostWithStack(updatedPost.getPostId());
+            findPost = postRepository.findPostWithStackAndPoster(updatedPost.getPostId());
         } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:updatePost] post with post id '{}' not exists", updatedPost.getPostId());
             throw new ResourceNotFoundException("postId", "post id", updatedPost.getPostId());
@@ -149,7 +149,7 @@ public class PostService {
     public SearchPostResponse findPostById(Long postId) {
         Posts findPost = null;
         try {
-            findPost = postRepository.findPostWithStack(postId);
+            findPost = postRepository.findPostWithStackAndPoster(postId);
         } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:findPostById] post with post id '{}' not exits", postId);
             throw new ResourceNotFoundException("Posts", "postId", postId);
