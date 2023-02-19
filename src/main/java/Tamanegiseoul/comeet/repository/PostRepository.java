@@ -19,6 +19,11 @@ public class PostRepository {
         return em.find(Posts.class, id);
     }
 
+    public Posts findPostWithStack(Long postId) {
+        return em.createQuery("select p from Posts p join fetch p.designatedStack where p.postId = :postId", Posts.class)
+                .setParameter("postId", postId)
+                .getSingleResult();
+    }
     public List<Posts> findAll() {
         return em.createQuery("select p from Posts p", Posts.class)
                 .getResultList();
