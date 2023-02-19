@@ -75,10 +75,10 @@ public class MemberService implements UserDetailsService {
 
         log.info("[MemberService:registerMember] member with email '{}' nickname '{}' are registered.", request.getEmail(), request.getNickname());
 
+        ImageDto imageDto = null;
         if(image!=null) {
-            ImageDto imageDto = imageDataService.uploadImage(newMember, image);
+            imageDto = imageDataService.uploadImage(newMember, image);
             log.info("[MemberService:registerMember] '{}' member have profile image with file name '{}'", newMember.getNickname(), imageDto.getFileName());
-            return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
         } else {
             log.info("[MemberService:registerMember] '{}' member doesn't have profile image to register", newMember.getNickname());
         }
@@ -89,7 +89,7 @@ public class MemberService implements UserDetailsService {
 
         log.info("[MemberService:registerMember] '{}' member prefer stacks '{}'", newMember.getNickname(), request.getPreferStacks().toString());
 
-        return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(null);
+        return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
     }
 
     @Transactional
