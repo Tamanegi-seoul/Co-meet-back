@@ -15,6 +15,7 @@ import Tamanegiseoul.comeet.repository.PostRepository;
 import Tamanegiseoul.comeet.repository.StackRelationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +39,10 @@ public class PostService {
 
     @Transactional
     public CreatePostResponse registerPost(CreatePostRequest request) {
-
-        Member findMember = memberRepository.findOne(request.getPosterId());
-        if(findMember == null) {
+        Member findMember = null;
+        try {
+            findMember = memberRepository.findMemberWithStack(request.getPosterId());
+        } catch(EmptyResultDataAccessException e) {
             log.info("[PostService:registerPost] member with member id '{}' not exits", request.getPosterId());
             throw new ResourceNotFoundException("member id", "memberId", request.getPosterId());
         }
@@ -86,11 +88,14 @@ public class PostService {
 
     @Transactional
     public UpdatePostResponse updatePost(UpdatePostRequest updatedPost) {
-        Posts findPost = postRepository.findOne(updatedPost.getPostId());
-        if(findPost == null) {
+        Posts findPost;
+        try {
+            findPost = postRepository.findPostWithStackAndPoster(updatedPost.getPostId());
+        } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:updatePost] post with post id '{}' not exists", updatedPost.getPostId());
             throw new ResourceNotFoundException("postId", "post id", updatedPost.getPostId());
         }
+
         log.info("[PostService:updatePost] found post with post id '{}'", updatedPost.getPostId());
         findPost.updatePost(updatedPost);
         findPost.updateDesignateStack(updatedPost.getDesignatedStacks());
@@ -109,7 +114,12 @@ public class PostService {
             throw new ResourceNotFoundException("post", "postId", postId);
         }
         log.info("[PostService:removePostByPostId] found post with post id '{}'", postId);
-        em.remove(findPost);
+//        em.remove(findPost);
+        int removeCommentNum = commentRepository.removeCommentByPostId(findPost.getPostId());
+        log.info("[PostService:removePostByPostId] removed {}ea from Comment", removeCommentNum);
+        int removeStackNum = stackRelationRepository.removeRelatedStacksByPost(findPost.getPostId());
+        log.info("[PostService:removePostByPostId] removed {}ea from StackRelation", removeStackNum);
+        postRepository.removePostByPostId(findPost.getPostId());
         log.info("[PostService:removePostByPostId] removed post id '{}'", postId);
         return RemovePostResponse.builder()
                 .postId(findPost.getPostId())
@@ -137,9 +147,10 @@ public class PostService {
      ***********************/
     @Transactional(readOnly = true)
     public SearchPostResponse findPostById(Long postId) {
-        Posts findPost = postRepository.findOne(postId);
-
-        if(findPost == null) {
+        Posts findPost = null;
+        try {
+            findPost = postRepository.findPostWithStackAndPoster(postId);
+        } catch (EmptyResultDataAccessException e) {
             log.info("[PostService:findPostById] post with post id '{}' not exits", postId);
             throw new ResourceNotFoundException("Posts", "postId", postId);
         }
@@ -181,7 +192,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostCompactDto> findPostByMemberId(Long memberId) {
-        Member findMember = memberRepository.findOne(memberId);
+        Member findMember = memberRepository.findMemberWithStack(memberId);
         if(findMember == null) {
             log.info("[PostService:findPostByMemberId] member with member id {} not exists", memberId);
             throw new ResourceNotFoundException("member id", "memberId", memberId);

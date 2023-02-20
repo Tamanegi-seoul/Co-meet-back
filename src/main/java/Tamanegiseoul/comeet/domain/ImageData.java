@@ -31,6 +31,7 @@ public class ImageData {
     private String fileType;
 
     @OneToOne(mappedBy = "profileImage", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+//    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id")
     private Member owner;
 
     @Lob
@@ -43,6 +44,10 @@ public class ImageData {
         this.imageData = ImageUtil.compressImage(updatedFile.getBytes());
 
         return this;
+    }
+
+    public void setOwnMember(Member member) {
+        this.owner = member;
     }
 
 }

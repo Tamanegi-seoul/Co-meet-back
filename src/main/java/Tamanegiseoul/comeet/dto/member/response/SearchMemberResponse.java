@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.dto.member.response;
 
 import Tamanegiseoul.comeet.domain.Member;
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,15 +39,23 @@ public class SearchMemberResponse {
         this.profileImage = profileImage;
     }
 
-    public static SearchMemberResponse toDto(Member member, ImageDto image, List<TechStack> stacks) {
+    public static SearchMemberResponse toDto(Member member, ImageDto image, List<StackRelation> stacks) {
         return SearchMemberResponse.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
-                .preferStacks(stacks)
+                .preferStacks(preferStacks(stacks))
                 .createdTime(member.getCreatedTime())
                 .modifiedTime(member.getModifiedTime())
                 .profileImage(image)
                 .build();
+    }
+
+    private static List<TechStack> preferStacks(List<StackRelation> list) {
+        List<TechStack> findStacks = new ArrayList<>();
+        for(StackRelation sr : list) {
+            findStacks.add(sr.getTechStack());
+        }
+        return findStacks;
     }
 }

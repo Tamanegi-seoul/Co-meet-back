@@ -38,8 +38,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Auth API", description = "인증/인가 관련 API 제공")
 public class AuthApiController {
 
-    @Autowired
-    private JwtProvider jwtProvider;
+
+    private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
     @PostMapping("/role/save")
@@ -59,7 +59,7 @@ public class AuthApiController {
         log.info("[AuthApiController:setUserRole] controller execute");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
-        memberService.addRoleToMember(member.getNickname(), role.getRoleName());
+        memberService.addRoleToMember(member, role.getRoleName());
         //return ResponseEntity.created(uri).body(role);
 
         return null;

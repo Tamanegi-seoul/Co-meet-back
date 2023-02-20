@@ -83,13 +83,9 @@ public class MemberApiController {
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("memberId") Long memberId) {
         try {
             log.info("[MemberApiController:searchMember] controller execute");
-            Member findMember = memberService.findMemberById(memberId);
+            SearchMemberResponse response = memberService.findMemberById(memberId);
 
-            ImageDto findImage = imageDataService.findImageByMemberId(findMember.getMemberId());
-
-            List<TechStack> preferredStacks = memberService.findPreferredStacks(findMember.getMemberId());
-
-            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, SearchMemberResponse.toDto(findMember, findImage, preferredStacks));
+            return ApiResponse.of(HttpStatus.OK, ResponseMessage.FOUND_USER, response);
 
         } catch (ResourceNotFoundException e) {
             return ApiResponse.of(HttpStatus.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, e.getMessage());

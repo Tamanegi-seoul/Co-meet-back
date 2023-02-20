@@ -19,20 +19,25 @@ public class PostRepository {
         return em.find(Posts.class, id);
     }
 
+    public Posts findPostWithStackAndPoster(Long postId) {
+        return em.createQuery("select p from Posts p join fetch p.designatedStack join fetch p.poster where p.postId = :postId", Posts.class)
+                .setParameter("postId", postId)
+                .getSingleResult();
+    }
     public List<Posts> findAll() {
         return em.createQuery("select p from Posts p", Posts.class)
                 .getResultList();
     }
 
     public List<Posts> findAll(int offset, int limit) {
-        return em.createQuery("select p from Posts p order by p.postId desc", Posts.class)
+        return em.createQuery("select p from Posts p join fetch p.designatedStack join fetch p.poster order by p.createdTime desc", Posts.class)
                 .setFirstResult(offset)
                 .setMaxResults(limit)
                 .getResultList();
     }
 
     public List<Posts> findPostByMemberId(Long memberId) {
-        return em.createQuery("select p from Posts p where p.poster.memberId = :memberId order by p.postId asc", Posts.class)
+        return em.createQuery("select p from Posts p join fetch p.designatedStack where p.poster.memberId = :memberId order by p.postId asc", Posts.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
