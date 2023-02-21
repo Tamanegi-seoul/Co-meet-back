@@ -127,9 +127,11 @@ public class CommentServiceTest {
     @Test
     public void 덧글_조회() {
         // given
-
         Member findMember = memberService.findMemberByNickname("케네스");
-        PostCompactDto findPost = postService.findPostByMemberId(findMember.getMemberId()).get(0);
+        log.info("found member with nickname {}", findMember.getNickname());
+        log.info("found {} posts with nickname {}", findMember.getWrotePosts().size());
+
+        Posts findPost = findMember.getWrotePosts().get(0);
 
         CreateCommentRequest request = CreateCommentRequest.builder()
                 .memberId(findMember.getMemberId())
