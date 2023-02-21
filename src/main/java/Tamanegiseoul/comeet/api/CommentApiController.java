@@ -9,6 +9,7 @@ import Tamanegiseoul.comeet.dto.comment.response.CreateCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.RemoveCommentResponse;
 import Tamanegiseoul.comeet.dto.comment.response.UpdateCommentResponse;
 import Tamanegiseoul.comeet.service.CommentService;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class CommentApiController {
     private final CommentService commentService;
 
     @PostMapping
-    @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성")
+    @Operation(summary = "덧글 등록", description = "포스트에 대한 덧글 작성", tags = "Comment API")
     public ResponseEntity<ApiResponse> registerComment(@RequestBody @Valid CreateCommentRequest request) {
         try {
             log.info("[CommentApiController:registerComment] controller execute");
@@ -40,7 +41,7 @@ public class CommentApiController {
     }
 
     @PatchMapping
-    @Operation(summary = "덧글 수정", description = "포스트에 작성된 덧글 수정")
+    @Operation(summary = "덧글 수정", description = "포스트에 작성된 덧글 수정", tags = "Comment API")
     public ResponseEntity<ApiResponse> updateComment(@RequestBody @Valid UpdateCommentRequest request) {
         try {
             log.info("[CommentApiController:updateComment] controller execute");
@@ -52,7 +53,7 @@ public class CommentApiController {
     }
 
     @DeleteMapping
-    @Operation(summary = "덧글 삭제", description = "포스트에 작성된 덧글 삭제")
+    @Operation(summary = "덧글 삭제", description = "포스트에 작성된 덧글 삭제", tags = "Comment API")
     public ResponseEntity<ApiResponse> removeComment(@RequestParam(name = "commentId") Long commentId) {
         try {
             log.info("[CommentApiController:removeComment] controller execute");
