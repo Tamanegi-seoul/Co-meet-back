@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
@@ -203,7 +204,9 @@ public class MemberServiceTest {
                 .contactType(ContactType.POSTER_EMAIL)
                 .contact("93jpark@gmail.com")
                 .posterId(response.getMemberId())
+                .groupType(GroupType.STUDY)
                 .recruitCapacity(4L)
+                .remote(true)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
                 .build();
