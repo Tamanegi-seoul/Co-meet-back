@@ -40,7 +40,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @ApiIgnore
 public class AuthApiController {
 
-
     private final JwtProvider jwtProvider;
     private final MemberService memberService;
 
