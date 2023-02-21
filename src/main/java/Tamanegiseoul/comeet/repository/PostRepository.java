@@ -24,6 +24,13 @@ public class PostRepository {
                 .setParameter("postId", postId)
                 .getSingleResult();
     }
+
+    public Posts findPostWithStackAndMember(Long postId) {
+        return em.createQuery("select p from Posts p join fetch p.designatedStack join fetch p.poster where p.postId = :postId", Posts.class)
+                .setParameter("postId", postId)
+                .getSingleResult();
+    }
+
     public List<Posts> findAll() {
         return em.createQuery("select p from Posts p", Posts.class)
                 .getResultList();
