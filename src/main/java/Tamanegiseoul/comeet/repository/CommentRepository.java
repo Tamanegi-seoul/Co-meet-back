@@ -31,8 +31,14 @@ public class CommentRepository {
                 .getResultList().stream().findFirst().orElse(null);
     }
 
+    public Comment findCommentWithPostAndMember(Long commentId) {
+        return em.createQuery("select c from Comment c join fetch c.post join fetch c.member where c.commentId = :commentId", Comment.class)
+                .setParameter("commentId", commentId)
+                .getResultList().stream().findFirst().orElse(null);
+    }
+
     public List<Comment> findCommentByPostId(Long postId) {
-        return em.createQuery("select c from Comment c where c.post.postId = :postId order by c.commentId asc", Comment.class)
+        return em.createQuery("select c from Comment c join fetch c.member where c.post.postId = :postId order by c.commentId asc", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }
@@ -43,7 +49,7 @@ public class CommentRepository {
                 .getResultList();
     }
 
-    public int removeCommentBymemberId(Long memberId) {
+    public int removeCommentByMemberId(Long memberId) {
         return em.createQuery("delete from Comment c where c.member.memberId = :memberId")
                 .setParameter("memberId", memberId)
                 .executeUpdate();
@@ -54,6 +60,5 @@ public class CommentRepository {
                 .setParameter("postId", postId)
                 .executeUpdate();
     }
-
 
 }

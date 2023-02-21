@@ -2,6 +2,7 @@ package Tamanegiseoul.comeet;
 
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
@@ -10,6 +11,7 @@ import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
 import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
 import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.SearchMemberResponse;
 import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
 import Tamanegiseoul.comeet.dto.post.request.CreatePostRequest;
 import Tamanegiseoul.comeet.dto.post.response.CreatePostResponse;
@@ -140,11 +142,14 @@ public class MemberServiceTest {
 
         // when
         memberService.updatePreferStack(findMember, new ArrayList<>(List.of(TechStack.R, TechStack.JAVA_SCRIPT)));
+        em.flush();
+        em.clear();
 
         // then
-        List<TechStack> findStacks = memberService.findPreferredStacks(response.getMemberId());
-        for(TechStack ts : findStacks) {
-            log.info("TechStack : " + ts.name());
+
+        List<StackRelation> findStacks = findMember.getPreferStacks();
+        for(StackRelation sr : findStacks) {
+            log.info("TechStack : " + sr.getTechStack().name());
         }
         Assert.assertEquals(2, findStacks.size());
     }
@@ -210,15 +215,14 @@ public class MemberServiceTest {
         postService.updateDesignateStacks(findPost, stacks);
 
         // when
+        Long removedMemberId = response.getMemberId();
         RemoveMemberResponse removeResponse = memberService.removeMember(response.getMemberId());
         em.flush();
         em.clear();
-        log.info("member id {} has been removed", removeResponse.getMemberId());
+        log.info("member id {} has been removed", removedMemberId);
 
         // then
-        Member findMember = memberService.findMemberById(response.getMemberId());
-
-        log.info("find member:", findMember.getNickname());
+        SearchMemberResponse searchResponse = memberService.findMemberById(removedMemberId);
 
         Assert.fail("member has not been removed");
     }

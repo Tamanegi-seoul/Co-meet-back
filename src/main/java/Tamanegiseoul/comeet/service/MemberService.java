@@ -8,13 +8,11 @@ import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
 import Tamanegiseoul.comeet.dto.member.request.JoinMemberRequest;
 import Tamanegiseoul.comeet.dto.member.request.UpdateMemberRequest;
-import Tamanegiseoul.comeet.dto.member.response.ImageDto;
-import Tamanegiseoul.comeet.dto.member.response.JoinMemberResponse;
-import Tamanegiseoul.comeet.dto.member.response.RemoveMemberResponse;
-import Tamanegiseoul.comeet.dto.member.response.UpdateMemberResponse;
+import Tamanegiseoul.comeet.dto.member.response.*;
 import Tamanegiseoul.comeet.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +36,14 @@ public class MemberService implements UserDetailsService {
 
     private final RoleRepository roleRepository;
 
+    private final PostRepository postRepository;
+
+    private final CommentRepository commentRepository;
+
+    private final ImageDataRepository imageDataRepository;
+
+    private final StackRelationRepository stackRelationRepository;
+
     private final ImageDataService imageDataService;
 
     private final PasswordEncoder passwordEncoder;
@@ -48,8 +54,14 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public JoinMemberResponse registerMember(JoinMemberRequest request, MultipartFile image) throws IOException {
 
-        validateMemberEmail(request.getEmail());
-        validateMemberNickname(request.getNickname());
+        List<Member> findMembers = null;
+        findMembers = memberRepository.findMemberWithNameOrEmail(request.getNickname(), request.getEmail());
+        if(!findMembers.isEmpty()) {
+            log.info("[MemberService:registerMember] email or nickname is already in use");
+            throw new DuplicateResourceException("Members nickname or email in use", request.getEmail()+ " or " + request.getNickname());
+        }
+
+
 
         Member newMember = Member.builder()
                 .email(request.getEmail())
@@ -63,21 +75,21 @@ public class MemberService implements UserDetailsService {
 
         log.info("[MemberService:registerMember] member with email '{}' nickname '{}' are registered.", request.getEmail(), request.getNickname());
 
+        ImageDto imageDto = null;
         if(image!=null) {
-            ImageDto imageDto = imageDataService.uploadImage(newMember, image);
+            imageDto = imageDataService.uploadImage(newMember, image);
             log.info("[MemberService:registerMember] '{}' member have profile image with file name '{}'", newMember.getNickname(), imageDto.getFileName());
-            return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
         } else {
             log.info("[MemberService:registerMember] '{}' member doesn't have profile image to register", newMember.getNickname());
         }
 
 
-        this.addRoleToMember(newMember.getEmail(), "ROLE_USER");
+        this.addRoleToMember(newMember, "ROLE_USER");
         this.updatePreferStack(newMember, request.getPreferStacks());
 
         log.info("[MemberService:registerMember] '{}' member prefer stacks '{}'", newMember.getNickname(), request.getPreferStacks().toString());
 
-        return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(null);
+        return JoinMemberResponse.toDto(newMember).preferStacks(request.getPreferStacks()).profileImage(imageDto);
     }
 
     @Transactional
@@ -86,13 +98,13 @@ public class MemberService implements UserDetailsService {
     }
 
     @Transactional
-    public void addRoleToMember(String email, String roleName) {
-        Member findMember = memberRepository.findMemberByEmail(email);
+    public void addRoleToMember(Member targetMember, String roleName) {
         Role roleToAdd = roleRepository.findByRoleName(roleName);
         if(roleToAdd == null) {
             log.warn("no such role {}", roleName);
         } else {
-            findMember.addRole(roleToAdd);
+            log.info("{} set role with {}", targetMember.getNickname(), roleToAdd.getRoleName());
+            targetMember.addRole(roleToAdd);
         }
     }
 
@@ -126,27 +138,31 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public UpdateMemberResponse updateMember(UpdateMemberRequest request, MultipartFile file) throws IOException {
-        Member findMember = memberRepository.findOne(request.getMemberId());
-        if(findMember == null) {
-            log.info("[MemberService:updateMember] member with member id '{}' not exists", request.getMemberId());
-            throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
-        }
-        log.info("[MemberService:updateMember] found {} member", findMember.getNickname());
 
         // validate nickname
         if(!request.getNewNickname().equals(request.getPrevNickname())) {
             // if new nickname is duplicated,
             // DuplicateResourceException will be thrown
             validateMemberNickname(request.getNewNickname());
-            findMember.changeNickname(request.getNewNickname());
             log.info("[MemberService:updateMember] updated nickname from '{}' to '{}'", request.getPrevNickname(), request.getNewNickname());
         } else {
             log.info("[MemberService:updateMember] request doesn't need update nickname");
         }
 
+        Member findMember;
+        try {
+             findMember = memberRepository.findMemberWithStack(request.getMemberId());
+        } catch (EmptyResultDataAccessException e) {
+            log.info("[MemberService:updateMember] member with member id '{}' not exists", request.getMemberId());
+            throw new ResourceNotFoundException("member id", "memberId", request.getMemberId());
+        }
+        log.info("[MemberService:updateMember] found {} member", findMember.getNickname());
+
+        findMember.changeNickname(request.getNewNickname());
         this.updatePreferStack(findMember, request.getUpdatedStacks());
-        log.info("[MemberService:updateMember] updated stacks to '{}'", request.getUpdatedStacks().toString());
         findMember.updateModifiedDate();
+        log.info("[MemberService:updateMember] updated stacks to '{}'", request.getUpdatedStacks().toString());
+
 
         ImageDto imageDto = imageDataService.findImageByMemberId(findMember.getMemberId());
 
@@ -155,9 +171,11 @@ public class MemberService implements UserDetailsService {
             if(imageDto == null) {
                 log.info("[MemberService:updateMember] no registered image for member '{}'", findMember.getNickname());
                 imageDto = imageDataService.uploadImage(findMember, file);
+                log.info("image id : {}", imageDto.getImageId());
             } else {
-                log.info("[MemberService:updateMember] found registered profile image '{}'", imageDto.getFileName());
+                log.info("[MemberService:updateMember] found registered profile image type '{}'", imageDto.getFileType());
                 imageDto = imageDataService.updateImage(findMember, file);
+                log.info("image id : {}", imageDto.getImageId());
             }
         } else {
             log.info("[MemberService:updateMember] request does not have profile image to upload or update.");
@@ -190,14 +208,24 @@ public class MemberService implements UserDetailsService {
 
     @Transactional
     public RemoveMemberResponse removeMember(Long memberId) throws ResourceNotFoundException {
-        Member findMember = this.findMemberById(memberId);
-
-        if(findMember == null) {
+        Member findMember;
+        try {
+            findMember = memberRepository.findMemberWithStack(memberId);
+        } catch (Exception e) {
             log.info("[MemberService:removeMember] member with member id {} not exists", memberId);
             throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
 
-        em.remove(findMember);
+//        em.remove(findMember);
+        stackRelationRepository.removeRelatedStacksByMember(memberId);
+        imageDataRepository.removeByMemberId(memberId);
+        commentRepository.removeCommentByMemberId(memberId);
+        postRepository.removePostByPosterId(memberId);
+        memberRepository.removeMemberWithAll(memberId);
+
+
+
+
         log.info("[MemberService:removeMember] '{}' member removed", findMember.getNickname());
 
         return RemoveMemberResponse.toDto(findMember);
@@ -208,16 +236,20 @@ public class MemberService implements UserDetailsService {
      **********************/
 
     @Transactional(readOnly = true)
-    public Member findMemberById(Long memberId) {
-        Member findMember = memberRepository.findOne(memberId);
-
-        if(findMember == null) {
+    public SearchMemberResponse findMemberById(Long memberId) {
+        Member findMember;
+        try {
+            findMember = memberRepository.findMemberWithStack(memberId);
+        } catch (EmptyResultDataAccessException e) {
             log.info("[MemberService:findMemberById] member with member id '{}' not exists", memberId);
             throw new ResourceNotFoundException("member_id", "memberId ", memberId);
-        } else {
-            log.info("[MemberService:findMemberById] found member with member id {}", memberId);
-            return findMember;
         }
+
+        // can't fetch join profile image because it can be null when user doesn't provide it.
+        ImageDto findImage = ImageDto.toDto(findMember.getProfileImage());
+
+        log.info("[MemberService:findMemberById] found member with member id {}", memberId);
+        return SearchMemberResponse.toDto(findMember, findImage, findMember.getPreferStacks());
     }
 
     // this method is only for test environment
@@ -261,7 +293,7 @@ public class MemberService implements UserDetailsService {
             log.error("[MemberService:loadUserByNickname] Member having email {} not found in the database", email);
             throw new UsernameNotFoundException("Member not found in the database");
         } else {
-            log.info("[MemberSerivce:loadUserByNickname] Member who has email {} found in the database", email);
+            log.info("[MemberService:loadUserByNickname] Member who has email {} found in the database", email);
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
