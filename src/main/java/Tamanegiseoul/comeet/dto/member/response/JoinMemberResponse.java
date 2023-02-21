@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class JoinMemberResponse {
     @ApiModelProperty(notes="신규 회원 이메일", example="k.park@gmail.com", required=true)
     private String email;
 
-    @NonNull
+    @Column(nullable = false)
     @ApiModelProperty(notes="신규 회원 선호 기술스택", example="JAVA, SPRING", required=true)
     private List<TechStack> preferStacks;
 
