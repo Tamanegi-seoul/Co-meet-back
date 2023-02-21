@@ -4,6 +4,7 @@ import Tamanegiseoul.comeet.domain.Comment;
 import Tamanegiseoul.comeet.domain.Member;
 import Tamanegiseoul.comeet.domain.Posts;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
+import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import Tamanegiseoul.comeet.domain.exception.DuplicateResourceException;
 import Tamanegiseoul.comeet.domain.exception.ResourceNotFoundException;
@@ -72,6 +73,8 @@ public class CommentServiceTest {
                 .recruitCapacity(4L)
                 .contactType(ContactType.KAKAO_OPEN_CHAT)
                 .expectedTerm(28L)
+                .remote(true)
+                .groupType(GroupType.STUDY)
                 .startDate(LocalDate.of(2024, 10, 23))
                 .build();
         postService.registerPost(newPostRequest);
