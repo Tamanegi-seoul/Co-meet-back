@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,32 +27,44 @@ import java.util.List;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class UpdatePostRequest {
-    @Schema(description = "수정할 포스트 ID", example = "3")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글 ID", example="3", required = true)
     private Long postId;
-    @Schema(description = "수정할 포스트 제목", example = "(수정)자바 알고리즘 스터디 구인")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글 제목", example="(수정)자바 알고리즘 스터디 구인", required = true)
     private String title;
-    @Schema(description = "수정할 포스트의 모집 그룹 타입", example = "PROJECT")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 타입", example="STUDY | PROJECT", required = true)
     @Enumerated(EnumType.STRING)
     private GroupType groupType;
-    @Schema(description = "수정할 포스트 내용", example = "서울지역 자바 알고리즘 스터디원 모집해요")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 내용", example="서울지역 자바 알고리즘 스터디원 모집", required = true)
     private String content;
-    @Schema(description = "모집 상태", example = "DONE")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 모집 상태", example="DONE", required = true)
     @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
-    @Schema(description = "모집 인원", example = "4")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 모집 인원", example="4", required = true)
     private Long recruitCapacity;
-    @Schema(description = "연락 수단", example = "GOOGLE_FORM")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 연락 수단", example="GOOGLE_FORM", required = true)
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
-    @Schema(description = "연락처", example = "form.google.com/die3IK39KJL")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 연락처", example="form.google.com/die3IK39KJL", required = true)
     private String contact;
-    @Schema(description = "온라인 진행 여부", example = "true")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 온라인 진행 여부", example="true", required = true)
     private Boolean remote;
-    @Schema(description = "스터디 시작일", example = "2022-01-10")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 활동 시작일", example="2022-01-10", required = true)
     private LocalDate startDate;
-    @Schema(description = "스터디 진행기간", example = "60")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 활동 기간(일)", example="60", required = true)
     private Long expectedTerm;
-    @Schema(description = "사용될 또는 스터디할 기술스택", example = "JAVA, JAVA_SCRIPT")
+    @NonNull
+    @ApiModelProperty(notes="수정할 게시글의 그룹 기술스택", example="JAVA, SPRING", required = true)
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
 

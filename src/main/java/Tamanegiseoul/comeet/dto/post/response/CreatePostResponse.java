@@ -8,8 +8,10 @@ import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,14 +23,35 @@ import java.util.List;
 @Data
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 public class CreatePostResponse {
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 ID", example="32", required = true)
     private Long postId;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 제목", example="자바 스터디원 모집", required = true)
     private String title;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 모집 그룹 타입", example="STUDY", required = true)
     @Enumerated(EnumType.STRING)
     private GroupType groupType;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 내용", example="스터디원 구해요", required = true)
     private String content;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 모집 상태", example="DONE", required = true)
     @Enumerated(EnumType.STRING)
     private RecruitStatus recruitStatus;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 모집 정원", example="4", required = true)
     private Long recruitCapacity;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 연락 수단", example="GOOGLE_FORM", required = true)
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
     private String contact;

@@ -6,10 +6,12 @@ import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,29 +22,44 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @NoArgsConstructor
 public class CreatePostRequest {
-    @Schema(description = "게시글 제목", example = "자바 알고리즘 스터디 모집")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글 제목", example="자바 알고리즘 스터디 모집", required = true)
     private String title;
-    @Schema(description = "게시글 내용", example = "백준문제풀이 같이하실분 구해요.")
+
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글 내용", example="백준 문제풀이 같이 하실분 구해요.", required = true)
     private String content;
-    @Schema(description = "그룹 타입", example = "STUDY")
+
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 타입", example="STUDY", required = true)
     @Enumerated(EnumType.STRING)
     private GroupType groupType;
-    @Schema(description = "모집 정원", example = "6")
+
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 정원", example="6", required = true)
     private Long recruitCapacity;
-    @Schema(description = "연락 수단", example = "KAKAO_OPEN_CHAT")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 연락 수단", example="KAKAO_OPEN_CHAT", required = true)
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
-    @Schema(description = "연락처", example = "https://open.kakao.com/o/gNqZKIle")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 연락처", example="https://open.kakao.com/o/gNqZKIle", required = true)
     private String contact;
-    @Schema(description = "스터디 온라인진행 여부", example = "TRUE")
+
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 운영 방식", example="ture | false", required = true)
     private Boolean remote;
-    @Schema(description = "스터디 시작일", example = "2021-08-15")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 활동 시작일", example="2021-08-15", required = true)
     private LocalDate startDate;
-    @Schema(description = "스터디 운영기간(일)", example = "14")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹 활동기간(일)", example="14", required = true)
     private Long expectedTerm;
-    @Schema(description = "작성자 ID", example = "5")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 작성자 ID", example="14", required = true)
     private Long posterId;
-    @Schema(description = "사용될 또는 스터디할 기술스택", example = "JAVA, JAVA_SCRIPT")
+    @NonNull
+    @ApiModelProperty(notes="등록할 게시글의 모집 그룹의 기술스택", example="JAVA, SPRING", required = true)
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
 
