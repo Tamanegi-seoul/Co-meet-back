@@ -1,6 +1,7 @@
 package Tamanegiseoul.comeet.dto.post.response;
 
 import Tamanegiseoul.comeet.domain.Posts;
+import Tamanegiseoul.comeet.domain.StackRelation;
 import Tamanegiseoul.comeet.domain.enums.ContactType;
 import Tamanegiseoul.comeet.domain.enums.GroupType;
 import Tamanegiseoul.comeet.domain.enums.RecruitStatus;
@@ -17,6 +18,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -101,7 +103,17 @@ public class CreatePostResponse {
                 .expectedTerm(post.getExpectedTerm())
                 .createdTime(post.getCreatedTime())
                 .modifiedTime(post.getModifiedTime())
+                .designatedStacks(fetchTechStacks(post.getDesignatedStack()))
+                .posterNickname(post.getPoster().getNickname())
                 .build();
+    }
+
+    public static List<TechStack> fetchTechStacks(List<StackRelation> list) {
+        ArrayList<TechStack> stacks = new ArrayList<>();
+        for(StackRelation sr : list) {
+            stacks.add(sr.getTechStack());
+        }
+        return stacks;
     }
 
     public CreatePostResponse designatedStacks(List<TechStack> stacks) {
