@@ -77,9 +77,7 @@ public class PostService {
         em.flush();
         log.warn("check");
         findMember.addWrotePost(newPost);
-        return CreatePostResponse.toDto(newPost)
-                .posterNickname(findMember.getNickname())
-                .designatedStacks(request.getDesignatedStacks());
+        return CreatePostResponse.toDto(newPost);
     }
 
     /***********************
