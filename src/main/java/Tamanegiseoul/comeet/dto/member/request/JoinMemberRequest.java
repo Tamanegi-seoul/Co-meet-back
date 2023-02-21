@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -16,13 +17,17 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @NoArgsConstructor
 public class JoinMemberRequest {
-    @Schema(description = "등록할 회원 이메일", example = "john.doe@gmail.com")
+    @NonNull
+    @ApiModelProperty(notes="등록할 회원 이메일", example="john.doe@gmail.com", required=true)
     private String email;
-    @Schema(description = "등록할 회원 비밀번호", example = "p@ssword")
+    @NonNull
+    @ApiModelProperty(notes="등록할 회원 이메일", example="john.doe@gmail.com", required=true)
     private String password;
-    @Schema(description = "등록할 회원 닉네임", example = "john123")
+    @NonNull
+    @ApiModelProperty(notes="등록할 회원 닉네임", example="john123", required=true)
     private String nickname;
-    @Schema(description = "등록할 회원 선호 기술스택", example = "JAVA, SPRING")
+    @NonNull
+    @ApiModelProperty(notes="등록할 회원 선호 기술스택", example="JAVA, SPRING", required=true)
     private List<TechStack> preferStacks;
 
     @Builder
