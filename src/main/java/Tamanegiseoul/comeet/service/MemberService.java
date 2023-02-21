@@ -216,15 +216,7 @@ public class MemberService implements UserDetailsService {
             throw new ResourceNotFoundException("member id", "memberId", memberId);
         }
 
-//        em.remove(findMember);
-        stackRelationRepository.removeRelatedStacksByMember(memberId);
-        imageDataRepository.removeByMemberId(memberId);
-        commentRepository.removeCommentByMemberId(memberId);
-        postRepository.removePostByPosterId(memberId);
-        memberRepository.removeMemberWithAll(memberId);
-
-
-
+        em.remove(findMember);
 
         log.info("[MemberService:removeMember] '{}' member removed", findMember.getNickname());
 
