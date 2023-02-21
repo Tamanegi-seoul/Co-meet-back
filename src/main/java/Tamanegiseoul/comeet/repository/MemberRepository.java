@@ -40,6 +40,12 @@ public class MemberRepository {
                 .getSingleResult();
     }
 
+    public Member findMemberWithStackAndImage(Long memberId) {
+        return em.createQuery("select m from Member m join fetch m.preferStacks join fetch m.profileImage where m.memberId = :memberId", Member.class)
+                .setParameter("memberId", memberId)
+                .getSingleResult();
+    }
+
     public Member findMemberWithProfileImage(Long memberId) {
         return em.createQuery("select m from Member m join fetch m.profileImage where m.memberId = :memberId", Member.class)
                 .setParameter("memberId", memberId)

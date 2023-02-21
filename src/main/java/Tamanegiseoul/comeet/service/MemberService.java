@@ -61,8 +61,6 @@ public class MemberService implements UserDetailsService {
             throw new DuplicateResourceException("Members nickname or email in use", request.getEmail()+ " or " + request.getNickname());
         }
 
-
-
         Member newMember = Member.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())

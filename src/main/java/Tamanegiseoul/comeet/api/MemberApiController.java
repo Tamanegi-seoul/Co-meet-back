@@ -34,7 +34,7 @@ public class MemberApiController {
     private final ImageDataService imageDataService;
 
     @GetMapping("/profile")
-    @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증")
+    @Operation(summary = "닉네임/이메일 중복 검증", description = "회원가입에 대한 이메일/닉네임 가용여부 검증", tags = "Member API")
     public ResponseEntity<ApiResponse> validate(@RequestParam("nickname") String nickname, @RequestParam("email") String email ) {
         try {
             log.info("[MemberApiController:validate] controller execute");
@@ -48,7 +48,7 @@ public class MemberApiController {
     }
 
     @PostMapping
-    @Operation(summary = "신규 회원가입", description = "새로운 회원 등록")
+    @Operation(summary = "신규 회원가입", description = "새로운 회원 등록", tags = "Member API")
     public ResponseEntity<ApiResponse> joinNewMember(@RequestPart("request") @Valid JoinMemberRequest request, @Nullable @RequestPart("image") MultipartFile image) {
         try {
             log.info("[MemberApiController:joinNewMember] controller execute");
@@ -66,7 +66,7 @@ public class MemberApiController {
 
 
     @DeleteMapping
-    @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴")
+    @Operation(summary = "회원 탈퇴", description = "등록된 회원 탈퇴", tags = "Member API")
     public ResponseEntity<ApiResponse> removeMember(@RequestParam("memberId") @Valid Long memberId) {
         try {
             log.info("[MemberApiController:removeMember] controller execute");
@@ -79,7 +79,7 @@ public class MemberApiController {
     }
 
     @GetMapping
-    @Operation(summary = "회원 조회", description = "등록된 회원정보 조회")
+    @Operation(summary = "회원 조회", description = "등록된 회원정보 조회", tags = "Member API")
     public ResponseEntity<ApiResponse> searchMember(@RequestParam("memberId") Long memberId) {
         try {
             log.info("[MemberApiController:searchMember] controller execute");
@@ -94,7 +94,7 @@ public class MemberApiController {
 
 
     @PatchMapping
-    @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정")
+    @Operation(summary = "회원 수정", description = "등록된 회원 정보 수정", tags = "Member API")
     public ResponseEntity<ApiResponse> updateMember(@RequestPart("request") @Valid UpdateMemberRequest request, @Nullable @RequestPart("image")MultipartFile file) {
         try {
             log.info("[MemberApiController:updateMember] controller execute");
