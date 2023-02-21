@@ -54,16 +54,34 @@ public class CreatePostResponse {
     @ApiModelProperty(notes="등록된 게시글의 연락 수단", example="GOOGLE_FORM", required = true)
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 연락처", example="form.google.com/die3IK39KJL", required = true)
     private String contact;
+
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 그룹 온라인 진행 여부", example="true", required = true)
     private Boolean remote;
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 그룹 활동 시작일", example="2022-01-10", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate startDate;
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 그룹 활동 기간(일)", example="60", required = true)
     private Long expectedTerm;
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 작성자 닉네임", example="John Doe", required = true)
     private String posterNickname;
+    @NonNull
+    @ApiModelProperty(notes="등록된 게시글의 그룹 기술스택", example="JAVA, SPRING", required = true)
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;
+    @NonNull
+    @ApiModelProperty(notes="게시글 등록일", example="2022-12-12 09:12:17", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdTime;
+    @NonNull
+    @ApiModelProperty(notes="게시글 수정일", example="2022-12-12 09:12:17", required = true)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedTime;
 
