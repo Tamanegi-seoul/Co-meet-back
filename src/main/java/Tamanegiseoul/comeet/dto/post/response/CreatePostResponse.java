@@ -101,6 +101,7 @@ public class CreatePostResponse {
                 .recruitStatus(post.getRecruitStatus())
                 .startDate(post.getStartDate())
                 .expectedTerm(post.getExpectedTerm())
+                .groupType(post.getGroupType())
                 .createdTime(post.getCreatedTime())
                 .modifiedTime(post.getModifiedTime())
                 .designatedStacks(fetchTechStacks(post.getDesignatedStack()))

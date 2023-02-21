@@ -91,8 +91,10 @@ public class UpdatePostResponse {
                 .recruitCapacity(findPost.getRecruitCapacity())
                 .recruitStatus(findPost.getRecruitStatus())
                 .startDate(findPost.getStartDate())
+                .expectedTerm(findPost.getExpectedTerm())
                 .createdTime(findPost.getCreatedTime())
                 .modifiedTime(findPost.getModifiedTime())
+                .designatedStacks(findPost.exportTechStack())
                 .build();
     }
 

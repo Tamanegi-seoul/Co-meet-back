@@ -57,7 +57,6 @@ public class PostCompactDto {
     @ApiModelProperty(notes="게시글의 작성자 닉네임", example="John Doe", required = true)
     private String posterNickname;
 
-    @NonNull
     @ApiModelProperty(notes="게시글의 모임 선호 기술스택", example="JAVA, SPRING", required = true)
     @Enumerated(EnumType.STRING)
     private List<TechStack> designatedStacks;

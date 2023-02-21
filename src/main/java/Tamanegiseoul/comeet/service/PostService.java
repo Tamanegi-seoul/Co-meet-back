@@ -59,6 +59,7 @@ public class PostService {
                 .startDate(request.getStartDate())
                 .expectedTerm(request.getExpectedTerm())
                 .recruitCapacity(request.getRecruitCapacity())
+                .groupType(request.getGroupType())
                 .build();
 
         newPost.updateModifiedDate();
