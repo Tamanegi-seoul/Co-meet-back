@@ -54,7 +54,7 @@ public class initDB {
                             .email("admin")
                             .nickname("관리자")
                             .password("password")
-                            .preferStacks(new ArrayList<>(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON)))
+                            .preferStacks(List.of(TechStack.JAVA_SCRIPT, TechStack.PYTHON))
                             .build(), null
             );
 

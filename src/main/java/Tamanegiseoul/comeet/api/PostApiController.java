@@ -28,7 +28,7 @@ public class PostApiController {
     private final PostService postService;
 
     @PostMapping
-    @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성")
+    @ApiOperation(value="포스트 작성", notes="새로운 포스트 작성", tags = "Post API")
     public ResponseEntity<ApiResponse> registerPost(@RequestBody @Valid CreatePostRequest request) {
         try {
             log.info("[PostApiController:registerPost] controller execute");
@@ -43,7 +43,7 @@ public class PostApiController {
     }
 
     @PatchMapping
-    @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정")
+    @ApiOperation(value="포스트 수정", notes="등록된 포스트 수정", tags = "Post API")
     public ResponseEntity<ApiResponse> updatePost(@RequestBody @Valid UpdatePostRequest request) {
         try {
             log.info("[PostApiController:updatePost] controller execute");
@@ -56,7 +56,7 @@ public class PostApiController {
     }
 
     @GetMapping("/all")
-    @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회")
+    @ApiOperation(value="포스트 전체 조회", notes="등록된 포스트 전체 조회", tags = "Post API")
     public ResponseEntity<ApiResponse> searchAllPost(@RequestParam(value="offset", defaultValue="0") @Valid int offset, @RequestParam(value="limit",defaultValue="20") @Valid int limit) {
         try {
             log.info("[PostApiController:searchAllPost] controller execute");
@@ -69,7 +69,7 @@ public class PostApiController {
     }
 
     @GetMapping("/my")
-    @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회")
+    @ApiOperation(value="작성자 기반 포스트 조회", notes="특정 회원이 작성한 포스트 모두 조회", tags = "Post API")
     public ResponseEntity<ApiResponse> searchPostByPosterId(@RequestParam(value="memberId") @Valid Long memberId) {
         try {
             log.info("[PostApiController:searchPostByPosterId] controller execute");
@@ -81,7 +81,7 @@ public class PostApiController {
     }
 
     @GetMapping
-    @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회")
+    @ApiOperation(value="포스트 상세 조회", notes="등록된 포스트 상세 조회", tags = "Post API")
     public ResponseEntity<ApiResponse> searchPost(@RequestParam("postId") Long postId) {
         try {
             log.info("[PostApiController:searchPost] controller execute");
@@ -94,7 +94,7 @@ public class PostApiController {
     }
 
     @DeleteMapping
-    @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제")
+    @ApiOperation(value="포스트 삭제", notes="등록된 포스트 삭제", tags = "Post API")
     public ResponseEntity<ApiResponse> removePost(@RequestParam(name = "postId")  Long postId) {
         try {
             log.info("[PostApiController:removePost] controller execute");

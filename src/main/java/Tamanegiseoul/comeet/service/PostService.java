@@ -59,6 +59,7 @@ public class PostService {
                 .startDate(request.getStartDate())
                 .expectedTerm(request.getExpectedTerm())
                 .recruitCapacity(request.getRecruitCapacity())
+                .groupType(request.getGroupType())
                 .build();
 
         newPost.updateModifiedDate();
@@ -77,9 +78,7 @@ public class PostService {
         em.flush();
         log.warn("check");
         findMember.addWrotePost(newPost);
-        return CreatePostResponse.toDto(newPost)
-                .posterNickname(findMember.getNickname())
-                .designatedStacks(request.getDesignatedStacks());
+        return CreatePostResponse.toDto(newPost);
     }
 
     /***********************

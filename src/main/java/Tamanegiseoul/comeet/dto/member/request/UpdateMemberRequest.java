@@ -3,10 +3,12 @@ package Tamanegiseoul.comeet.dto.member.request;
 import Tamanegiseoul.comeet.domain.enums.TechStack;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
 
@@ -14,15 +16,19 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @NoArgsConstructor
 public class UpdateMemberRequest {
-    @Schema(description = "수정할 회원 ID", example = "5")
+    @NonNull
+    @ApiModelProperty(notes="수정할 회원 ID", example="5", required=true)
     private Long memberId;
 
-    @Schema(description = "기존의 닉네임", example = "johndoe")
+    @NonNull
+    @ApiModelProperty(notes="기존의 닉네임", example="johndoe", required=true)
     private String prevNickname;
 
-    @Schema(description = "회원의 새로운 닉네임", example = "doej123")
+    @NonNull
+    @ApiModelProperty(notes="수정할 회원 닉네임", example="doej123", required=true)
     private String newNickname;
-    @Schema(description = "회원의 새로운 선호 기술스택", example = "JAVA_SCRIPT, REACT")
+    @NonNull
+    @ApiModelProperty(notes="회원의 새로운 선호 기술스택", example="JAVA_SCRIPT, REACT", required=true)
     private List<TechStack> updatedStacks;
 
     @Builder

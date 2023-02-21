@@ -71,6 +71,7 @@ public class PostServiceTest {
                 .remote(false)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
+                .groupType(GroupType.STUDY)
                 .designatedStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
         CreatePostResponse postResponse = postService.registerPost(requset);
@@ -105,25 +106,27 @@ public class PostServiceTest {
                 .recruitCapacity(4L)
                 .startDate(LocalDate.of(2022, 10, 23))
                 .expectedTerm(14L)
+                .groupType(GroupType.STUDY)
                 .designatedStacks(new ArrayList<>(List.of(TechStack.JAVA, TechStack.SPRING)))
                 .build();
         CreatePostResponse response = postService.registerPost(request);
 
         // when
-        UpdatePostRequest updatedPost = new UpdatePostRequest(
-                response.getPostId(),
-                "이것은 수정된 포스트입니다.",
-                GroupType.STUDY,
-                "빈 내용",
-                RecruitStatus.DONE,
-                8L,
-                ContactType.POSTER_EMAIL,
-                "93jpark@gmail.com",
-                false,
-                LocalDate.of(2022, 11, 27),
-                28L,
-                new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT))
-        );
+        UpdatePostRequest updatedPost = UpdatePostRequest.builder()
+                .postId(response.getPostId())
+                .title("이것은 수정된 포스트입니다.")
+                .recruitCapacity(8L)
+                .groupType(GroupType.STUDY)
+                .contact("93jpark@gmail.com")
+                .recruitStatus(RecruitStatus.DONE)
+                .contactType(ContactType.GOOGLE_FORM)
+                .remote(false)
+                .expectedTerm(8L)
+                .content("sample")
+                .startDate(LocalDate.parse("2022-11-27"))
+                .designatedStacks(new ArrayList(Arrays.asList(TechStack.R, TechStack.REACT)))
+                .build();
+
 
         log.warn(updatedPost.getTitle());
 
