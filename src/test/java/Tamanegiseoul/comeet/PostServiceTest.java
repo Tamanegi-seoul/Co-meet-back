@@ -82,7 +82,7 @@ public class PostServiceTest {
 
         // then
         List<PostCompactDto> findPosts = postService.findPostByMemberId(response.getMemberId());
-        Assert.assertEquals(1, findPosts.size());
+        Assert.assertEquals(2, findPosts.size());
     }
 
     @Test
