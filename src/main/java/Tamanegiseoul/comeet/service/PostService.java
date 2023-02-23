@@ -157,12 +157,7 @@ public class PostService {
 
         Member findPoster = findPost.getPoster();
         log.info("[PostService:findPostById] post with post id '{}' wrote by '{}' member", postId, findPoster.getNickname());
-        ImageDto findProfileImage = ImageDto.toDto(findPoster.getProfileImage());
-        if(findProfileImage == null) {
-            log.info("[PostService:findPostById] poster '{}' has no profile image");
-        } else {
-            log.info("[PostService:findPostById] poster '{}' has profile image '{}'", findProfileImage.getFileName());
-        }
+
 
         List<Comment> commentList = commentRepository.findCommentByPostId(postId);
         log.info("[PostService:findPostById] post with post id '{}' has {} comments", findPost.getPostId(), commentList.size());
@@ -176,9 +171,7 @@ public class PostService {
         }
 
         return SearchPostResponse.toDto(findPost)
-                .designatedStacks(findPost.exportTechStack())
-                .comments(commentDtoList)
-                .posterProfile(findProfileImage);
+                .comments(commentDtoList);
     }
 
     @Transactional(readOnly = true)
