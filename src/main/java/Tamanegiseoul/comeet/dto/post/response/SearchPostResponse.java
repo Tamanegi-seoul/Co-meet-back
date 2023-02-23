@@ -101,29 +101,20 @@ public class SearchPostResponse {
                 .contactType(findPost.getContactType())
                 .contact(findPost.getContact())
                 .remote(findPost.getRemote())
+                .designatedStacks(findPost.exportTechStack())
                 .recruitCapacity(findPost.getRecruitCapacity())
                 .recruitStatus(findPost.getRecruitStatus())
                 .startDate(findPost.getStartDate())
                 .expectedTerm(findPost.getExpectedTerm())
                 .createdTime(findPost.getCreatedTime())
                 .modifiedTime(findPost.getModifiedTime())
+                .posterProfile(ImageDto.toDto(findPost.getPoster().getProfileImage()))
                 .build();
-    }
-
-    public SearchPostResponse designatedStacks(List<TechStack> stacks) {
-        this.designatedStacks = stacks;
-        return this;
     }
 
     public SearchPostResponse comments(List<CommentDto> list) {
         this.comments = list;
         return this;
     }
-
-    public SearchPostResponse posterProfile(ImageDto imageData) {
-        this.posterProfile = imageData;
-        return this;
-    }
-
 
 }
